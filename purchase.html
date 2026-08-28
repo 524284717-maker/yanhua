@@ -21,11 +21,13 @@
     }
     html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; }
     body {
+      display: flex; align-items: center; justify-content: center;
       background:
         radial-gradient(circle at 50% 0%, rgba(0, 90, 150, 0.25), transparent 60%),
         radial-gradient(circle at 80% 80%, rgba(0, 60, 100, 0.2), transparent 50%),
         linear-gradient(180deg, #050b14 0%, #081322 100%);
     }
+    .screen { position: relative; flex-shrink: 0; width: 1920px; height: 1080px; transform-origin: center center; }
     body::before {
       content: "";
       position: absolute; inset: 0;
@@ -296,6 +298,7 @@
   </style>
 </head>
 <body>
+  <div class="screen">
   <header class="header">
     <div class="brand">
       <div class="brand-icon">赣</div>
@@ -434,6 +437,27 @@
   </main>
 
   <script>
+    // 自适应：按视口缩放整个设计稿(1920x1080)
+    function fitScreen() {
+      const screen = document.querySelector('.screen');
+      if (!screen) return;
+      const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      screen.style.transform = 'scale(' + scale + ')';
+    }
+    window.addEventListener('resize', fitScreen);
+    fitScreen();
+
+    // 导航：有真实 href 的菜单正常跳转，占位菜单仅切换高亮
+    document.querySelectorAll('.nav a').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        if (href && href !== '#') return;
+        e.preventDefault();
+        document.querySelectorAll('.nav a').forEach(x => x.classList.remove('active'));
+        a.classList.add('active');
+      });
+    });
+
     // ================= 基础工具 =================
     function updateClock() {
       const now = new Date();
@@ -839,5 +863,6 @@
 
     refreshAll();
   </script>
+  </div>
 </body>
 </html>
