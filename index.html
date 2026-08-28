@@ -1382,6 +1382,15 @@
       if (drillPath.length > 1) { drillPath.pop(); refreshAll(); }
     });
 
+    // 省级基线数据（定义在 loadGeo 同步回调之前，避免 TDZ）
+    const BASE_KPI = {
+      prod: 186, whole: 312, retail: 749, active: 142,
+      vehicle: 156, worker: 4.82, fire: 86,
+      iotAI: 1286, iotDoor: 2140, iotMach: 864, iotVideo: 3752,
+      warnToday: 38, warnDone: 31, warnHigh: 9, warnMid: 29,
+      chain: [5, 14, 9, 6, 7]
+    };
+
     // 加载省级地图并初始化（首屏 KPI 滚动动画）
     loadGeo(360000, gj => {
       if (!gj) { showMapError(); return; }
@@ -1397,14 +1406,6 @@
     });
 
     // ============ 下钻联动：KPI / 图表 / 预警列表 ============
-    // 省级基线数据
-    const BASE_KPI = {
-      prod: 186, whole: 312, retail: 749, active: 142,
-      vehicle: 156, worker: 4.82, fire: 86,
-      iotAI: 1286, iotDoor: 2140, iotMach: 864, iotVideo: 3752,
-      warnToday: 38, warnDone: 31, warnHigh: 9, warnMid: 29,
-      chain: [5, 14, 9, 6, 7]
-    };
     function setNum(el, target, decimals) {
       // 保留尾部单位：优先 .summary-unit，其次同级的 <span>（如 %）
       let unitHtml = '';
