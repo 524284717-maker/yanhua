@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>江西省烟花爆竹产业全链条监管服务平台 - 态势总览</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050b14;
+      --panel: rgba(10, 30, 60, 0.55);
+      --panel-border: rgba(0, 180, 255, 0.35);
+      --accent: #00d4ff;
+      --accent-dim: rgba(0, 212, 255, 0.15);
+      --warn: #ff9f2e;
+      --danger: #ff4d4f;
+      --text: #e0f7ff;
+      --text-dim: #8aa4bf;
+      --title: #ffffff;
+    }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; }
+    body {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(0, 90, 150, 0.25), transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(0, 60, 100, 0.2), transparent 50%),
+        linear-gradient(180deg, #050b14 0%, #081322 100%);
+    }
+    body::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header */
+    .header {
+      position: relative; z-index: 10;
+      height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      background: linear-gradient(180deg, rgba(6, 26, 55, 0.95) 0%, rgba(6, 26, 55, 0.6) 100%);
+      border-bottom: 1px solid rgba(0, 180, 255, 0.25);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    .header::after {
+      content: "";
+      position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
+      width: 60%; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-icon {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #00d4ff, #0066aa);
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: bold; color: #fff;
+    }
+    .brand h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; color: var(--title); text-shadow: 0 0 12px rgba(0, 212, 255, 0.5); }
+    .brand p { font-size: 11px; color: var(--text-dim); letter-spacing: 4px; margin-top: 2px; }
+    .nav { display: flex; gap: 8px; }
+    .nav a {
+      position: relative;
+      padding: 8px 18px;
+      color: var(--text-dim); text-decoration: none; font-size: 14px;
+      border-radius: 4px; transition: all 0.25s;
+      background: rgba(0, 120, 200, 0.08);
+      border: 1px solid transparent;
+    }
+    .nav a:hover { color: var(--accent); background: rgba(0, 180, 255, 0.12); }
+    .nav a.active {
+      color: #fff; background: linear-gradient(180deg, rgba(0, 150, 255, 0.25), rgba(0, 80, 160, 0.15));
+      border-color: rgba(0, 212, 255, 0.45);
+      box-shadow: 0 0 12px rgba(0, 180, 255, 0.25) inset, 0 0 8px rgba(0, 180, 255, 0.2);
+    }
+    .nav a.active::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .header-right { display: flex; align-items: center; gap: 20px; color: var(--text-dim); font-size: 13px; }
+    .weather { display: flex; align-items: center; gap: 8px; }
+    .time { font-family: "DIN Alternate", "Arial Black", sans-serif; font-size: 16px; color: var(--accent); letter-spacing: 1px; }
+
+    /* Main */
+    .main {
+      position: relative; z-index: 5;
+      height: calc(100% - 72px);
+      padding: 16px 20px 20px;
+      display: grid;
+      grid-template-columns: 23% 1fr 23%;
+      gap: 18px;
+    }
+    .col { display: flex; flex-direction: column; gap: 16px; height: 100%; overflow: hidden; }
+    .col-center { gap: 14px; }
+
+    /* Panel */
+    .panel {
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 14px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 20px rgba(0, 40, 80, 0.4) inset;
+      display: flex; flex-direction: column;
+    }
+    .panel::before, .panel::after {
+      content: ""; position: absolute; width: 10px; height: 10px;
+      border: 2px solid var(--accent); transition: all 0.3s;
+    }
+    .panel::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .panel::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+    .panel-title {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .panel-title h3 {
+      font-size: 15px; font-weight: 600; color: var(--title);
+      display: flex; align-items: center; gap: 8px;
+      text-shadow: 0 0 8px rgba(0, 180, 255, 0.3);
+    }
+    .panel-title h3::before {
+      content: ""; display: inline-block; width: 4px; height: 14px;
+      background: linear-gradient(180deg, var(--accent), #0055aa);
+      border-radius: 2px;
+    }
+    .panel-title .more { font-size: 12px; color: var(--text-dim); cursor: pointer; }
+    .panel-title .more:hover { color: var(--accent); }
+
+    /* KPI Grid */
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .kpi-card {
+      background: linear-gradient(135deg, rgba(0, 100, 180, 0.15), rgba(0, 60, 110, 0.08));
+      border: 1px solid rgba(0, 150, 255, 0.18);
+      border-radius: 6px;
+      padding: 10px 12px;
+      display: flex; flex-direction: column; gap: 6px;
+      transition: all 0.2s;
+    }
+    .kpi-card:hover { border-color: rgba(0, 212, 255, 0.4); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 180, 255, 0.15); }
+    .kpi-label { font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+    .kpi-label i { font-style: normal; width: 18px; height: 18px; border-radius: 3px; background: rgba(0, 180, 255, 0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--accent); }
+    .kpi-value { font-size: 22px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate", "Arial Black", sans-serif; text-shadow: 0 0 8px rgba(0, 212, 255, 0.35); }
+    .kpi-trend { font-size: 11px; color: var(--text-dim); }
+    .kpi-trend.up { color: #ff6b6b; }
+    .kpi-trend.down { color: #51cf66; }
+
+    /* Chart containers */
+    .chart { flex: 1; min-height: 140px; }
+    .chart-sm { flex: 1; min-height: 110px; }
+
+    /* Center KPI cards overlay on map */
+    .center-top {
+      position: absolute; top: 10px; left: 12px; right: 12px; z-index: 6;
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
+    }
+    .center-top .summary-card {
+      background: rgba(4, 18, 38, 0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0, 150, 255, 0.35);
+      border-radius: 8px;
+      padding: 10px 6px;
+      text-align: center;
+      position: relative; overflow: hidden;
+      transition: all 0.25s;
+    }
+    .center-top .summary-card:hover { border-color: rgba(0, 212, 255, 0.6); box-shadow: 0 0 16px rgba(0, 180, 255, 0.2); transform: translateY(-2px); }
+    .center-top .summary-card::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .center-top .summary-card:nth-child(2)::before { background: linear-gradient(90deg, transparent, var(--warn), transparent); }
+    .center-top .summary-card:nth-child(3)::before { background: linear-gradient(90deg, transparent, #a855f7, transparent); }
+    .center-top .summary-card:nth-child(4)::before { background: linear-gradient(90deg, transparent, #22c55e, transparent); }
+    .center-top .summary-card:nth-child(5)::before { background: linear-gradient(90deg, transparent, #f43f5e, transparent); }
+    .center-top .summary-card:nth-child(6)::before { background: linear-gradient(90deg, transparent, #38c8f5, transparent); }
+    .center-top .summary-card:nth-child(7)::before { background: linear-gradient(90deg, transparent, #f43f5e, transparent); }
+    .summary-label { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
+    .summary-value { font-size: 26px; font-weight: 800; color: #fff; font-family: "DIN Alternate", "Arial Black", sans-serif; text-shadow: 0 0 10px rgba(255,255,255,0.15); }
+    .summary-unit { font-size: 12px; color: var(--text-dim); margin-left: 2px; }
+    .summary-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+    /* Map container */
+    .map-wrap {
+      flex: 1; position: relative;
+      border: 1px solid rgba(0, 150, 255, 0.2);
+      border-radius: 10px;
+      background: radial-gradient(circle at 50% 50%, rgba(0, 80, 140, 0.15), transparent 70%);
+      overflow: hidden;
+    }
+    .map-bg {
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(0, 180, 255, 0.08) 0%, transparent 25%),
+        radial-gradient(circle at 75% 65%, rgba(0, 180, 255, 0.06) 0%, transparent 30%);
+    }
+    #jxMapChart { position: absolute; inset: 0; z-index: 2; }
+
+    /* Legend toolbar (floating on map) */
+    .map-toolbar {
+      position: absolute; bottom: 118px; left: 50%; transform: translateX(-50%); z-index: 6;
+      display: flex; gap: 16px;
+      background: rgba(4, 18, 38, 0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0, 150, 255, 0.25);
+      border-radius: 6px;
+      padding: 7px 16px;
+    }
+    .map-toolbar span { font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .map-toolbar i { width: 10px; height: 8px; border-radius: 2px; display: inline-block; }
+    .map-toolbar i.lg-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .map-toolbar i.lg-grad { width: 22px; height: 9px; border-radius: 2px; background: linear-gradient(90deg,#0b3b6b,#38c8f5); }
+
+    /* Breadcrumb (top-right of map) */
+    .map-crumb {
+      position: absolute; top: 124px; right: 16px; z-index: 7;
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(4, 18, 38, 0.82);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0, 150, 255, 0.35);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px; color: var(--text-dim);
+      box-shadow: 0 0 12px rgba(0, 150, 255, 0.15);
+    }
+    .map-crumb .crumb-sep { color: rgba(0, 180, 255, 0.5); }
+    .map-crumb .crumb-cur { color: var(--accent); font-weight: 700; }
+    .map-crumb .crumb-ico { font-size: 13px; }
+    .map-crumb .crumb-item { cursor: pointer; transition: color .2s; }
+    .map-crumb .crumb-item:hover { color: var(--accent); text-decoration: underline; }
+    .map-crumb .crumb-back {
+      margin-left: 6px; padding: 2px 10px;
+      border: 1px solid rgba(0, 212, 255, 0.4); border-radius: 10px;
+      color: var(--accent); font-size: 11px; cursor: pointer;
+      background: rgba(0, 150, 255, 0.1); transition: all .2s;
+    }
+    .map-crumb .crumb-back:hover { background: rgba(0, 150, 255, 0.25); box-shadow: 0 0 8px rgba(0,180,255,0.3); }
+    .map-crumb .crumb-back.hidden { display: none; }
+
+    /* Chain flow overlay (bottom of map) */
+    .chain-overlay {
+      position: absolute; bottom: 10px; left: 12px; right: 12px; z-index: 6;
+      background: rgba(4, 18, 38, 0.82);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 150, 255, 0.3);
+      border-radius: 8px;
+      padding: 10px 18px 8px;
+    }
+    .chain-overlay h4 {
+      font-size: 13px; color: var(--title); font-weight: 600;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+    .chain-overlay h4::before {
+      content: ""; display: inline-block; width: 4px; height: 13px;
+      background: linear-gradient(180deg, var(--accent), #0055aa); border-radius: 2px;
+    }
+    .chain-flow { display: flex; justify-content: space-around; align-items: center; }
+    .chain-node { text-align: center; }
+    .chain-node .icon {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 5px; color: #fff; font-size: 16px; font-weight: 600;
+    }
+    .chain-node .name { font-size: 12px; color: var(--text-dim); }
+    .chain-arrow { width: 36px; height: 2px; background: linear-gradient(90deg, rgba(0,212,255,0.8), transparent); }
+    .chain-parallel { display: flex; gap: 14px; align-items: center; padding: 4px 8px; border: 1px dashed rgba(0, 212, 255, 0.35); border-radius: 10px; }
+
+    /* Warning list */
+    .warning-list { display: flex; flex-direction: column; gap: 8px; }
+    .warning-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255, 79, 79, 0.06);
+      border-left: 3px solid var(--danger);
+      border-radius: 4px;
+      padding: 9px 10px;
+      font-size: 12px;
+    }
+    .warning-item.warn { border-left-color: var(--warn); background: rgba(255, 159, 46, 0.06); }
+    .warning-item.normal { border-left-color: #22c55e; background: rgba(34, 197, 94, 0.06); }
+    .warning-info { display: flex; flex-direction: column; gap: 3px; }
+    .warning-title { color: #fff; font-weight: 500; }
+    .warning-meta { color: var(--text-dim); font-size: 11px; }
+    .warning-level { font-size: 11px; padding: 2px 6px; border-radius: 3px; }
+    .warning-level.high { background: rgba(255, 77, 79, 0.2); color: #ff7875; }
+    .warning-level.mid { background: rgba(255, 159, 46, 0.2); color: #ffc078; }
+    .warning-level.low { background: rgba(34, 197, 94, 0.2); color: #95faa3; }
+
+    /* Chain warnings */
+    .chain-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 12px; }
+    .chain-name { width: 60px; color: var(--text-dim); text-align: right; }
+    .chain-bar { flex: 1; height: 10px; background: rgba(255,255,255,0.06); border-radius: 5px; overflow: hidden; }
+    .chain-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, #0055aa, var(--accent)); box-shadow: 0 0 8px rgba(0, 212, 255, 0.3); }
+    .chain-fill.warn { background: linear-gradient(90deg, #aa4400, var(--warn)); box-shadow: 0 0 8px rgba(255, 159, 46, 0.3); }
+    .chain-value { width: 40px; color: var(--accent); font-weight: 700; text-align: right; }
+
+    /* Top5 undisposed warning enterprises */
+    .top5-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding-right: 2px; }
+    .top5-item { background: rgba(0,0,0,0.18); border: 1px solid rgba(0,150,255,0.15); border-radius: 8px; overflow: hidden; transition: border-color .25s; }
+    .top5-item:hover { border-color: rgba(0,150,255,0.35); }
+    .top5-item.open { border-color: rgba(0,150,255,0.4); background: rgba(0,60,120,0.12); }
+    .top5-header { display: flex; align-items: center; gap: 8px; padding: 10px 12px; cursor: pointer; }
+    .top5-level { font-size: 11px; padding: 2px 8px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+    .top5-level.major { color: #ff4d4f; border-color: #ff4d4f; background: rgba(255,77,79,0.12); }
+    .top5-level.large { color: #ff9f2e; border-color: #ff9f2e; background: rgba(255,159,46,0.12); }
+    .top5-level.normal { color: #38c8f5; border-color: #38c8f5; background: rgba(56,200,245,0.12); }
+    .top5-title { flex: 1; font-size: 13px; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .top5-arrow { color: #8aa4bf; font-size: 12px; transition: transform .3s; }
+    .top5-item.open .top5-arrow { transform: rotate(180deg); }
+    .top5-body { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+    .top5-item.open .top5-body { max-height: 130px; }
+    .top5-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0 12px 12px; }
+    .top5-kpi { background: rgba(0,0,0,0.22); border: 1px solid rgba(0,150,255,0.12); border-radius: 6px; padding: 8px 4px; text-align: center; }
+    .top5-kpi .lab { font-size: 11px; color: #8aa4bf; }
+    .top5-kpi .val { font-size: 17px; font-weight: 700; color: #fff; margin-top: 2px; }
+    .top5-kpi .val.warn { color: #ff4d4f; }
+
+    /* Region distribution */
+    .region-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
+    .region-row:last-child { border-bottom: none; }
+    .region-name { color: var(--text-dim); }
+    .region-bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .region-bar { width: 80px; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+    .region-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #0066aa, var(--accent)); }
+    .region-value { color: var(--accent); font-weight: 600; width: 30px; text-align: right; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 150, 255, 0.3); border-radius: 2px; }
+
+    /* AI Assistant floating button & modal */
+    .ai-fab {
+      position: fixed; right: 24px; bottom: 24px; z-index: 100;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, #00d4ff, #0066ff);
+      border: 2px solid rgba(255,255,255,0.3);
+      box-shadow: 0 0 20px rgba(0,180,255,0.45);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: transform .25s, box-shadow .25s;
+    }
+    .ai-fab:hover { transform: scale(1.08); box-shadow: 0 0 30px rgba(0,180,255,0.65); }
+    .ai-fab svg { width: 28px; height: 28px; fill: #fff; }
+    .ai-modal {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(2, 10, 22, 0.85);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .25s;
+    }
+    .ai-modal.open { display: flex; opacity: 1; }
+    .ai-container {
+      width: 920px; max-width: 92vw; height: 76vh;
+      background: linear-gradient(180deg, rgba(8,28,60,0.98), rgba(4,16,36,0.98));
+      border: 1px solid rgba(0,150,255,0.35);
+      border-radius: 16px;
+      box-shadow: 0 0 40px rgba(0,100,200,0.35);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .ai-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(0,150,255,0.2); }
+    .ai-header h3 { margin:0; font-size:18px; color:#fff; letter-spacing:1px; }
+    .ai-header h3::before { content: ""; display: inline-block; width: 4px; height: 16px; background: #00d4ff; border-radius: 2px; margin-right: 8px; vertical-align: middle; }
+    .ai-close { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; }
+    .ai-close:hover { background:rgba(255,77,79,0.25); border-color:rgba(255,77,79,0.4); }
+    .ai-tabs { display:flex; gap:10px; padding:12px 20px; border-bottom:1px solid rgba(0,150,255,0.15); }
+    .ai-tab { padding:8px 18px; border-radius:20px; background:rgba(0,0,0,0.2); border:1px solid rgba(0,150,255,0.2); color:#8aa4bf; cursor:pointer; transition:.2s; font-size:13px; }
+    .ai-tab:hover { border-color:rgba(0,180,255,0.4); color:#cfe9ff; }
+    .ai-tab.active { background:rgba(0,180,255,0.18); border-color:rgba(0,212,255,0.5); color:#fff; }
+    .ai-body { flex:1; overflow:hidden; position:relative; }
+    .ai-pane { position:absolute; inset:0; padding:20px; overflow-y:auto; display:none; }
+    .ai-pane.active { display:block; }
+
+    /* AI - 智能问数 */
+    .ai-chat { display:flex; flex-direction:column; height:100%; }
+    .ai-messages { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px; margin-bottom:12px; }
+    .ai-msg { max-width:80%; padding:10px 14px; border-radius:12px; font-size:13px; line-height:1.6; }
+    .ai-msg.user { align-self:flex-end; background:rgba(0,150,255,0.25); border:1px solid rgba(0,180,255,0.35); color:#fff; }
+    .ai-msg.bot { align-self:flex-start; background:rgba(0,0,0,0.25); border:1px solid rgba(0,150,255,0.2); color:#cfe9ff; }
+    .ai-hints { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+    .ai-hint { padding:6px 12px; border-radius:14px; background:rgba(0,150,255,0.1); border:1px solid rgba(0,150,255,0.25); color:#8aa4bf; font-size:12px; cursor:pointer; }
+    .ai-hint:hover { background:rgba(0,150,255,0.2); color:#fff; }
+    .ai-inputbar { display:flex; gap:10px; }
+    .ai-inputbar input { flex:1; background:rgba(0,0,0,0.25); border:1px solid rgba(0,150,255,0.3); border-radius:24px; padding:10px 16px; color:#fff; outline:none; font-size:13px; }
+    .ai-inputbar input::placeholder { color:#5a7a9a; }
+    .ai-inputbar button { padding:10px 22px; border-radius:24px; background:linear-gradient(90deg,#00a8ff,#0066ff); border:none; color:#fff; cursor:pointer; font-size:13px; }
+    .ai-inputbar button:hover { filter: brightness(1.1); }
+
+    /* AI - 智能报告 */
+    .ai-report-form { display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+    .ai-report-form select, .ai-report-form input { background:rgba(0,0,0,0.25); border:1px solid rgba(0,150,255,0.3); color:#fff; padding:8px 12px; border-radius:6px; font-size:13px; outline:none; }
+    .ai-report-form select option { background:#061a37; }
+    .ai-report-form button { padding:8px 20px; border-radius:6px; background:linear-gradient(90deg,#00a8ff,#0066ff); border:none; color:#fff; cursor:pointer; font-size:13px; }
+    .ai-report-card { background:rgba(0,0,0,0.2); border:1px solid rgba(0,150,255,0.15); border-radius:8px; padding:16px; }
+    .ai-report-card h4 { margin:0 0 10px; color:#00d4ff; font-size:14px; }
+    .ai-report-card p { margin:0 0 6px; font-size:13px; color:#cfe9ff; line-height:1.6; }
+
+    /* AI - 政策案例 */
+    .ai-search { display:flex; gap:10px; margin-bottom:14px; }
+    .ai-search input { flex:1; background:rgba(0,0,0,0.25); border:1px solid rgba(0,150,255,0.3); color:#fff; padding:8px 12px; border-radius:6px; font-size:13px; outline:none; }
+    .ai-search button { padding:8px 16px; border-radius:6px; background:rgba(0,150,255,0.18); border:1px solid rgba(0,150,255,0.3); color:#fff; cursor:pointer; font-size:13px; }
+    .ai-tags { display:flex; gap:8px; margin-bottom:14px; }
+    .ai-tag { padding:5px 12px; border-radius:14px; background:rgba(0,0,0,0.2); border:1px solid rgba(0,150,255,0.2); color:#8aa4bf; cursor:pointer; font-size:12px; }
+    .ai-tag.active { background:rgba(0,180,255,0.18); color:#fff; border-color:rgba(0,212,255,0.4); }
+    .ai-policy-list { display:flex; flex-direction:column; gap:10px; }
+    .ai-policy-item { background:rgba(0,0,0,0.18); border:1px solid rgba(0,150,255,0.12); border-radius:8px; padding:12px; }
+    .ai-policy-item h5 { margin:0 0 4px; font-size:13px; color:#fff; }
+    .ai-policy-item p { margin:0; font-size:12px; color:#8aa4bf; line-height:1.5; }
+    .ai-policy-item .tag { display:inline-block; margin-top:6px; padding:2px 8px; border-radius:10px; background:rgba(0,150,255,0.12); color:#00d4ff; font-size:11px; }
+
+    /* ===== 页面整体优化 ===== */
+    /* 面板入场动画（逐层淡入上移） */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    .col .panel { animation: fadeUp .55s ease both; }
+    .col .panel:nth-child(2) { animation-delay: .08s; }
+    .col .panel:nth-child(3) { animation-delay: .16s; }
+    .col .panel:nth-child(4) { animation-delay: .24s; }
+
+    /* 地图装饰：双层旋转科技环 */
+    .map-deco { position: absolute; left: 50%; top: 55%; transform: translate(-50%,-50%); border-radius: 50%; pointer-events: none; z-index: 1; }
+    .map-deco.ring1 { width: 470px; height: 470px; border: 1px dashed rgba(0,180,255,0.22); animation: spin 46s linear infinite; }
+    .map-deco.ring1::before { content: ""; position: absolute; bottom: -2px; left: calc(50% - 2px); width: 4px; height: 4px; border-radius: 50%; background: #38c8f5; box-shadow: 0 0 8px #38c8f5; }
+    .map-deco.ring2 { width: 570px; height: 570px; border: 1px solid rgba(0,150,255,0.10); animation: spin 70s linear infinite reverse; }
+    .map-deco.ring2::before { content: ""; position: absolute; top: -3px; left: calc(50% - 3px); width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+    @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+    /* 地图四角刻度 */
+    .map-corner { position: absolute; width: 16px; height: 16px; border: 2px solid rgba(0,212,255,0.55); z-index: 5; pointer-events: none; }
+    .map-corner.tl { top: -1px; left: -1px; border-right: none; border-bottom: none; border-top-left-radius: 10px; }
+    .map-corner.tr { top: -1px; right: -1px; border-left: none; border-bottom: none; border-top-right-radius: 10px; }
+    .map-corner.bl { bottom: -1px; left: -1px; border-right: none; border-top: none; border-bottom-left-radius: 10px; }
+    .map-corner.br { bottom: -1px; right: -1px; border-left: none; border-top: none; border-bottom-right-radius: 10px; }
+
+    /* 头部系统运行状态呼吸灯 */
+    .sys-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #51cf66; }
+    .sys-status i { width: 8px; height: 8px; border-radius: 50%; background: #51cf66; box-shadow: 0 0 6px #51cf66; animation: pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
+
+    /* 实时预警列表项过渡（用于轮播与悬停） */
+    .warning-item { transition: opacity .3s, transform .3s, box-shadow .2s; }
+    .warning-item:hover { box-shadow: 0 0 10px rgba(0,150,255,0.15); }
+
+    /* 全链条节点悬停反馈 */
+    .chain-node .icon { transition: transform .25s; }
+    .chain-node:hover .icon { transform: scale(1.12); }
+
+    /* 选中文字颜色 */
+    ::selection { background: rgba(0, 150, 255, 0.35); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <div class="brand-icon">赣</div>
+      <div>
+        <h1>江西省烟花爆竹产业全链条监管服务平台</h1>
+      </div>
+    </div>
+    <nav class="nav">
+      <a class="active" href="#">态势总览</a>
+      <a href="purchase.html">采购态势</a>
+      <a href="#">生产态势</a>
+      <a href="#">仓储态势</a>
+      <a href="#">运输态势</a>
+      <a href="#">出口态势</a>
+      <a href="#">零售态势</a>
+      <a href="#">燃放态势</a>
+      <a href="#">综合数据</a>
+    </nav>
+    <div class="header-right">
+      <div class="sys-status"><i></i>系统运行正常</div>
+      <div class="weather">🌤 南昌 多云 28°C</div>
+      <div class="time" id="clock">2026-08-26 16:08:27</div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Left Column -->
+    <section class="col">
+      <div class="panel" style="flex: 1.3;">
+        <div class="panel-title">
+          <h3>物联网接入情况</h3>
+          <span class="more">更多 &gt;</span>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label"><i>AI</i>AI边缘设备接入数</div>
+            <div class="kpi-value">1,286</div>
+            <div class="kpi-trend">在线率 98.2%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><i>门</i>门禁接入数据</div>
+            <div class="kpi-value">2,140</div>
+            <div class="kpi-trend">今日上报 9.6万次</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><i>械</i>涉药机械接入数</div>
+            <div class="kpi-value">864</div>
+            <div class="kpi-trend">覆盖 142 家在产企业</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><i>视</i>视频接入路数</div>
+            <div class="kpi-value">3,752</div>
+            <div class="kpi-trend">1.3级工库房全覆盖</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><i>企</i>企业在线率</div>
+            <div class="kpi-value">92.6<span style="font-size:13px">%</span></div>
+            <div class="kpi-trend down">离线 92 家</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><i>服</i>服务器在线率</div>
+            <div class="kpi-value">99.8<span style="font-size:13px">%</span></div>
+            <div class="kpi-trend">节点 36/36</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="flex: 0.9;">
+        <div class="panel-title"><h3>原材料采购情况</h3><span class="more">更多 &gt;</span></div>
+        <div id="materialChart" class="chart-sm"></div>
+      </div>
+
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>企业增长趋势</h3><span class="more">更多 &gt;</span></div>
+        <div id="trendChart" class="chart"></div>
+      </div>
+
+      <div class="panel" style="flex: 1.15;">
+        <div class="panel-title"><h3>烟花爆竹出口情况</h3><span class="more">更多 &gt;</span></div>
+        <div id="typeChart" class="chart"></div>
+      </div>
+    </section>
+
+    <!-- Center Column -->
+    <section class="col col-center">
+      <div class="map-wrap">
+        <div class="map-bg"></div>
+        <div class="map-deco ring1"></div>
+        <div class="map-deco ring2"></div>
+        <div class="map-corner tl"></div>
+        <div class="map-corner tr"></div>
+        <div class="map-corner bl"></div>
+        <div class="map-corner br"></div>
+        <div id="jxMapChart"></div>
+
+        <!-- Breadcrumb: current region (点击可逐级回退) -->
+        <div class="map-crumb" id="mapCrumb">
+          <span class="crumb-ico">📍</span>
+          <span id="crumbBox" style="display:flex;align-items:center;gap:5px;"></span>
+          <span class="crumb-sep">›</span>
+          <span class="crumb-cur" id="crumbRegion">全省</span>
+          <span class="crumb-back" id="crumbBack">‹ 返回</span>
+        </div>
+
+        <!-- KPI cards overlay on map -->
+        <div class="center-top">
+        <div class="summary-card">
+          <div class="summary-label">生产企业总量</div>
+          <div class="summary-value">186<span class="summary-unit">家</span></div>
+          <div class="summary-sub">覆盖 11 个设区市</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">批发企业总量</div>
+          <div class="summary-value">312<span class="summary-unit">家</span></div>
+          <div class="summary-sub">同比增长 2.4%</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">零售企业总量</div>
+          <div class="summary-value">749<span class="summary-unit">家</span></div>
+          <div class="summary-sub">占比 60.1%</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">今日在产企业</div>
+          <div class="summary-value">142<span class="summary-unit">家</span></div>
+          <div class="summary-sub">开工率 76.3%</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">在途运输车辆</div>
+          <div class="summary-value">156<span class="summary-unit">辆</span></div>
+          <div class="summary-sub">实时 GPS 在线</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">从业人员</div>
+          <div class="summary-value">4.82<span class="summary-unit">万</span></div>
+          <div class="summary-sub">覆盖 11 个设区市</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">本月燃放活动数</div>
+          <div class="summary-value">86<span class="summary-unit">场</span></div>
+          <div class="summary-sub">已审批 79 场</div>
+        </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="map-toolbar">
+          <span><i class="lg-dot" style="background:#ff4d4f"></i>高风险预警</span>
+          <span><i class="lg-dot" style="background:#ff9f2e"></i>中风险预警</span>
+          <span><i class="lg-dot" style="background:#ff4d4f;border:1px solid #fff"></i>预警车辆</span>
+          <span><i style="background:#ffd23f"></i>在途车辆</span>
+          <span><i style="background:#ff4dd2"></i>当日燃放活动</span>
+        </div>
+
+        <!-- Chain flow overlay -->
+        <div class="chain-overlay">
+          <h4>全链条关键节点</h4>
+          <div class="chain-flow">
+            <div class="chain-node"><div class="icon" style="background:linear-gradient(135deg,#00a8ff,#0055aa);box-shadow:0 0 12px rgba(0,180,255,0.4);">料</div><div class="name">原材料</div></div>
+            <div class="chain-arrow"></div>
+            <div class="chain-node"><div class="icon" style="background:linear-gradient(135deg,#00d4ff,#0066aa);box-shadow:0 0 12px rgba(0,212,255,0.4);">产</div><div class="name">生产</div></div>
+            <div class="chain-arrow"></div>
+            <div class="chain-node"><div class="icon" style="background:linear-gradient(135deg,#a855f7,#5b21b6);box-shadow:0 0 12px rgba(168,85,247,0.4);">仓</div><div class="name">仓储</div></div>
+            <div class="chain-arrow"></div>
+            <div class="chain-node"><div class="icon" style="background:linear-gradient(135deg,#ff9f2e,#c2410c);box-shadow:0 0 12px rgba(255,159,46,0.4);">运</div><div class="name">运输</div></div>
+            <div class="chain-arrow"></div>
+            <div class="chain-parallel">
+              <div class="chain-node"><div class="icon" style="background:linear-gradient(135deg,#22c55e,#15803d);box-shadow:0 0 12px rgba(34,197,94,0.4);">出</div><div class="name">出口</div></div>
+              <div class="chain-node"><div class="icon" style="background:linear-gradient(135deg,#f43f5e,#be123c);box-shadow:0 0 12px rgba(244,63,94,0.4);">零</div><div class="name">零售</div></div>
+            </div>
+            <div class="chain-arrow"></div>
+            <div class="chain-node"><div class="icon" style="background:linear-gradient(135deg,#e11d48,#7f1d1d);box-shadow:0 0 12px rgba(225,29,72,0.4);">燃</div><div class="name">燃放</div></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Right Column -->
+    <section class="col">
+      <div class="panel" style="flex: 0.7;">
+        <div class="panel-title"><h3>预警总览</h3><span class="more">更多 &gt;</span></div>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label"><i>警</i>今日预警</div>
+            <div class="kpi-value" style="color:#ff4d4f;text-shadow:0 0 8px rgba(255,77,79,0.4);">38</div>
+            <div class="kpi-trend up">同比 +12.5%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><i>处</i>已处置</div>
+            <div class="kpi-value" style="color:#22c55e;text-shadow:0 0 8px rgba(34,197,94,0.4);">31</div>
+            <div class="kpi-trend">处置率 81.6%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><i>高</i>高风险</div>
+            <div class="kpi-value" style="color:#ff4d4f;">9</div>
+            <div class="kpi-trend">需立即督办</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label"><i>中</i>中低风险</div>
+            <div class="kpi-value" style="color:#ff9f2e;">29</div>
+            <div class="kpi-trend">跟踪处置中</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="flex: 0.95;">
+        <div class="panel-title"><h3>全链条各环节预警</h3><span class="more">更多 &gt;</span></div>
+        <div class="chain-row">
+          <div class="chain-name">采购</div>
+          <div class="chain-bar"><div class="chain-fill" style="width:35%"></div></div>
+          <div class="chain-value">5</div>
+        </div>
+        <div class="chain-row">
+          <div class="chain-name">生产</div>
+          <div class="chain-bar"><div class="chain-fill warn" style="width:78%"></div></div>
+          <div class="chain-value" style="color:#ff9f2e;">14</div>
+        </div>
+        <div class="chain-row">
+          <div class="chain-name">仓储</div>
+          <div class="chain-bar"><div class="chain-fill warn" style="width:62%"></div></div>
+          <div class="chain-value" style="color:#ff9f2e;">9</div>
+        </div>
+        <div class="chain-row">
+          <div class="chain-name">运输</div>
+          <div class="chain-bar"><div class="chain-fill" style="width:45%"></div></div>
+          <div class="chain-value">6</div>
+        </div>
+        <div class="chain-row">
+          <div class="chain-name">燃放</div>
+          <div class="chain-bar"><div class="chain-fill warn" style="width:48%"></div></div>
+          <div class="chain-value" style="color:#ff9f2e;">7</div>
+        </div>
+      </div>
+
+      <div class="panel" style="flex: 1.15;">
+        <div class="panel-title"><h3>预警未处置 Top5 企业</h3><span class="more">更多 &gt;</span></div>
+        <div class="top5-list" id="top5List"></div>
+      </div>
+
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>实时预警</h3><span class="more">更多 &gt;</span></div>
+        <div class="warning-list">
+          <div class="warning-item">
+            <div class="warning-info">
+              <div class="warning-title">1.3级工库房温湿度异常</div>
+              <div class="warning-meta">赣州市赣县区 · 10分钟前</div>
+            </div>
+            <span class="warning-level high">高危</span>
+          </div>
+          <div class="warning-item warn">
+            <div class="warning-info">
+              <div class="warning-title">运输车辆偏离规定路线</div>
+              <div class="warning-meta">宜春市万载县 · 18分钟前</div>
+            </div>
+            <span class="warning-level mid">中危</span>
+          </div>
+          <div class="warning-item warn">
+            <div class="warning-info">
+              <div class="warning-title">仓储超量预警</div>
+              <div class="warning-meta">上饶市鄱阳县 · 32分钟前</div>
+            </div>
+            <span class="warning-level mid">中危</span>
+          </div>
+          <div class="warning-item normal">
+            <div class="warning-info">
+              <div class="warning-title">零售点用电负荷异常</div>
+              <div class="warning-meta">南昌市新建区 · 55分钟前</div>
+            </div>
+            <span class="warning-level low">低危</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      document.getElementById('clock').textContent = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // ===== 页面整体优化 =====
+    // 顶部导航点击切换 active 状态（有真实 href 的菜单正常跳转）
+    document.querySelectorAll('.nav a').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        if (href && href !== '#') return; // 交给浏览器跳转
+        e.preventDefault();
+        document.querySelectorAll('.nav a').forEach(x => x.classList.remove('active'));
+        a.classList.add('active');
+      });
+    });
+
+    // KPI 数字滚动动画
+    function animateNumber(el, target, decimals, dur) {
+      dur = dur || 1200;
+      const start = performance.now();
+      function frame(now) {
+        const p = Math.min((now - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const cur = target * eased;
+        el.firstChild.nodeValue = decimals > 0 ? cur.toFixed(decimals) : Math.round(cur).toLocaleString();
+        if (p < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+    // 仅左列物联网 KPI 做首屏滚动（中部/右列由 refreshKpis 统一驱动）
+    document.querySelectorAll('.kpi-value').forEach(el => {
+      const text = el.firstChild.nodeValue.replace(/,/g, '');
+      const num = parseFloat(text);
+      if (isNaN(num)) return;
+      const decimals = (text.split('.')[1] || '').length;
+      animateNumber(el, num, decimals);
+    });
+
+    // 实时预警列表自动轮播
+    (function rotateWarnings() {
+      const list = document.querySelector('.warning-list');
+      if (!list || list.children.length < 2) return;
+      setInterval(() => {
+        const first = list.firstElementChild;
+        first.style.opacity = '0';
+        first.style.transform = 'translateX(12px)';
+        setTimeout(() => {
+          list.appendChild(first);
+          first.style.opacity = '1';
+          first.style.transform = 'none';
+        }, 300);
+      }, 4000);
+    })();
+
+    // ECharts common dark theme options
+    const textColor = '#e0f7ff';
+    const axisColor = 'rgba(255,255,255,0.15)';
+
+    // Trend chart
+    const trendChart = echarts.init(document.getElementById('trendChart'));
+    trendChart.setOption({
+      tooltip: { trigger: 'axis', backgroundColor: 'rgba(6,26,55,0.95)', borderColor: '#00d4ff', textStyle: { color: '#fff' } },
+      legend: { data: ['生产企业', '批发企业', '零售企业'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
+      grid: { left: 36, right: 12, top: 32, bottom: 22 },
+      xAxis: { type: 'category', data: ['1月','2月','3月','4月','5月','6月','7月','8月'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+      yAxis: { type: 'value', splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+      series: [
+        { name: '生产企业', type: 'line', smooth: true, data: [178,180,181,182,183,184,185,186], lineStyle: { color: '#00d4ff', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,212,255,0.25)'},{offset:1,color:'rgba(0,212,255,0.01)'}]) }, symbol: 'none' },
+        { name: '批发企业', type: 'line', smooth: true, data: [300,303,305,307,308,310,311,312], lineStyle: { color: '#ff9f2e', width: 2 }, symbol: 'none' },
+        { name: '零售企业', type: 'line', smooth: true, data: [712,720,728,735,740,744,747,749], lineStyle: { color: '#a855f7', width: 2 }, symbol: 'none' }
+      ]
+    });
+
+    // Type distribution pie
+    const typeChart = echarts.init(document.getElementById('typeChart'));
+    typeChart.setOption({
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(6,26,55,0.95)', borderColor: '#00d4ff', textStyle: { color: '#fff' } },
+      legend: { data: ['烟花出口箱数', '爆竹出口箱数'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
+      grid: { left: 40, right: 14, top: 30, bottom: 24 },
+      xAxis: { type: 'category', data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 9, interval: 0 } },
+      yAxis: { type: 'value', name: '箱', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+      series: [
+        { name: '烟花出口箱数', type: 'bar', barWidth: 8, itemStyle: { color: '#00d4ff', borderRadius: [2, 2, 0, 0] }, data: [12.6, 9.8, 14.2, 16.5, 18.3, 17.1, 15.8, 14.9, 19.4, 21.7, 24.3, 26.8] },
+        { name: '爆竹出口箱数', type: 'bar', barWidth: 8, itemStyle: { color: '#ff9f2e', borderRadius: [2, 2, 0, 0] }, data: [8.4, 6.5, 9.8, 11.2, 12.6, 11.8, 10.9, 10.3, 13.5, 15.1, 17.2, 19.1] }
+      ]
+    });
+
+    // Material procurement chart
+    const materialChart = echarts.init(document.getElementById('materialChart'));
+    materialChart.setOption({
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(6,26,55,0.95)', borderColor: '#00d4ff', textStyle: { color: '#fff' } },
+      legend: { data: ['本月采购量', '月末库存'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
+      grid: { left: 40, right: 12, top: 30, bottom: 22 },
+      xAxis: { type: 'category', data: ['黑火药', '引线', '危化品'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 11 } },
+      yAxis: { type: 'value', name: '吨', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+      series: [
+        { name: '本月采购量', type: 'bar', barWidth: 16, data: [320, 185, 96], itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#00d4ff'},{offset:1,color:'#0066aa'}]) }, label: { show: true, position: 'top', color: '#fff', fontSize: 10 } },
+        { name: '月末库存', type: 'bar', barWidth: 16, data: [540, 260, 150], itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#ff9f2e'},{offset:1,color:'#c2410c'}]) } }
+      ]
+    });
+
+    // 预警未处置 Top5 企业可折叠列表
+    const top5Data = [
+      { name: '上栗县某烟花厂', type: '库温异常预警', level: '重大', unhandled: 5, workers: 23, monitors: 18 },
+      { name: '万载县某爆竹厂', type: '超员作业预警', level: '较大', unhandled: 3, workers: 47, monitors: 12 },
+      { name: '袁州区某烟花仓库', type: '湿度异常预警', level: '较大', unhandled: 3, workers: 12, monitors: 8 },
+      { name: '赣县区某爆竹厂', type: '门禁异常预警', level: '一般', unhandled: 2, workers: 31, monitors: 15 },
+      { name: '南昌县某烟花厂', type: '温湿度异常预警', level: '一般', unhandled: 1, workers: 19, monitors: 9 }
+    ];
+    function renderTop5() {
+      const el = document.getElementById('top5List');
+      el.innerHTML = top5Data.map((d, i) => {
+        const levelClass = d.level === '重大' ? 'major' : (d.level === '较大' ? 'large' : 'normal');
+        return `
+          <div class="top5-item ${i === 0 ? 'open' : ''}" data-idx="${i}">
+            <div class="top5-header">
+              <span class="top5-level ${levelClass}">${d.level}</span>
+              <span class="top5-title">${d.name} · ${d.type}</span>
+              <span class="top5-arrow">▼</span>
+            </div>
+            <div class="top5-body">
+              <div class="top5-kpis">
+                <div class="top5-kpi"><div class="lab">未处置预警</div><div class="val warn">${d.unhandled} 起</div></div>
+                <div class="top5-kpi"><div class="lab">当前作业人数</div><div class="val">${d.workers} 人</div></div>
+                <div class="top5-kpi"><div class="lab">重点监控点位</div><div class="val">${d.monitors} 路</div></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      el.querySelectorAll('.top5-header').forEach(h => {
+        h.addEventListener('click', () => {
+          const item = h.parentElement;
+          const wasOpen = item.classList.contains('open');
+          el.querySelectorAll('.top5-item').forEach(x => x.classList.remove('open'));
+          if (!wasOpen) item.classList.add('open');
+        });
+      });
+    }
+    renderTop5();
+
+    // Jiangxi province map (real GeoJSON)
+    const mapChart = echarts.init(document.getElementById('jxMapChart'));
+    const cityData = [
+      { name: '南昌市', value: 16, workers: 6200, vehicles: 20, warnings: 1, adcode: 360100 },
+      { name: '景德镇市', value: 7, workers: 2800, vehicles: 8, warnings: 0, adcode: 360200 },
+      { name: '萍乡市', value: 11, workers: 4200, vehicles: 10, warnings: 1, adcode: 360300 },
+      { name: '九江市', value: 13, workers: 3600, vehicles: 14, warnings: 1, adcode: 360400 },
+      { name: '新余市', value: 6, workers: 1500, vehicles: 5, warnings: 0, adcode: 360500 },
+      { name: '鹰潭市', value: 6, workers: 1800, vehicles: 6, warnings: 0, adcode: 360600 },
+      { name: '赣州市', value: 22, workers: 8800, vehicles: 26, warnings: 4, adcode: 360700 },
+      { name: '吉安市', value: 16, workers: 5400, vehicles: 18, warnings: 2, adcode: 360800 },
+      { name: '宜春市', value: 19, workers: 7600, vehicles: 22, warnings: 3, adcode: 360900 },
+      { name: '抚州市', value: 11, workers: 3300, vehicles: 12, warnings: 1, adcode: 361000 },
+      { name: '上饶市', value: 21, workers: 6700, vehicles: 15, warnings: 2, adcode: 361100 }
+    ];
+    const warningPoints = [
+      { name: '赣州市', value: 4, coord: [114.93, 25.83], color: '#ff4d4f' },
+      { name: '宜春市', value: 3, coord: [114.39, 27.81], color: '#ff9f2e' },
+      { name: '上饶市', value: 2, coord: [117.94, 28.46], color: '#ff9f2e' },
+      { name: '南昌市', value: 1, coord: [115.89, 28.68], color: '#00d4ff' }
+    ];
+    // 在途运输车辆实时图层：每辆车的行驶路线(省内城市间)、进度与状态
+    const CAR_PATH = 'path://M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z';
+    const vehicles = [
+      { plate: '赣A·F0123', company: '南昌市烟花实业', status: '在途', speed: 58, route: [[115.89,28.68],[115.99,29.71]], t: 0.2, dir: 1 },
+      { plate: '赣A·F0456', company: '青云谱烟花厂', status: '在途', speed: 64, route: [[115.89,28.68],[116.36,27.98]], t: 0.6, dir: 1 },
+      { plate: '赣B·H0789', company: '赣州源通烟花', status: '在途', speed: 52, route: [[114.93,25.83],[114.99,27.12]], t: 0.35, dir: 1 },
+      { plate: '赣C·K1122', company: '宜春万载烟花', status: '预警', speed: 41, route: [[114.39,27.81],[113.85,27.62]], t: 0.5, dir: 1 },
+      { plate: '赣E·L2031', company: '上饶信州烟花', status: '在途', speed: 67, route: [[117.94,28.46],[117.18,29.27]], t: 0.15, dir: 1 },
+      { plate: '赣D·M3098', company: '吉安青原烟花', status: '在途', speed: 59, route: [[114.99,27.12],[114.93,25.83]], t: 0.7, dir: 1 },
+      { plate: '赣F·N4125', company: '抚州临川烟花', status: '在途', speed: 61, route: [[116.36,27.98],[115.89,28.68]], t: 0.4, dir: 1 },
+      { plate: '赣G·P5567', company: '九江庐岳烟花', status: '在途', speed: 55, route: [[115.99,29.71],[117.18,29.27]], t: 0.25, dir: 1 },
+      { plate: '赣J·Q6688', company: '萍乡上栗烟花', status: '在途', speed: 63, route: [[113.85,27.62],[114.39,27.81]], t: 0.55, dir: 1 },
+      { plate: '赣B·R7021', company: '赣州南康烟花', status: '预警', speed: 38, route: [[114.93,25.83],[116.36,27.98]], t: 0.45, dir: 1 },
+      { plate: '赣A·S8110', company: '南昌昌南烟花', status: '在途', speed: 70, route: [[115.89,28.68],[114.39,27.81]], t: 0.3, dir: 1 },
+      { plate: '赣E·T9256', company: '上饶广丰烟花', status: '在途', speed: 66, route: [[117.94,28.46],[115.89,28.68]], t: 0.5, dir: 1 }
+    ];
+    // 当日燃放活动图层：省内重点焰火燃放点（星芒绽放图标，醒目）
+    const FIREWORK_PATH = 'path://M12 1l1.8 5.6L19 4l-2.2 5.4L23 12l-6.2 2.6L19 20l-5.2-3.4L12 23l-1.8-6.4L5 20l2.2-5.4L1 12l6.2-2.6L5 4l5.2 3.6z';
+    const fireworks = [
+      { name: '南昌·赣江焰火晚会', place: '南昌市红谷滩赣江两岸', time: '今日 20:00-20:30', count: 8000, status: '待燃放', coord: [115.68,28.82] },
+      { name: '赣州·宋城新春焰火', place: '赣州市章江新区', time: '今日 21:00-21:20', count: 5200, status: '进行中', coord: [114.72,25.98] },
+      { name: '吉安·庐陵文化节焰火', place: '吉安市庐陵文化生态园', time: '今日 19:30-20:00', count: 4600, status: '待燃放', coord: [114.99,27.12] },
+      { name: '九江·庐山国际焰火', place: '九江市八里湖新区', time: '今日 20:30-21:00', count: 6100, status: '已结束', coord: [115.99,29.71] },
+      { name: '宜春·明月山音乐焰火', place: '宜春市袁州区', time: '今日 20:00-20:40', count: 3900, status: '待燃放', coord: [114.18,27.96] },
+      { name: '上饶·婺源花海焰火', place: '上饶市婺源县', time: '今日 19:00-19:30', count: 2800, status: '已结束', coord: [117.73,28.62] },
+      { name: '抚州·汤显祖戏剧节焰火', place: '抚州市文昌里', time: '今日 21:30-22:00', count: 3300, status: '待燃放', coord: [116.36,27.98] },
+      { name: '萍乡·武功山星空焰火', place: '萍乡市武功山景区', time: '今日 21:00-21:25', count: 2400, status: '进行中', coord: [113.85,27.62] }
+    ];
+    // ============ 五级下钻：省 - 市 - 县 - 乡镇 - 企业 ============
+    const hash01 = s => { let h = 7; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return (h % 1000) / 1000; };
+    const LEVEL_NAMES = ['省级', '市级', '县级', '乡镇级', '企业级'];
+    // 各层级相对全省的基准比例，保证上下级量级合理
+    const SCALE = [1, 0.09, 0.032, 0.013, 0.0045];
+    const mult = (name, lv) => lv === 0 ? 1 : SCALE[lv] * (0.65 + hash01(name) * 0.7);
+
+    // 下钻路径栈
+    let drillPath = [{ name: '江西省', level: 0, adcode: 360000 }];
+    const curNode = () => drillPath[drillPath.length - 1];
+
+    // 区域中心坐标（用于乡镇/企业散点定位）
+    const COUNTY_CENTER = {
+      '南昌县': [115.94, 28.55], '进贤县': [116.26, 28.37], '新建区': [115.82, 28.70], '安义县': [115.55, 28.85], '东湖区': [115.90, 28.69],
+      '乐平市': [117.12, 28.96], '浮梁县': [117.21, 29.37], '珠山区': [117.21, 29.29], '昌江区': [117.15, 29.26],
+      '上栗县': [113.79, 27.89], '芦溪县': [114.04, 27.62], '莲花县': [113.94, 27.14], '安源区': [113.85, 27.62], '湘东区': [113.70, 27.66],
+      '瑞昌市': [115.67, 29.68], '修水县': [114.55, 29.03], '湖口县': [116.24, 29.71], '永修县': [115.82, 29.04], '都昌县': [116.20, 29.28],
+      '分宜县': [114.68, 27.82], '渝水区': [114.93, 27.82],
+      '贵溪市': [117.22, 28.28], '余江区': [116.83, 28.29], '月湖区': [117.06, 28.26],
+      '赣县区': [115.05, 25.87], '南康区': [114.76, 25.67], '信丰县': [114.93, 25.39], '宁都县': [116.00, 26.46], '龙南市': [114.79, 24.91],
+      '吉安县': [114.74, 27.06], '青原区': [115.13, 26.89], '泰和县': [114.92, 26.79], '吉水县': [115.28, 27.31], '永丰县': [115.44, 27.32],
+      '万载县': [114.44, 28.11], '袁州区': [114.38, 27.78], '上高县': [114.93, 28.24], '樟树市': [115.54, 28.07], '丰城市': [115.80, 28.20],
+      '临川区': [116.29, 27.98], '东乡区': [116.61, 28.24], '南城县': [116.65, 27.56], '崇仁县': [116.05, 27.76], '广昌县': [116.33, 26.84],
+      '广丰区': [118.18, 28.44], '鄱阳县': [116.69, 29.00], '铅山县': [117.71, 28.31], '玉山县': [118.25, 28.68], '婺源县': [117.86, 29.25],
+      '南昌市': [115.89, 28.68], '景德镇市': [117.18, 29.27], '萍乡市': [113.85, 27.62], '九江市': [115.99, 29.71],
+      '新余市': [114.93, 27.82], '鹰潭市': [117.06, 28.26], '赣州市': [114.93, 25.83], '吉安市': [114.99, 27.12],
+      '宜春市': [114.39, 27.81], '抚州市': [116.36, 27.98], '上饶市': [117.94, 28.46], '江西省': [115.70, 27.60]
+    };
+    // 县域内的乡镇/企业虚拟坐标（相对县级中心的小范围偏移，保证落点不越界）
+    function subPoints(centerName, n, spread) {
+      const h = hash01(centerName);
+      const h2 = hash01(centerName + '2');
+      const pts = [];
+      for (let i = 0; i < n; i++) {
+        const ang = (h * 6.28) + (i / n) * 6.28;
+        const r = spread * (0.35 + hash01(centerName + i) * 0.65);
+        pts.push([h2 * 0.02 - 0.01 + Math.cos(ang) * r, Math.sin(ang) * r * 0.8]);
+      }
+      return pts;
+    }
+
+    // 读取 GeoJSON 的经纬度范围（用于下钻后把车辆/烟花落在当前区域范围内）
+    function regionExtent(adcode) {
+      const gj = geoCache[adcode];
+      if (!gj) return null;
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      const scan = c => {
+        if (typeof c[0] === 'number') {
+          minX = Math.min(minX, c[0]); maxX = Math.max(maxX, c[0]);
+          minY = Math.min(minY, c[1]); maxY = Math.max(maxY, c[1]);
+        } else c.forEach(scan);
+      };
+      gj.features.forEach(f => scan(f.geometry.coordinates));
+      if (!isFinite(minX)) return null;
+      return [minX, minY, maxX, maxY];
+    }
+
+    // 为当前层级生成车辆 / 燃放活动落在区域范围内的坐标与悬浮信息
+    function buildTraffic(node) {
+      const mapAdcode = (node.level <= 2 && node.adcode) ? node.adcode : (drillPath[drillPath.length - 2] || drillPath[0]).adcode;
+      const ext = regionExtent(mapAdcode) || [115.5, 27.0, 116.5, 28.2];
+      const cx = (ext[0] + ext[2]) / 2, cy = (ext[1] + ext[3]) / 2;
+      const w = ext[2] - ext[0], h = ext[3] - ext[1];
+
+      // 各级车辆数量（省级沿用既有数据）
+      if (node.level === 0) {
+        return {
+          vehicles: vehicles.map(v => ({
+            name: v.plate, value: [v.route[0][0] + (v.route[1][0] - v.route[0][0]) * v.t, v.route[0][1] + (v.route[1][1] - v.route[0][1]) * v.t],
+            itemStyle: { color: v.status === '预警' ? '#ff4d4f' : '#ffd23f' }, v
+          })),
+          fireworks: fireworks.map(f => ({
+            name: f.name, value: [...f.coord, 0],
+            itemStyle: { color: f.status === '进行中' ? '#ff3df0' : (f.status === '已结束' ? '#b06bff' : '#ff79e1'), borderColor: '#fff', borderWidth: 1.5, shadowColor: 'rgba(255,77,210,0.9)', shadowBlur: 8 }, f
+          }))
+        };
+      }
+
+      const vn = [0, 8, 5, 3, 2][node.level];
+      const fn = [0, 6, 4, 2, 1][node.level];
+      const platPrefix = ['赣A', '赣B', '赣C', '赣D', '赣E', '赣F', '赣G', '赣H', '赣J', '赣K', '赣L'];
+      const veh = [];
+      for (let i = 0; i < vn; i++) {
+        const lon = cx + (hash01(node.name + 'v' + i) - 0.5) * w * 0.92;
+        const lat = cy + (hash01(node.name + 'w' + i) - 0.5) * h * 0.92;
+        const plate = platPrefix[(hash01(node.name + i) * platPrefix.length) | 0] + hash01(node.name + 'p' + i).toString().slice(2, 7);
+        const status = hash01(node.name + 's' + i) > 0.8 ? '预警' : '正常';
+        veh.push({
+          name: plate, value: [lon, lat],
+          itemStyle: { color: status === '预警' ? '#ff4d4f' : '#ffd23f', borderColor: '#fff', borderWidth: 0.5 },
+          v: { plate, company: node.name + '·运输队', status, speed: 40 + Math.round(hash01(node.name + 'sp' + i) * 40) }
+        });
+      }
+      const fws = [];
+      const places = ['市民广场', '滨江公园', '体育中心', '文化广场', '烟花观礼点', '景区草坪'];
+      for (let i = 0; i < fn; i++) {
+        const lon = cx + (hash01(node.name + 'f' + i) - 0.5) * w * 0.9;
+        const lat = cy + (hash01(node.name + 'g' + i) - 0.5) * h * 0.9;
+        const status = ['计划中', '进行中', '已结束'][(hash01(node.name + 'st' + i) * 3) | 0];
+        fws.push({
+          name: node.name + '燃放点' + (i + 1), value: [lon, lat, 0],
+          itemStyle: { color: status === '进行中' ? '#ff3df0' : (status === '已结束' ? '#b06bff' : '#ff79e1'), borderColor: '#fff', borderWidth: 1.5, shadowColor: 'rgba(255,77,210,0.9)', shadowBlur: 8 },
+          f: { name: node.name + '燃放点' + (i + 1), place: places[(hash01(node.name + 'pl' + i) * places.length) | 0], time: '20:00-21:00', count: 500 + Math.round(hash01(node.name + 'c' + i) * 4000), status }
+        });
+      }
+      return { vehicles: veh, fireworks: fws };
+    }
+
+    // 市 → 县 / 县 → 乡镇 / 乡镇 → 企业 的静态名称表（真实县级行政区）
+    const CITY_COUNTIES = {
+      '南昌市': ['南昌县', '进贤县', '新建区', '安义县', '东湖区'],
+      '景德镇市': ['乐平市', '浮梁县', '珠山区', '昌江区'],
+      '萍乡市': ['上栗县', '芦溪县', '莲花县', '安源区', '湘东区'],
+      '九江市': ['瑞昌市', '修水县', '湖口县', '永修县', '都昌县'],
+      '新余市': ['分宜县', '渝水区'],
+      '鹰潭市': ['贵溪市', '余江区', '月湖区'],
+      '赣州市': ['赣县区', '南康区', '信丰县', '宁都县', '龙南市'],
+      '吉安市': ['吉安县', '青原区', '泰和县', '吉水县', '永丰县'],
+      '宜春市': ['万载县', '袁州区', '上高县', '樟树市', '丰城市'],
+      '抚州市': ['临川区', '东乡区', '南城县', '崇仁县', '广昌县'],
+      '上饶市': ['广丰区', '鄱阳县', '铅山县', '玉山县', '婺源县']
+    };
+    // 乡镇名前缀按县名 hash 生成专属字号，避免不同县出现同名乡镇
+    const TOWN_HEAD = ['桐', '金', '赤', '株', '黄', '双', '罗', '三', '潭', '马', '高', '白', '石', '长', '沙', '湖'];
+    const TOWN_TAIL = ['木', '山', '溪', '潭', '茅', '桥', '城', '兴', '埠', '步', '田', '良', '塘', '岭', '江', '源'];
+    const TOWN_SUFFIX = ['镇', '镇', '镇', '乡'];
+    const ENT_PREFIX = ['鸿运', '鑫盛', '金焰', '景泰', '瑞祥', '宏图', '顺达', '永辉', '昌盛', '安泰'];
+    // 为指定县生成 4 个专属乡镇名
+    function townsOf(county) {
+      const a = Math.floor(hash01(county) * TOWN_HEAD.length);
+      const b = Math.floor(hash01(county + 'b') * TOWN_TAIL.length);
+      const out = [];
+      for (let i = 0; i < 4; i++) {
+        const h = TOWN_HEAD[(a + i * 3) % TOWN_HEAD.length];
+        const t = TOWN_TAIL[(b + i * 5) % TOWN_TAIL.length];
+        const s = TOWN_SUFFIX[(i + Math.floor(hash01(county + i) * 4)) % TOWN_SUFFIX.length];
+        out.push(h + t + s);
+      }
+      return out;
+    }
+
+    // 生成下级节点（含中心坐标）
+    function getChildren(node) {
+      if (node.level === 0) {
+        return cityData.map(c => ({ name: c.name, level: 1, adcode: c.adcode, value: c.value, workers: c.workers, warnings: c.warnings }));
+      }
+      if (node.level === 1) {
+        return (CITY_COUNTIES[node.name] || []).map(n => ({ name: n, level: 2, adcode: node.adcode + 100 + Math.floor(hash01(n) * 90) }));
+      }
+      if (node.level === 2) {
+        return townsOf(node.name).map(n => ({ name: n, level: 3 }));
+      }
+      if (node.level === 3) {
+        const h = Math.floor(hash01(node.name) * ENT_PREFIX.length);
+        const town = node.name.replace(/[镇乡]$/, '');
+        return [0, 1, 2, 3].map(i => ({
+          name: town + ENT_PREFIX[(h + i * 3) % ENT_PREFIX.length] + '烟花厂', level: 4
+        }));
+      }
+      return [];
+    }
+
+    // 计算节点指标
+    function nodeStats(n) {
+      const m = mult(n.name, n.level);
+      return {
+        name: n.name, level: n.level, adcode: n.adcode,
+        value: n.value !== undefined ? n.value : Math.max(1, Math.round(142 * m)),
+        workers: n.workers !== undefined ? n.workers : Math.max(10, Math.round(48200 * m)),
+        warnings: n.warnings !== undefined ? n.warnings : Math.round(38 * m),
+        vehicles: Math.max(1, Math.round(156 * m)),
+        fires: Math.max(0, Math.round(86 * m)),
+        m
+      };
+    }
+
+    // 地图 GeoJSON 缓存与加载（省/市/县使用真实边界）
+    const geoCache = {};
+    function geoUrlFor(adcode) {
+      return [
+        `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}_full.json`,
+        `https://geo.datav.aliyun.com/areas/bound/${adcode}_full.json`
+      ];
+    }
+    function loadGeo(adcode, cb) {
+      if (geoCache[adcode]) { cb(geoCache[adcode]); return; }
+      const urls = geoUrlFor(adcode);
+      (function tryLoad(i) {
+        if (i >= urls.length) { cb(null); return; }
+        fetch(urls[i])
+          .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(j => { geoCache[adcode] = j; cb(j); })
+          .catch(() => tryLoad(i + 1));
+      })(0);
+    }
+
+    // 渲染地图（根据当前层级切换地图与图层）
+    function renderJxMap() {
+      const node = curNode();
+      const stats = nodeStats(node);
+      const children = getChildren(node);
+      const mapName = 'region_' + (node.adcode || 'root');
+      // 省/市/县有真实边界；若县级 adcode 缺失，回退到父级地图 + 散点叠加
+      const hasGeo = node.level <= 2 && !!node.adcode;
+      const parent = drillPath[drillPath.length - 2] || drillPath[0];
+      const fallbackMap = 'region_' + (parent.adcode || 360000);
+      const activeMap = hasGeo ? mapName : fallbackMap;
+
+      // 需要 GeoJSON 的层级先加载
+      if (hasGeo && !geoCache[node.adcode]) {
+        loadGeo(node.adcode, gj => {
+          if (!gj) {
+            // 加载失败：标记无边界，用父级地图 + 散点回退
+            node.adcode = null;
+            renderJxMap();
+            return;
+          }
+          echarts.registerMap(mapName, gj);
+          renderJxMap();
+        });
+        return;
+      }
+      // 回退模式需要父级地图已加载
+      if (!hasGeo && !geoCache[parent.adcode]) {
+        loadGeo(parent.adcode, gj => {
+          if (gj) { geoCache[parent.adcode] = gj; echarts.registerMap(fallbackMap, gj); }
+          renderJxMap();
+        });
+        return;
+      }
+
+      // 区域填充数据（有边界时按子区域着色）
+      let regionData = [];
+      if (hasGeo) {
+        regionData = children.map(c => {
+          const s = nodeStats(c);
+          return { name: c.name, value: s.value, workers: s.workers, warnings: s.warnings };
+        });
+        // 县 → 乡镇层：县界内无下级边界，用子区域同名着色回退
+        if (node.level === 2) {
+          regionData = [{ name: node.name, value: stats.value, workers: stats.workers, warnings: stats.warnings }];
+        }
+      }
+
+      // 散点标记：无边界时（乡镇/企业层、县级 adcode 缺失）
+      // 县级有边界时，在其上方叠加乡镇散点，提供继续下钻入口
+      let markers = [];
+      if (hasGeo && node.level === 2 && children.length) {
+        const cc = COUNTY_CENTER[node.name] || [115.5, 27.8];
+        markers = children.map((c, i) => {
+          const s = nodeStats(c);
+          const offs = subPoints(node.name, children.length, 0.16);
+          return {
+            name: c.name,
+            value: [cc[0] + offs[i][0], cc[1] + offs[i][1], s.value],
+            itemStyle: { color: '#38c8f5' },
+            s
+          };
+        });
+      } else if (!hasGeo) {
+        const cc = COUNTY_CENTER[node.name] || COUNTY_CENTER[parent.name] || [115.5, 27.8];
+        const spread = node.level >= 3 ? 0.12 : 0.22;
+        markers = children.map((c, i) => {
+          const s = nodeStats(c);
+          const offs = subPoints(node.name, children.length, spread);
+          return {
+            name: c.name,
+            value: [cc[0] + offs[i][0], cc[1] + offs[i][1], s.value],
+            itemStyle: { color: c.level === 4 ? '#ffd23f' : '#38c8f5' },
+            s
+          };
+        });
+      }
+
+      // 预警点：按层级过滤（省级显示地市预警；下钻后显示本级下属）
+      const warnPoints = (node.level === 0 ? warningPoints.filter(w => w.value > 1) : [])
+        .map(w => ({ name: w.name, value: [...w.coord, w.value], itemStyle: { color: w.color } }));
+
+      // 车辆 / 燃放：所有层级都展示（下钻后落在当前区域范围内，携带悬浮信息）
+      const traffic = buildTraffic(node);
+      const vehiclesData = traffic.vehicles;
+      const fireworksData = traffic.fireworks;
+
+      const series = [];
+      if (hasGeo) {
+        series.push({
+          type: 'map', geoIndex: 0, data: regionData,
+          label: {
+            show: true, color: '#cfe9ff', fontSize: node.level === 0 ? 10 : 11,
+            lineHeight: 14,
+            formatter: p => node.level === 0 ? `${p.name}\n在产${p.value}家` : `${p.name}\n${p.value}`
+          },
+          emphasis: { label: { color: '#fff' } }
+        });
+      }
+      if (warnPoints.length) {
+        series.push({
+          name: '预警', type: 'effectScatter', coordinateSystem: 'geo', geoIndex: 0,
+          symbolSize: v => 10 + v[2] * 1.1,
+          rippleEffect: { brushType: 'stroke', scale: 3.5 },
+          label: { show: true, position: 'right', color: '#fff', fontSize: 10, formatter: p => '未处置' + p.value[2] + '起' },
+          data: warnPoints
+        });
+      }
+      if (markers.length) {
+        series.push({
+          id: 'markers', name: node.level === 3 ? '下属企业' : '下属乡镇',
+          type: 'scatter', coordinateSystem: 'geo', geoIndex: 0,
+          symbol: node.level === 3 ? 'circle' : 'roundRect',
+          symbolSize: v => (node.level === 3 ? 14 : 18),
+          zlevel: 3,
+          itemStyle: { borderColor: '#fff', borderWidth: 1, shadowColor: 'rgba(0,212,255,0.8)', shadowBlur: 8 },
+          label: { show: true, position: 'right', color: '#cfe9ff', fontSize: 10, formatter: p => p.name.length > 8 ? p.name.slice(0, 8) + '…' : p.name },
+          data: markers
+        });
+      }
+      if (vehiclesData.length) {
+        series.push({
+          id: 'vehicles', name: '在途车辆',
+          type: 'scatter', coordinateSystem: 'geo', geoIndex: 0,
+          symbol: CAR_PATH, symbolSize: 16, zlevel: 4,
+          label: { show: false },
+          data: vehiclesData
+        });
+      }
+      if (fireworksData.length) {
+        series.push({
+          id: 'fireworks', name: '当日燃放活动',
+          type: 'scatter', coordinateSystem: 'geo', geoIndex: 0,
+          symbol: FIREWORK_PATH, symbolSize: 24, label: { show: false }, zlevel: 5,
+          data: fireworksData
+        });
+      }
+
+      const vmax = Math.max(5, ...regionData.map(d => d.value), ...markers.map(m => m.s.value));
+      mapChart.setOption({
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(6,26,55,0.95)', borderColor: '#00d4ff', textStyle: { color: '#fff' },
+          formatter: p => {
+            if (p.data && p.data.v) {
+              const v = p.data.v;
+              return `<b>${v.plate}</b><br/>所属企业：${v.company}<br/>状态：${v.status}`
+                + `<br/>车速：${v.speed} km/h<br/>坐标：${p.value[0].toFixed(2)}, ${p.value[1].toFixed(2)}`;
+            }
+            if (p.data && p.data.f) {
+              const f = p.data.f;
+              return `<b>${f.name}</b><br/>举办地点：${f.place}<br/>计划时间：${f.time}`
+                + `<br/>燃放规模：${f.count.toLocaleString()} 发<br/>活动状态：${f.status}`;
+            }
+            if (p.data && p.data.s) {
+              const s = p.data.s;
+              return `<b>${s.name}</b><br/>当前在产企业数：${s.value} 家`
+                + `<br/>当前作业人员数：${s.workers.toLocaleString()} 人`
+                + `<br/>未处置预警数：${s.warnings} 起<br/><span style="color:#00d4ff">点击查看详情</span>`;
+            }
+            if (p.seriesName === '预警') return `${p.name}<br/>未处置预警数：${p.value[2]} 起`;
+            const d = p.data;
+            if (!d) return p.name;
+            const canDrill = curNode().level < 2;
+            return `<b>${p.name}</b><br/>当前在产企业数：${d.value} 家`
+              + `<br/>当前作业人员数：${(d.workers || 0).toLocaleString()} 人`
+              + `<br/>未处置预警数：${d.warnings || 0} 起`
+              + (canDrill ? `<br/><span style="color:#00d4ff">点击下钻</span>` : '');
+          }
+        },
+        visualMap: hasGeo ? {
+          min: 0, max: vmax, left: 10, bottom: 130,
+          text: ['多', '少'], calculable: false,
+          inRange: { color: ['#0b3b6b', '#0f6aa8', '#17a2d8', '#38c8f5'] },
+          textStyle: { color: '#8aa4bf', fontSize: 11 },
+          itemWidth: 12, itemHeight: 70
+        } : null,
+        geo: {
+          map: activeMap, roam: false,
+          layoutCenter: ['50%', '55%'], layoutSize: '95%',
+          itemStyle: { borderColor: 'rgba(0,212,255,0.7)', borderWidth: 1, areaColor: '#0a2a4a', shadowColor: 'rgba(0,180,255,0.45)', shadowBlur: 18 },
+          emphasis: { itemStyle: { areaColor: 'rgba(0,180,255,0.4)' } }
+        },
+        series
+      }, true);
+    }
+
+    function showMapError() {
+      document.getElementById('jxMapChart').innerHTML =
+        '<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#8aa4bf;font-size:13px;">地图数据加载失败，请检查网络后刷新</div>';
+    }
+
+    // 面包屑渲染（点击逐级回退）
+    function renderCrumb() {
+      const box = document.getElementById('crumbBox');
+      const cur = curNode();
+      box.innerHTML = drillPath.slice(0, -1).map((n, i) =>
+        `${i > 0 ? '<span class="crumb-sep">›</span>' : ''}<span class="crumb-item" data-idx="${i}">${i === 0 ? '江西省' : n.name}</span>`
+      ).join('');
+      box.querySelectorAll('.crumb-item').forEach(el => {
+        el.addEventListener('click', () => {
+          drillPath = drillPath.slice(0, +el.dataset.idx + 1);
+          refreshAll();
+        });
+      });
+      document.getElementById('crumbRegion').textContent = cur.level === 0 ? '全省' : cur.name;
+      document.getElementById('crumbBack').classList.toggle('hidden', drillPath.length <= 1);
+    }
+
+    // 点击地图下钻
+    mapChart.on('click', p => {
+      if (!p || !p.name) return;
+      // 散点标记（乡镇/企业层）
+      if (p.data && p.data.s) {
+        const s = p.data.s;
+        if (s.level < 4) { drillPath.push({ name: s.name, level: s.level, adcode: null }); refreshAll(); }
+        return;
+      }
+      // 区域面（省→市、市→县）
+      const node = curNode();
+      if (node.level >= 2) return; // 县级已是最后一级边界，散点下钻见上方分支
+      const children = getChildren(node);
+      const hit = children.find(c => c.name === p.name);
+      if (!hit) return;
+      if (node.level === 1) {
+        // 市 → 县：需要县级 adcode，从市级 GeoJSON 中查找
+        const gj = geoCache[node.adcode];
+        let adcode = null;
+        if (gj) {
+          const f = gj.features.find(f => f.properties.name === p.name);
+          if (f) adcode = f.properties.adcode;
+        }
+        drillPath.push({ name: p.name, level: 2, adcode: adcode });
+      } else {
+        drillPath.push({ name: p.name, level: 1, adcode: hit.adcode });
+      }
+      refreshAll();
+    });
+
+    document.getElementById('crumbBack').addEventListener('click', () => {
+      if (drillPath.length > 1) { drillPath.pop(); refreshAll(); }
+    });
+
+    // 加载省级地图并初始化（首屏 KPI 滚动动画）
+    loadGeo(360000, gj => {
+      if (!gj) { showMapError(); return; }
+      geoCache[360000] = gj;
+      echarts.registerMap('region_360000', gj);
+      document.querySelectorAll('.center-top .summary-card').forEach(c => {
+        const el = c.querySelector('.summary-value');
+        const unit = el.querySelector('.summary-unit');
+        const unitHtml = unit ? unit.outerHTML : '';
+        el.innerHTML = '0' + unitHtml;
+      });
+      refreshAll();
+    });
+
+    // ============ 下钻联动：KPI / 图表 / 预警列表 ============
+    // 省级基线数据
+    const BASE_KPI = {
+      prod: 186, whole: 312, retail: 749, active: 142,
+      vehicle: 156, worker: 4.82, fire: 86,
+      iotAI: 1286, iotDoor: 2140, iotMach: 864, iotVideo: 3752,
+      warnToday: 38, warnDone: 31, warnHigh: 9, warnMid: 29,
+      chain: [5, 14, 9, 6, 7]
+    };
+    function setNum(el, target, decimals) {
+      // 保留尾部单位：优先 .summary-unit，其次同级的 <span>（如 %）
+      let unitHtml = '';
+      const su = el.querySelector('.summary-unit');
+      if (su) unitHtml = su.outerHTML;
+      else if (el.children.length) unitHtml = el.innerHTML.replace(/^[\d,.]+/, '');
+      const from = parseFloat((el.firstChild.nodeValue || '0').replace(/,/g, '')) || 0;
+      const start = performance.now();
+      (function frame(now) {
+        const p = Math.min((now - start) / 600, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const cur = from + (target - from) * eased;
+        el.innerHTML = (decimals > 0 ? cur.toFixed(decimals) : Math.round(cur).toLocaleString()) + unitHtml;
+        if (p < 1) requestAnimationFrame(frame);
+      })(start);
+    }
+    function refreshKpis(m) {
+      const d = v => Math.max(0, v * m);
+      const cards = document.querySelectorAll('.center-top .summary-card');
+      const set = (i, val, dec) => setNum(cards[i].querySelector('.summary-value'), val, dec);
+      const node = curNode();
+      const done = Math.round(BASE_KPI.warnDone * m);
+      const total = Math.round(BASE_KPI.warnToday * m);
+      set(0, d(BASE_KPI.prod), 0);
+      set(1, d(BASE_KPI.whole), 0);
+      set(2, d(BASE_KPI.retail), 0);
+      set(3, d(BASE_KPI.active), 0);
+      set(4, d(BASE_KPI.vehicle), 0);
+      set(5, d(BASE_KPI.worker), m < 0.05 ? 2 : 1);
+      set(6, d(BASE_KPI.fire), 0);
+      // 副标题随层级更新
+      const subs = cards[0].parentElement.querySelectorAll('.summary-sub');
+      if (subs.length >= 7) {
+        subs[0].textContent = node.level === 0 ? '覆盖 11 个设区市' : `${node.name} 辖区`;
+        subs[3].textContent = '开工率 76.3%';
+        subs[4].textContent = '实时 GPS 在线';
+        subs[6].textContent = `已审批 ${Math.round(d(BASE_KPI.fire) * 0.92)} 场`;
+      }
+      // 右列预警总览
+      const wk = document.querySelectorAll('.col:last-child .kpi-value');
+      if (wk.length >= 4) {
+        setNum(wk[0], total, 0);
+        setNum(wk[1], done, 0);
+        setNum(wk[2], Math.round(BASE_KPI.warnHigh * m), 0);
+        setNum(wk[3], Math.round(BASE_KPI.warnMid * m), 0);
+      }
+      // 左列物联网接入（随层级缩放）
+      const iot = document.querySelectorAll('.col:first-child .kpi-value');
+      if (iot.length >= 6) {
+        setNum(iot[0], Math.round(BASE_KPI.iotAI * m), 0);
+        setNum(iot[1], Math.round(BASE_KPI.iotDoor * m), 0);
+        setNum(iot[2], Math.round(BASE_KPI.iotMach * m), 0);
+        setNum(iot[3], Math.round(BASE_KPI.iotVideo * m), 0);
+      }
+      // 全链条各环节预警
+      const rows = document.querySelectorAll('.chain-row');
+      const chainVals = BASE_KPI.chain.map(v => Math.max(0, Math.round(v * m)));
+      const cmax = Math.max(1, ...chainVals);
+      rows.forEach((r, i) => {
+        const fill = r.querySelector('.chain-fill');
+        const val = r.querySelector('.chain-value');
+        if (!fill || !val) return;
+        fill.style.width = (chainVals[i] / cmax * 100) + '%';
+        fill.classList.toggle('warn', chainVals[i] / cmax > 0.55);
+        val.textContent = chainVals[i];
+        val.style.color = chainVals[i] / cmax > 0.55 ? '#ff9f2e' : '';
+      });
+    }
+    // 图表随层级缩放
+    function refreshCharts(m) {
+      const s = a => a.map(v => +(v * m).toFixed(m < 0.05 ? 2 : 1));
+      trendChart.setOption({ series: [
+        { data: s([178,180,181,182,183,184,185,186]).map(v => Math.round(v)) },
+        { data: s([300,303,305,307,308,310,311,312]).map(v => Math.round(v)) },
+        { data: s([712,720,728,735,740,744,747,749]).map(v => Math.round(v)) }
+      ]});
+      typeChart.setOption({ series: [
+        { data: s([12.6, 9.8, 14.2, 16.5, 18.3, 17.1, 15.8, 14.9, 19.4, 21.7, 24.3, 26.8]) },
+        { data: s([8.4, 6.5, 9.8, 11.2, 12.6, 11.8, 10.9, 10.3, 13.5, 15.1, 17.2, 19.1]) }
+      ]});
+      materialChart.setOption({ series: [
+        { data: s([320, 185, 96]) },
+        { data: s([540, 260, 150]) }
+      ]});
+    }
+    // Top5 预警企业随层级变化
+    function refreshTop5(m) {
+      const node = curNode();
+      const prefix = node.level === 0 ? '' : node.name.replace(/市$|县$|区$|镇$|乡$/, '');
+      const src = [
+        { n: '鸿运烟花厂', t: '库温异常预警', lv: '重大', u: 5, w: 23, mo: 18 },
+        { n: '鑫盛爆竹厂', t: '超员作业预警', lv: '较大', u: 3, w: 47, mo: 12 },
+        { n: '金焰烟花仓库', t: '湿度异常预警', lv: '较大', u: 3, w: 12, mo: 8 },
+        { n: '景泰爆竹厂', t: '门禁异常预警', lv: '一般', u: 2, w: 31, mo: 15 },
+        { n: '瑞祥烟花厂', t: '温湿度异常预警', lv: '一般', u: 1, w: 19, mo: 9 }
+      ];
+      const data = src.slice(0, Math.max(1, Math.min(5, Math.round(5 * (m > 1 ? 1 : m * 3))))).map(d => ({
+        name: (prefix || '上栗县') + d.n, type: d.t, level: d.lv,
+        unhandled: Math.max(1, Math.round(d.u * Math.max(0.3, m))),
+        workers: Math.max(5, Math.round(d.w * Math.max(0.3, m))),
+        monitors: Math.max(3, Math.round(d.mo * Math.max(0.3, m)))
+      }));
+      const el = document.getElementById('top5List');
+      el.innerHTML = data.map((d, i) => {
+        const lc = d.level === '重大' ? 'major' : (d.level === '较大' ? 'large' : 'normal');
+        return `<div class="top5-item ${i === 0 ? 'open' : ''}" data-idx="${i}">
+          <div class="top5-header">
+            <span class="top5-level ${lc}">${d.level}</span>
+            <span class="top5-title">${d.name} · ${d.type}</span>
+            <span class="top5-arrow">▼</span>
+          </div>
+          <div class="top5-body"><div class="top5-kpis">
+            <div class="top5-kpi"><div class="lab">未处置预警</div><div class="val warn">${d.unhandled} 起</div></div>
+            <div class="top5-kpi"><div class="lab">当前作业人数</div><div class="val">${d.workers} 人</div></div>
+            <div class="top5-kpi"><div class="lab">重点监控点位</div><div class="val">${d.monitors} 路</div></div>
+          </div></div>
+        </div>`;
+      }).join('');
+      el.querySelectorAll('.top5-header').forEach(h => {
+        h.addEventListener('click', () => {
+          const item = h.parentElement;
+          const wasOpen = item.classList.contains('open');
+          el.querySelectorAll('.top5-item').forEach(x => x.classList.remove('open'));
+          if (!wasOpen) item.classList.add('open');
+        });
+      });
+    }
+    // 实时预警列表随层级变化
+    function refreshWarnings(m) {
+      const node = curNode();
+      const region = node.level === 0 ? '南昌市新建区' : node.name;
+      const items = [
+        { t: '1.3级工库房温湿度异常', r: region, min: 10, lv: 'high', txt: '高危' },
+        { t: '运输车辆偏离规定路线', r: region, min: 18, lv: 'mid', txt: '中危' },
+        { t: '仓储超量预警', r: region, min: 32, lv: 'mid', txt: '中危' },
+        { t: '零售点用电负荷异常', r: region, min: 55, lv: 'low', txt: '低危' }
+      ];
+      const list = document.querySelector('.warning-list');
+      const n = Math.max(1, Math.min(4, Math.round(4 * Math.max(0.4, m * 2))));
+      list.innerHTML = items.slice(0, n).map(it => {
+        const cls = it.lv === 'high' ? '' : (it.lv === 'mid' ? 'warn' : 'normal');
+        return `<div class="warning-item ${cls}">
+          <div class="warning-info">
+            <div class="warning-title">${it.t}</div>
+            <div class="warning-meta">${it.r} · ${it.min}分钟前</div>
+          </div>
+          <span class="warning-level ${it.lv}">${it.txt}</span>
+        </div>`;
+      }).join('');
+    }
+
+    // 统一刷新入口
+    function refreshAll() {
+      const node = curNode();
+      const m = mult(node.name, node.level);
+      renderCrumb();
+      renderJxMap();
+      refreshKpis(m);
+      refreshCharts(m);
+      refreshTop5(m);
+      refreshWarnings(m);
+    }
+
+    // 实时更新在途车辆位置（沿各自路线来回移动，模拟 GPS 轨迹）
+    function updateVehicles() {
+      if (curNode().level !== 0) return; // 仅省级展示车辆动画
+      const data = vehicles.map(v => {
+        v.t += v.dir * 0.012;
+        if (v.t >= 1) { v.t = 1; v.dir = -1; }
+        if (v.t <= 0) { v.t = 0; v.dir = 1; }
+        const lon = v.route[0][0] + (v.route[1][0] - v.route[0][0]) * v.t;
+        const lat = v.route[0][1] + (v.route[1][1] - v.route[0][1]) * v.t;
+        return {
+          name: v.plate,
+          value: [lon, lat],
+          itemStyle: { color: v.status === '预警' ? '#ff4d4f' : '#ffd23f' },
+          v
+        };
+      });
+      mapChart.setOption({ series: [{ id: 'vehicles', data }] });
+    }
+    setInterval(updateVehicles, 2000);
+
+    // 统一处理窗口尺寸变化
+    const allCharts = [trendChart, typeChart, materialChart, mapChart];
+    window.addEventListener('resize', () => allCharts.forEach(c => c.resize()));
+
+    // AI 智能助手交互（DOMContentLoaded 后绑定，确保按钮元素已就绪）
+    function initAI() {
+      const aiFab = document.getElementById('aiFab');
+      const aiModal = document.getElementById('aiModal');
+      const aiClose = document.getElementById('aiClose');
+      aiFab.addEventListener('click', () => aiModal.classList.add('open'));
+      aiClose.addEventListener('click', () => aiModal.classList.remove('open'));
+      aiModal.addEventListener('click', e => { if (e.target === aiModal) aiModal.classList.remove('open'); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') aiModal.classList.remove('open'); });
+
+      // Tab 切换
+      document.querySelectorAll('.ai-tab').forEach(t => {
+        t.addEventListener('click', () => {
+          document.querySelectorAll('.ai-tab').forEach(x => x.classList.remove('active'));
+          document.querySelectorAll('.ai-pane').forEach(x => x.classList.remove('active'));
+          t.classList.add('active');
+          document.getElementById('tab-' + t.dataset.tab).classList.add('active');
+        });
+      });
+
+      // 智能问数
+      const chatBox = document.getElementById('chatBox');
+      const chatInput = document.getElementById('chatInput');
+      const chatSend = document.getElementById('chatSend');
+      function addMsg(text, who) {
+        const div = document.createElement('div');
+        div.className = 'ai-msg ' + who;
+        div.textContent = text;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+      function reply(q) {
+        const map = {
+          '今日全省有多少条未处置预警': '今日全省未处置预警共 14 起，其中重大 2 起、较大 5 起、一般 7 起。',
+          '当前在产企业最多的市是哪里': '当前在产企业数最多的是赣州市，共有 22 家在产企业；其次是宜春市 19 家、上饶市 21 家。',
+          '在途车辆有多少辆': '当前全省在途运输车辆 156 辆，GPS 在线率 98.2%，其中 2 辆处于预警状态。',
+          '本月原材料采购量统计': '本月全省黑火药采购 320 吨、引线 185 吨、危化品 96 吨，均已入库并核验。'
+        };
+        let a = '已收到您的问题。根据当前平台数据，';
+        for (const k in map) { if (q.includes(k.replace(/\?|今日|当前|本月/g, '').slice(0, 6))) { a = map[k]; break; } }
+        if (a.startsWith('已收到')) a += '建议您通过具体指标查询，如“在途车辆”“未处置预警”等。';
+        setTimeout(() => addMsg(a, 'bot'), 400);
+      }
+      chatSend.addEventListener('click', () => {
+        const v = chatInput.value.trim();
+        if (!v) return;
+        addMsg(v, 'user');
+        chatInput.value = '';
+        reply(v);
+      });
+      chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') chatSend.click(); });
+      document.querySelectorAll('.ai-hint').forEach(h => {
+        h.addEventListener('click', () => {
+          chatInput.value = h.textContent;
+          chatSend.click();
+        });
+      });
+
+      // 智能报告
+      const reportBtn = document.getElementById('reportBtn');
+      const reportCard = document.getElementById('reportCard');
+      const reportTitle = document.getElementById('reportTitle');
+      const reportContent = document.getElementById('reportContent');
+      reportBtn.addEventListener('click', () => {
+        const type = document.getElementById('reportType').value;
+        const date = document.getElementById('reportDate').value;
+        reportCard.style.display = 'block';
+        reportTitle.textContent = type + '（' + date + '）';
+        reportContent.innerHTML = `
+          <p><b>一、总体态势</b><br/>今日全省烟花爆竹产业运行平稳，企业在线率 92.6%，在产企业 142 家，在途车辆 156 辆。</p>
+          <p><b>二、预警情况</b><br/>共产生预警 38 起，已处置 31 起，未处置 7 起；主要集中在仓储温湿度异常、超员作业、门禁异常三类。</p>
+          <p><b>三、重点督办</b><br/>上栗县某烟花厂、万载县某爆竹厂等 5 家企业存在未处置预警，建议立即下发督办单并跟踪整改。</p>
+          <p><b>四、趋势研判</b><br/>临近传统销售旺季，预计下周生产、运输活跃度将上升 8%-12%，需加强重点环节巡查。</p>
+        `;
+      });
+
+      // 政策案例
+      const policies = [
+        { title: '烟花爆竹安全管理条例（国务院令第455号）', desc: '规范烟花爆竹生产、经营、运输和燃放活动，强化安全监管责任。', tag: '政策法规' },
+        { title: '江西省烟花爆竹生产企业安全生产标准化评审标准', desc: '明确企业安全生产条件、现场管理、隐患排查等评审细则。', tag: '行业标准' },
+        { title: '萍乡市上栗县“1·15”爆竹爆炸事故案例', desc: '因超员超量作业、防静电措施缺失引发爆炸，造成重大人员伤亡。', tag: '典型案例' },
+        { title: '关于加强旺季烟花爆竹道路运输安全管理的通知', desc: '对运输许可、GPS 监管、车辆资质等提出明确要求。', tag: '政策法规' },
+        { title: '万载县某烟花厂涉药机械伤人事故案例', desc: '机械故障导致药物撒落燃烧，教训包括设备点检与人员培训。', tag: '典型案例' },
+        { title: '烟花爆竹作业安全技术规程（GB 11652）', desc: '国家标准，涵盖烟火药制造、产品制作、储存运输等安全技术要求。', tag: '行业标准' }
+      ];
+      const policyList = document.getElementById('policyList');
+      function renderPolicy(filter, keyword) {
+        const kw = (keyword || '').toLowerCase();
+        const filtered = policies.filter(p => {
+          const matchFilter = filter === '全部' || p.tag === filter;
+          const matchKw = !kw || p.title.toLowerCase().includes(kw) || p.desc.toLowerCase().includes(kw);
+          return matchFilter && matchKw;
+        });
+        policyList.innerHTML = filtered.map(p => `
+          <div class="ai-policy-item">
+            <h5>${p.title}</h5>
+            <p>${p.desc}</p>
+            <span class="tag">${p.tag}</span>
+          </div>
+        `).join('');
+      }
+      renderPolicy('全部');
+      document.querySelectorAll('.ai-tag').forEach(t => {
+        t.addEventListener('click', () => {
+          document.querySelectorAll('.ai-tag').forEach(x => x.classList.remove('active'));
+          t.classList.add('active');
+          renderPolicy(t.dataset.filter, document.getElementById('policySearch').value);
+        });
+      });
+      document.getElementById('policySearchBtn').addEventListener('click', () => {
+        const filter = document.querySelector('.ai-tag.active').dataset.filter;
+        renderPolicy(filter, document.getElementById('policySearch').value);
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAI);
+    else initAI();
+  </script>
+
+  <!-- AI 智能体入口 -->
+  <div class="ai-fab" id="aiFab" title="AI 智能助手">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h2.5c1.5 0 2.86.62 3.85 1.61l1.42-1.42 1.42 1.42-1.42 1.42A5.48 5.48 0 0 1 21 13.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5.5a5.48 5.48 0 0 1 1.23-3.47L2.81 8.61 4.23 7.19l1.42 1.42A5.48 5.48 0 0 1 9.5 7H12V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 1-1.73V2zm-2.5 9A1.5 1.5 0 0 0 8 12.5 1.5 1.5 0 0 0 9.5 14 1.5 1.5 0 0 0 11 12.5 1.5 1.5 0 0 0 9.5 11zm7 0A1.5 1.5 0 0 0 15 12.5 1.5 1.5 0 0 0 16.5 14 1.5 1.5 0 0 0 18 12.5 1.5 1.5 0 0 0 16.5 11zM12 17a4 4 0 0 1-3.46-2h6.92A4 4 0 0 1 12 17z"/></svg>
+  </div>
+
+  <!-- AI 智能体页面 -->
+  <div class="ai-modal" id="aiModal">
+    <div class="ai-container">
+      <div class="ai-header">
+        <h3>AI 智能助手</h3>
+        <button class="ai-close" id="aiClose">✕</button>
+      </div>
+      <div class="ai-tabs">
+        <div class="ai-tab active" data-tab="ask">智能问数</div>
+        <div class="ai-tab" data-tab="report">智能报告</div>
+        <div class="ai-tab" data-tab="policy">政策案例</div>
+      </div>
+      <div class="ai-body">
+        <!-- 智能问数 -->
+        <div class="ai-pane active" id="tab-ask">
+          <div class="ai-chat">
+            <div class="ai-messages" id="chatBox">
+              <div class="ai-msg bot">您好，我是烟花爆竹安全监管 AI 助手。可以帮您查询全省企业、预警、车辆、人员等实时数据。</div>
+            </div>
+            <div class="ai-hints">
+              <span class="ai-hint">今日全省有多少条未处置预警？</span>
+              <span class="ai-hint">当前在产企业最多的市是哪里？</span>
+              <span class="ai-hint">在途车辆有多少辆？</span>
+              <span class="ai-hint">本月原材料采购量统计</span>
+            </div>
+            <div class="ai-inputbar">
+              <input type="text" id="chatInput" placeholder="请输入您想查询的数据或问题…" />
+              <button id="chatSend">发送</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 智能报告 -->
+        <div class="ai-pane" id="tab-report">
+          <div class="ai-report-form">
+            <select id="reportType">
+              <option>每日安全运行报告</option>
+              <option>每周风险研判报告</option>
+              <option>月度产业运行报告</option>
+              <option>专项整治总结报告</option>
+            </select>
+            <input type="date" id="reportDate" value="2026-08-27" />
+            <button id="reportBtn">生成报告</button>
+          </div>
+          <div class="ai-report-card" id="reportCard" style="display:none;">
+            <h4 id="reportTitle"></h4>
+            <div id="reportContent"></div>
+          </div>
+        </div>
+
+        <!-- 政策案例 -->
+        <div class="ai-pane" id="tab-policy">
+          <div class="ai-search">
+            <input type="text" id="policySearch" placeholder="搜索政策、法规、典型案例…" />
+            <button id="policySearchBtn">搜索</button>
+          </div>
+          <div class="ai-tags">
+            <span class="ai-tag active" data-filter="全部">全部</span>
+            <span class="ai-tag" data-filter="政策法规">政策法规</span>
+            <span class="ai-tag" data-filter="典型案例">典型案例</span>
+            <span class="ai-tag" data-filter="行业标准">行业标准</span>
+          </div>
+          <div class="ai-policy-list" id="policyList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
