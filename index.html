@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>江西省烟花爆竹产业全链条监管服务平台 - 态势总览</title>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="geo-data.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -1099,6 +1100,7 @@
     }
 
     // 地图 GeoJSON 缓存与加载（省/市/县使用真实边界）
+    // 优先使用内联 geo-data.js（本地/部署均可用），网络仅作兜底
     const geoCache = {};
     function geoUrlFor(adcode) {
       return [
@@ -1108,6 +1110,11 @@
     }
     function loadGeo(adcode, cb) {
       if (geoCache[adcode]) { cb(geoCache[adcode]); return; }
+      if (window.GEO_DATA && window.GEO_DATA[adcode]) {
+        geoCache[adcode] = window.GEO_DATA[adcode];
+        cb(geoCache[adcode]);
+        return;
+      }
       const urls = geoUrlFor(adcode);
       (function tryLoad(i) {
         if (i >= urls.length) { cb(null); return; }
