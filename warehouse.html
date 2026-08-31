@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>江西省烟花爆竹产业全链条监管服务平台 - 生产态势</title>
+  <title>江西省烟花爆竹产业全链条监管服务平台 - 仓储态势</title>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -131,16 +131,6 @@
     .panel-title .more { font-size: 12px; color: var(--text-dim); cursor: pointer; }
     .panel-title .more:hover { color: var(--accent); }
 
-    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .kpi-card {
-      background: linear-gradient(135deg, rgba(0, 100, 180, 0.15), rgba(0, 60, 110, 0.08));
-      border: 1px solid rgba(0, 150, 255, 0.18);
-      border-radius: 6px;
-      padding: 10px 12px;
-      display: flex; flex-direction: column; gap: 6px;
-      transition: all 0.2s;
-    }
-
     .chart { flex: 1; min-height: 130px; }
 
     .center-top {
@@ -161,12 +151,12 @@
       content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, transparent, var(--accent), transparent);
     }
-    .summary-card:nth-child(2)::before { background: linear-gradient(90deg, transparent, var(--danger), transparent); }
-    .summary-card:nth-child(3)::before { background: linear-gradient(90deg, transparent, #a855f7, transparent); }
-    .summary-card:nth-child(4)::before { background: linear-gradient(90deg, transparent, #22c55e, transparent); }
+    .summary-card:nth-child(2)::before { background: linear-gradient(90deg, transparent, #a855f7, transparent); }
+    .summary-card:nth-child(3)::before { background: linear-gradient(90deg, transparent, #22c55e, transparent); }
+    .summary-card:nth-child(4)::before { background: linear-gradient(90deg, transparent, #ffd23f, transparent); }
     .summary-card:nth-child(5)::before { background: linear-gradient(90deg, transparent, #38c8f5, transparent); }
-    .summary-card:nth-child(6)::before { background: linear-gradient(90deg, transparent, #f43f5e, transparent); }
-    .summary-card:nth-child(7)::before { background: linear-gradient(90deg, transparent, #ffd23f, transparent); }
+    .summary-card:nth-child(6)::before { background: linear-gradient(90deg, transparent, #00d4ff, transparent); }
+    .summary-card:nth-child(7)::before { background: linear-gradient(90deg, transparent, #ff4d4f, transparent); }
     .summary-card:nth-child(8)::before { background: linear-gradient(90deg, transparent, #ff9f2e, transparent); }
     .summary-label { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
     .summary-value { font-size: 24px; font-weight: 800; color: #fff; font-family: "DIN Alternate", "Arial Black", sans-serif; text-shadow: 0 0 10px rgba(255,255,255,0.15); }
@@ -234,22 +224,23 @@
     }
     .ent-head h4 { font-size: 16px; color: #fff; margin-bottom: 6px; }
     .ent-head p { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
-    .ent-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .ent-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .ent-kpi { background: rgba(0,0,0,0.22); border: 1px solid rgba(0,150,255,0.15); border-radius: 8px; padding: 12px 8px; text-align: center; }
     .ent-kpi .lab { font-size: 11px; color: var(--text-dim); }
     .ent-kpi .val { font-size: 20px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate", "Arial Black", sans-serif; margin-top: 4px; }
     .ent-kpi .val.warn { color: var(--danger); }
+    .ent-kpi .val.ok { color: #51cf66; }
     .ent-status { display: inline-block; margin-top: 8px; font-size: 11px; padding: 3px 10px; border-radius: 10px; }
     .ent-status.ok { color: #51cf66; border: 1px solid rgba(81,207,102,0.5); background: rgba(81,207,102,0.1); }
     .ent-status.warn { color: var(--danger); border: 1px solid rgba(255,77,79,0.5); background: rgba(255,77,79,0.1); }
 
-    .warning-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+    .warning-list { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
     .warning-item {
       display: flex; align-items: center; justify-content: space-between;
       background: rgba(255, 79, 79, 0.06);
       border-left: 3px solid var(--danger);
       border-radius: 4px;
-      padding: 9px 10px;
+      padding: 7px 10px;
       font-size: 12px;
       transition: box-shadow .2s;
     }
@@ -271,7 +262,6 @@
     .mini-stat .lab { font-size: 11px; color: var(--text-dim); }
     .mini-stat .val { font-size: 22px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate", "Arial Black", sans-serif; margin-top: 4px; }
     .mini-stat .val.warn { color: var(--danger); }
-    .mini-stat .val.ok { color: #51cf66; }
 
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-thumb { background: rgba(0, 150, 255, 0.3); border-radius: 2px; }
@@ -301,8 +291,8 @@
     <nav class="nav">
       <a href="index.html">态势总览</a>
       <a href="purchase.html">采购态势</a>
-      <a class="active" href="production.html">生产态势</a>
-      <a href="warehouse.html">仓储态势</a>
+      <a href="production.html">生产态势</a>
+      <a class="active" href="warehouse.html">仓储态势</a>
       <a href="#">运输态势</a>
       <a href="#">出口态势</a>
       <a href="#">零售态势</a>
@@ -312,7 +302,7 @@
     <div class="header-right">
       <div class="sys-status"><i></i>系统运行正常</div>
       <div class="weather">🌤 南昌 多云 28°C</div>
-      <div class="time" id="clock">2026-08-28 14:22:51</div>
+      <div class="time" id="clock">2026-08-31 10:00:00</div>
     </div>
   </header>
 
@@ -320,18 +310,18 @@
     <!-- Left Column -->
     <section class="col">
       <div class="panel" style="flex: 1;">
-        <div class="panel-title"><h3>全省生产企业在产停产情况</h3><span class="more">更多 &gt;</span></div>
-        <div id="statusChart" class="chart"></div>
+        <div class="panel-title"><h3>成品库存情况</h3><span class="more">更多 &gt;</span></div>
+        <div id="stockChart" class="chart"></div>
       </div>
 
       <div class="panel" style="flex: 1;">
-        <div class="panel-title"><h3>全省生产用电情况</h3><span class="more">更多 &gt;</span></div>
-        <div id="powerChart" class="chart"></div>
+        <div class="panel-title"><h3>车辆进出库情况</h3><span class="more">更多 &gt;</span></div>
+        <div id="vehicleChart" class="chart"></div>
       </div>
 
       <div class="panel" style="flex: 1;">
-        <div class="panel-title"><h3>全省企业资质情况</h3><span class="more">更多 &gt;</span></div>
-        <div id="qualChart" class="chart"></div>
+        <div class="panel-title"><h3>视频监测点情况</h3><span class="more">更多 &gt;</span></div>
+        <div id="videoChart" class="chart"></div>
       </div>
     </section>
 
@@ -340,29 +330,29 @@
       <!-- KPI cards -->
       <div class="center-top">
         <div class="summary-card">
-          <div class="summary-label">在产企业</div>
-          <div class="summary-value" id="kpiProd">860<span class="summary-unit">家</span></div>
-          <div class="summary-sub">停产 92 · 检修 24</div>
+          <div class="summary-label">仓库库房总数</div>
+          <div class="summary-value" id="kpiRoom">1040<span class="summary-unit">栋</span></div>
+          <div class="summary-sub">工房 5380 · 库房 1040</div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">本月生产用电</div>
-          <div class="summary-value" id="kpiPower">1286<span class="summary-unit">万kWh</span></div>
-          <div class="summary-sub">环比 +3.2%</div>
+          <div class="summary-label">成品库存量</div>
+          <div class="summary-value" id="kpiStock">8620<span class="summary-unit">吨</span></div>
+          <div class="summary-sub">库存周转 22 天</div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">从业人员</div>
-          <div class="summary-value" id="kpiWorkers">4.82<span class="summary-unit">万人</span></div>
+          <div class="summary-label">库区作业人员</div>
+          <div class="summary-value" id="kpiWorker">1.86<span class="summary-unit">万人</span></div>
           <div class="summary-sub">持证上岗率 98.6%</div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">生产区作业人员</div>
-          <div class="summary-value" id="kpiOnSite">3.12<span class="summary-unit">万人</span></div>
-          <div class="summary-sub">实时在岗巡检</div>
+          <div class="summary-label">今日进库车辆</div>
+          <div class="summary-value" id="kpiIn">248<span class="summary-unit">辆</span></div>
+          <div class="summary-sub">已核验 245 辆</div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">生产工库房</div>
-          <div class="summary-value" id="kpiRoom">6420<span class="summary-unit">栋</span></div>
-          <div class="summary-sub">工房 5380 · 库房 1040</div>
+          <div class="summary-label">今日出库车辆</div>
+          <div class="summary-value" id="kpiOut">216<span class="summary-unit">辆</span></div>
+          <div class="summary-sub">合规率 99.1%</div>
         </div>
         <div class="summary-card">
           <div class="summary-label">视频监测点</div>
@@ -371,13 +361,13 @@
         </div>
         <div class="summary-card">
           <div class="summary-label">本月预警总数</div>
-          <div class="summary-value" id="kpiWarn" style="color:#ff4d4f;">83<span class="summary-unit">起</span></div>
-          <div class="summary-sub">处置率 91.6%</div>
+          <div class="summary-value" id="kpiWarn" style="color:#ff4d4f;">156<span class="summary-unit">起</span></div>
+          <div class="summary-sub">处置率 92.3%</div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">资质到期预警</div>
-          <div class="summary-value" id="kpiQual" style="color:#ff9f2e;">8<span class="summary-unit">家</span></div>
-          <div class="summary-sub">企业 2 · 人员 6</div>
+          <div class="summary-label">人员资质到期</div>
+          <div class="summary-value" id="kpiQual" style="color:#ff9f2e;">32<span class="summary-unit">人</span></div>
+          <div class="summary-sub">即将到期 23 · 已过期 9</div>
         </div>
       </div>
 
@@ -392,10 +382,10 @@
 
       <!-- Drill content -->
       <div class="panel" style="flex: 1.35; min-height: 0;">
-        <div class="panel-title"><h3 id="drillTitle">各市生产数据分布</h3><span class="more">点击行可逐级下钻 &gt;</span></div>
+        <div class="panel-title"><h3 id="drillTitle">各市仓储数据分布</h3><span class="more">点击行可逐级下钻 &gt;</span></div>
         <div class="drill-content" id="drillContent">
           <div class="drill-box">
-            <h5 id="rankTitle">在产企业排名（家）</h5>
+            <h5 id="rankTitle">成品库存排名（吨）</h5>
             <div id="rankChart"></div>
           </div>
           <div class="drill-box">
@@ -403,7 +393,7 @@
             <div class="rtable-wrap">
               <table class="rtable">
                 <thead>
-                  <tr><th>名称</th><th>在产</th><th>停产</th><th>用工</th><th>工库房</th><th>视频</th><th>预警</th><th>操作</th></tr>
+                  <tr><th>名称</th><th>库房(栋)</th><th>库存(吨)</th><th>作业人员</th><th>进库</th><th>出库</th><th>视频</th><th>预警</th><th>操作</th></tr>
                 </thead>
                 <tbody id="regionTbody"></tbody>
               </table>
@@ -412,37 +402,42 @@
         </div>
       </div>
 
-      <!-- 生产用电与用工趋势 -->
+      <!-- 库区人员与车辆进出趋势 -->
       <div class="panel" style="flex: 1; min-height: 0;">
-        <div class="panel-title"><h3>生产用电 · 用工 · 工库房趋势</h3><span class="more">更多 &gt;</span></div>
+        <div class="panel-title"><h3>库区人员 · 车辆进出库趋势</h3><span class="more">更多 &gt;</span></div>
         <div id="trendChart" class="chart"></div>
       </div>
     </section>
 
     <!-- Right Column -->
     <section class="col">
-      <div class="panel" style="flex: 1;">
-        <div class="panel-title"><h3>预警总体情况</h3><span class="more">更多 &gt;</span></div>
-        <div id="warnChart" class="chart"></div>
+      <div class="panel" style="flex: 0.82;">
+        <div class="panel-title"><h3>预警处置情况</h3><span class="more">更多 &gt;</span></div>
+        <div id="disposeChart" class="chart"></div>
       </div>
 
-      <div class="panel" style="flex: 1;">
-        <div class="panel-title"><h3>分级预警类型分布</h3><span class="more">更多 &gt;</span></div>
+      <div class="panel" style="flex: 0.95;">
+        <div class="panel-title"><h3>预警类型分布</h3><span class="more">更多 &gt;</span></div>
         <div id="warnTypeChart" class="chart"></div>
       </div>
 
-      <div class="panel" style="flex: 1;">
-        <div class="panel-title"><h3>资质到期与监测</h3><span class="more">更多 &gt;</span></div>
-        <div class="mini-stats" style="margin-bottom:10px;">
-          <div class="mini-stat"><div class="lab">企业资质即将到期</div><div class="val warn" id="qualSoon">6<span style="font-size:12px">家</span></div></div>
-          <div class="mini-stat"><div class="lab">企业资质已过期</div><div class="val warn" id="qualOver">2<span style="font-size:12px">家</span></div></div>
-          <div class="mini-stat"><div class="lab">人员资质即将到期</div><div class="val warn" id="pQualSoon">23<span style="font-size:12px">人</span></div></div>
-          <div class="mini-stat"><div class="lab">人员资质已过期</div><div class="val warn" id="pQualOver">9<span style="font-size:12px">人</span></div></div>
-        </div>
+      <div class="panel" style="flex: 1.75; min-height: 0;">
+        <div class="panel-title"><h3>仓库实时预警</h3><span class="more">更多 &gt;</span></div>
         <div class="warning-list" id="warnList"></div>
+      </div>
+
+      <div class="panel" style="flex: 0.7;">
+        <div class="panel-title"><h3>人员资质到期与监测</h3><span class="more">更多 &gt;</span></div>
+        <div class="mini-stats">
+          <div class="mini-stat"><div class="lab">人员资质即将到期</div><div class="val warn" id="qualSoon">23<span style="font-size:12px">人</span></div></div>
+          <div class="mini-stat"><div class="lab">人员资质已过期</div><div class="val warn" id="qualOver">9<span style="font-size:12px">人</span></div></div>
+          <div class="mini-stat"><div class="lab">库区在岗人数</div><div class="val" id="onDuty">1280<span style="font-size:12px">人</span></div></div>
+          <div class="mini-stat"><div class="lab">超员预警次数</div><div class="val warn" id="overCrowd">14<span style="font-size:12px">次</span></div></div>
+        </div>
       </div>
     </section>
   </main>
+  </div>
 
   <script>
     // 自适应：按视口缩放整个设计稿(1920x1080)
@@ -516,9 +511,9 @@
         const h = Math.floor(hash01(node.name) * TOWNS.length);
         return [0, 1, 2].map(i => ({ name: TOWNS[(h + i * 4) % TOWNS.length], level: 3 }));
       }
-      if (  node.level === 3) {
+      if (node.level === 3) {
         const h = Math.floor(hash01(node.name) * ENT_PREFIX.length);
-        return [0, 1, 2].map(i => ({ name: node.name + ENT_PREFIX[(h + i * 3) % ENT_PREFIX.length] + '烟花爆竹有限公司', level: 4 }));
+        return [0, 1, 2].map(i => ({ name: node.name + ENT_PREFIX[(h + i * 3) % ENT_PREFIX.length] + '烟花仓储有限公司', level: 4 }));
       }
       return [];
     }
@@ -526,32 +521,60 @@
     // ================= 省级基础数据 =================
     const MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月'];
     const BASE = {
-      // 在产/停产/检修（家）
-      prod: 860, stop: 92, repair: 24,
-      // 生产用电（万kWh）月度
-      power: [1180, 1205, 1230, 1210, 1240, 1265, 1270, 1286],
-      rooms: 6420,
-      // 企业资质：有效/即将到期/已过期
-      qualOk: 832, qualSoon: 6, qualOver: 2,
-      // 从业人员资质
-      pQualSoon: 23, pQualOver: 9,
-      // 分级预警（省级起数）
+      rooms: 1040,
+      // 成品库存（吨）月度：烟花 / 爆竹
+      stock: {
+        '烟花': [4200, 4350, 4500, 4620, 4700, 4780, 4680, 4820],
+        '爆竹': [3400, 3520, 3650, 3720, 3780, 3820, 3760, 3800]
+      },
+      stockTotal: 8620,
+      workers: 18600,
+      // 车辆进出库（辆）月度
+      vehicleIn:  [210, 225, 240, 235, 248, 256, 242, 248],
+      vehicleOut: [188, 202, 216, 212, 225, 232, 218, 216],
+      // 视频监测点
+      videoTotal: 3752,
+      videoOnline: 3718,
+      videoOffline: 26,
+      videoFault: 8,
+      // 预警类型及省级起数
       warns: {
-        '停产作业': 18, '涉药机械运行时长': 12, '工库房超员': 9, '静电未释放': 7,
-        '非法入侵': 5, '堵塞通道': 8, '超高堆垛': 6, '烟火识别': 14, '产品不合格': 4
+        '仓库超高/超量': 38,
+        '库区超员': 14,
+        '堵塞消防通道': 22,
+        '非法入侵': 8,
+        '摄像头偏移/遮挡': 16,
+        '无证装货': 12,
+        '运输车辆无挡板': 10,
+        '温湿度异常': 36
       }
     };
     const WARN_COLORS = {
-      '停产作业': '#ff4d4f', '涉药机械运行时长': '#ff9f2e', '工库房超员': '#ffd23f',
-      '静电未释放': '#38c8f5', '非法入侵': '#a855f7', '堵塞通道': '#22c55e',
-      '超高堆垛': '#ff79e1', '烟火识别': '#ff6b6b', '产品不合格': '#51cf66'
+      '仓库超高/超量': '#ff4d4f',
+      '库区超员': '#ff9f2e',
+      '堵塞消防通道': '#ffd23f',
+      '非法入侵': '#a855f7',
+      '摄像头偏移/遮挡': '#38c8f5',
+      '无证装货': '#f43f5e',
+      '运输车辆无挡板': '#22c55e',
+      '温湿度异常': '#ff6b6b'
+    };
+    const WARN_SUGGEST = {
+      '仓库超高/超量': '立即转运分流，降低堆垛高度与存量',
+      '库区超员': '疏散超员人员，严格落实定员定量',
+      '堵塞消防通道': '立即清理通道，恢复消防畅通',
+      '非法入侵': '启动联防，核查人员并锁闭库区',
+      '摄像头偏移/遮挡': '现场复位摄像头，清理遮挡物',
+      '无证装货': '制止装货，核验驾驶员与押运员资质',
+      '运输车辆无挡板': '要求加装挡板后方可出库',
+      '温湿度异常': '开启通风除湿，核查温湿度设备'
     };
 
     // ================= 图表初始化 =================
-    const statusChart = echarts.init(document.getElementById('statusChart'));
-    const powerChart = echarts.init(document.getElementById('powerChart'));
-    const qualChart = echarts.init(document.getElementById('qualChart'));
-    const warnChart = echarts.init(document.getElementById('warnChart'));
+    const stockChart = echarts.init(document.getElementById('stockChart'));
+    const vehicleChart = echarts.init(document.getElementById('vehicleChart'));
+    const videoChart = echarts.init(document.getElementById('videoChart'));
+    const disposeChart = echarts.init(document.getElementById('disposeChart'));
     const warnTypeChart = echarts.init(document.getElementById('warnTypeChart'));
     let rankChart = echarts.init(document.getElementById('rankChart'));
     const trendChart = echarts.init(document.getElementById('trendChart'));
@@ -561,68 +584,67 @@
       return rankChart;
     }
 
-    function renderStatus(m) {
-      statusChart.setOption({
-        tooltip: Object.assign({ trigger: 'item', formatter: '{b}：{c} 家（{d}%）' }, tipBase),
+    function renderStock(m) {
+      stockChart.setOption({
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, tipBase),
+        legend: { data: Object.keys(BASE.stock), textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
+        grid: { left: 48, right: 12, top: 30, bottom: 22 },
+        xAxis: { type: 'category', data: MONTHS, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+        yAxis: { type: 'value', name: '吨', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+        series: Object.keys(BASE.stock).map(k => ({
+          name: k, type: 'bar', barWidth: 8, stack: 'total',
+          itemStyle: { color: k === '烟花' ? '#00d4ff' : '#ff9f2e', borderRadius: k === '爆竹' ? [2, 2, 0, 0] : [0, 0, 0, 0] },
+          data: scaleArr(BASE.stock[k], m, 0)
+        }))
+      }, true);
+    }
+
+    function renderVehicle(m) {
+      vehicleChart.setOption({
+        tooltip: Object.assign({ trigger: 'axis' }, tipBase),
+        legend: { data: ['进库车辆', '出库车辆'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
+        grid: { left: 44, right: 12, top: 30, bottom: 22 },
+        xAxis: { type: 'category', data: MONTHS, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+        yAxis: { type: 'value', name: '辆', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+        series: [
+          { name: '进库车辆', type: 'line', smooth: true, symbol: 'none', lineStyle: { color: '#00d4ff', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,212,255,0.22)'},{offset:1,color:'rgba(0,212,255,0.01)'}]) }, data: scaleArr(BASE.vehicleIn, m, 0) },
+          { name: '出库车辆', type: 'line', smooth: true, symbol: 'none', lineStyle: { color: '#ff9f2e', width: 2 }, data: scaleArr(BASE.vehicleOut, m, 0) }
+        ]
+      }, true);
+    }
+
+    function renderVideo(m) {
+      const online = Math.max(0, Math.round(BASE.videoOnline * m));
+      const offline = Math.max(0, Math.round(BASE.videoOffline * m));
+      const fault = Math.max(0, Math.round(BASE.videoFault * m));
+      videoChart.setOption({
+        tooltip: Object.assign({ trigger: 'item', formatter: '{b}：{c} 路（{d}%）' }, tipBase),
         legend: { bottom: 0, textStyle: { color: textColor, fontSize: 11 }, itemWidth: 12, itemHeight: 8 },
         series: [{
           type: 'pie', radius: ['45%', '70%'], center: ['50%', '44%'],
-          label: { color: '#cfe9ff', fontSize: 11, formatter: '{b}\n{c}家' },
+          label: { color: '#cfe9ff', fontSize: 11, formatter: '{b}\n{c}路' },
           itemStyle: { borderColor: '#050b14', borderWidth: 2 },
           data: [
-            { name: '在产', value: Math.round(BASE.prod * m), itemStyle: { color: '#22c55e' } },
-            { name: '停产', value: Math.round(BASE.stop * m), itemStyle: { color: '#ff4d4f' } },
-            { name: '检修', value: Math.round(BASE.repair * m), itemStyle: { color: '#ff9f2e' } }
+            { name: '在线', value: online, itemStyle: { color: '#22c55e' } },
+            { name: '离线', value: offline, itemStyle: { color: '#ff9f2e' } },
+            { name: '故障', value: fault, itemStyle: { color: '#ff4d4f' } }
           ]
         }]
       }, true);
     }
 
-    function renderPower(m) {
-      powerChart.setOption({
-        tooltip: Object.assign({ trigger: 'axis' }, tipBase),
-        grid: { left: 48, right: 14, top: 24, bottom: 22 },
-        xAxis: { type: 'category', data: MONTHS, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        yAxis: { type: 'value', name: '万kWh', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        series: [{
-          type: 'line', smooth: true, symbol: 'none',
-          lineStyle: { color: '#00d4ff', width: 2 },
-          areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,212,255,0.25)'},{offset:1,color:'rgba(0,212,255,0.01)'}]) },
-          data: scaleArr(BASE.power, m)
-        }]
-      }, true);
-    }
-
-    function renderQual(m) {
-      const cats = ['资质有效', '即将到期', '已过期'];
-      const vals = [Math.max(1, Math.round(BASE.qualOk * m)), Math.max(0, Math.round(BASE.qualSoon * m)), Math.max(0, Math.round(BASE.qualOver * m))];
-      qualChart.setOption({
-        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, tipBase),
-        grid: { left: 44, right: 16, top: 24, bottom: 22 },
-        xAxis: { type: 'category', data: cats, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 11 } },
-        yAxis: { type: 'value', name: '家', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        series: [{
-          type: 'bar', barWidth: 26,
-          data: vals.map((v, i) => ({
-            value: v,
-            itemStyle: { color: [ '#22c55e', '#ff9f2e', '#ff4d4f' ][i], borderRadius: [3,3,0,0] }
-          })),
-          label: { show: true, position: 'top', color: '#fff', fontSize: 11 }
-        }]
-      }, true);
-    }
-
-    function renderWarn(m) {
-      const done = Math.round(60 * m);
-      const doing = Math.round(16 * m);
-      const todo = Math.round(7 * m);
-      const total = done + doing + todo;
-      warnChart.setOption({
+    function renderDispose(m) {
+      const total = Object.values(BASE.warns).reduce((a, b) => a + b, 0);
+      const done = Math.round(total * 0.78 * m);
+      const doing = Math.round(total * 0.14 * m);
+      const todo = Math.round(total * 0.08 * m);
+      const sum = done + doing + todo;
+      disposeChart.setOption({
         tooltip: Object.assign({ trigger: 'item', formatter: '{b}：{c} 起（{d}%）' }, tipBase),
         legend: { bottom: 0, textStyle: { color: textColor, fontSize: 11 }, itemWidth: 12, itemHeight: 8 },
         series: [{
           type: 'pie', radius: ['48%', '68%'], center: ['50%', '44%'],
-          label: { show: true, position: 'center', formatter: `处置率\n${Math.round(done/total*100)}%`, color: '#fff', fontSize: 15, fontWeight: 700, lineHeight: 22 },
+          label: { show: true, position: 'center', formatter: `处置率\n${sum ? Math.round(done / sum * 100) : 0}%`, color: '#fff', fontSize: 15, fontWeight: 700, lineHeight: 22 },
           itemStyle: { borderColor: '#050b14', borderWidth: 2 },
           data: [
             { name: '已处置', value: done, itemStyle: { color: '#22c55e' } },
@@ -634,14 +656,13 @@
     }
 
     function renderWarnType(m) {
-      const entries = Object.entries(BASE.warns);
-      const data = entries.map(([k, v]) => ({
+      const data = Object.entries(BASE.warns).map(([k, v]) => ({
         name: k,
         value: Math.max(0, Math.round(v * m)),
         itemStyle: { color: WARN_COLORS[k] }
       })).sort((a, b) => b.value - a.value);
       warnTypeChart.setOption({
-        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: ps => `${ps[0].name}<br/>预警：${ps[0].value} 起` }, tipBase),
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: ps => `${ps[0].name}<br/>预警：${ps[0].value} 起<br/>建议：${WARN_SUGGEST[ps[0].name] || '现场核查处置'}` }, tipBase),
         grid: { left: 8, right: 30, top: 6, bottom: 6, containLabel: true },
         xAxis: { type: 'value', splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
         yAxis: { type: 'category', inverse: true, data: data.map(d => d.name), axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#cfe9ff', fontSize: 10 } },
@@ -650,22 +671,20 @@
     }
 
     function renderTrend(m) {
-      const workers = MONTHS.map((_, i) => Math.round(46000 + i * 300 + hash01('w' + i) * 1500));
-      const rooms = MONTHS.map((_, i) => Math.round(6200 + i * 30 + hash01('r' + i) * 200));
-      const power = scaleArr(BASE.power, m);
+      const workers = MONTHS.map((_, i) => Math.round(16800 + i * 250 + hash01('w' + i) * 1200));
       trendChart.setOption({
         tooltip: Object.assign({ trigger: 'axis' }, tipBase),
-        legend: { data: ['生产用电(万kWh)', '用工人数', '工库房(栋)'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
+        legend: { data: ['库区作业人员', '进库车辆', '出库车辆'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
         grid: { left: 48, right: 48, top: 30, bottom: 22 },
         xAxis: { type: 'category', data: MONTHS, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
         yAxis: [
-          { type: 'value', name: '万kWh', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-          { type: 'value', name: '人/栋', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, axisLabel: { color: '#8aa4bf', fontSize: 10 } }
+          { type: 'value', name: '人', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+          { type: 'value', name: '辆', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, axisLabel: { color: '#8aa4bf', fontSize: 10 } }
         ],
         series: [
-          { name: '生产用电(万kWh)', type: 'line', smooth: true, symbol: 'none', lineStyle: { color: '#00d4ff', width: 2 }, data: power, yAxisIndex: 0 },
-          { name: '用工人数', type: 'bar', barWidth: 10, yAxisIndex: 1, itemStyle: { color: 'rgba(255,159,46,0.8)' }, data: scaleArr(workers, m/10000) },
-          { name: '工库房(栋)', type: 'bar', barWidth: 10, yAxisIndex: 1, itemStyle: { color: 'rgba(168,85,247,0.8)' }, data: scaleArr(rooms, m) }
+          { name: '库区作业人员', type: 'line', smooth: true, symbol: 'none', lineStyle: { color: '#a855f7', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(168,85,247,0.2)'},{offset:1,color:'rgba(168,85,247,0.01)'}]) }, data: scaleArr(workers, m / 10000, 2), yAxisIndex: 0 },
+          { name: '进库车辆', type: 'bar', barWidth: 8, yAxisIndex: 1, itemStyle: { color: 'rgba(0,212,255,0.8)' }, data: scaleArr(BASE.vehicleIn, m, 0) },
+          { name: '出库车辆', type: 'bar', barWidth: 8, yAxisIndex: 1, itemStyle: { color: 'rgba(255,159,46,0.8)' }, data: scaleArr(BASE.vehicleOut, m, 0) }
         ]
       }, true);
     }
@@ -676,13 +695,17 @@
 
     function childStats(child) {
       const m = mult(child.name, child.level);
-      const prod = Math.max(0, Math.round(BASE.prod * m * (0.7 + hash01(child.name) * 0.6)));
-      const stop = Math.max(0, Math.round(BASE.stop * m * (0.7 + hash01(child.name + 's') * 0.6)));
-      const workers = Math.max(0, Math.round(48200 * m));
-      const rooms = Math.max(0, Math.round(BASE.rooms * m));
-      const video = Math.max(0, Math.round(3752 * m));
-      const warns = Math.max(0, Math.round(Object.values(BASE.warns).reduce((a,b)=>a+b,0) * m * 0.5 + (hash01(child.name+'w') > 0.7 ? 1 : 0)));
-      return { name: child.name, level: child.level, prod, stop, workers, rooms, video, warns };
+      const stockVal = Math.max(0, Math.round(BASE.stockTotal * m * (0.7 + hash01(child.name) * 0.6)));
+      return {
+        name: child.name, level: child.level,
+        rooms: Math.max(0, Math.round(BASE.rooms * m)),
+        stock: stockVal,
+        workers: Math.max(0, Math.round(BASE.workers * m)),
+        inVeh: Math.max(0, Math.round(BASE.vehicleIn[7] * m)),
+        outVeh: Math.max(0, Math.round(BASE.vehicleOut[7] * m)),
+        video: Math.max(0, Math.round(BASE.videoTotal * m)),
+        warns: Math.max(0, Math.round(Object.values(BASE.warns).reduce((a, b) => a + b, 0) * m * 0.5 + (hash01(child.name + 'w') > 0.7 ? 1 : 0)))
+      };
     }
 
     function renderCrumb() {
@@ -704,29 +727,28 @@
     function renderDrillContent() {
       const node = curNode();
       const children = getChildren(node);
-      const drillContent = document.getElementById('drillContent');
 
       if (children.length === 0) {
         renderEnterprise(node);
         return;
       }
 
-      const stats = children.map(childStats).sort((a, b) => b.prod - a.prod);
+      const stats = children.map(childStats).sort((a, b) => b.stock - a.stock);
       const subName = LEVEL_NAMES[children[0].level].replace('级', '');
 
-      document.getElementById('drillTitle').textContent = `${node.name} · 各${subName}生产数据分布`;
-      document.getElementById('rankTitle').textContent = `在产企业排名（家）`;
+      document.getElementById('drillTitle').textContent = `${node.name} · 各${subName}仓储数据分布`;
+      document.getElementById('rankTitle').textContent = `成品库存排名（吨）`;
       document.getElementById('tableTitle').textContent = `${subName}级单位明细（点击行下钻）`;
 
       ensureRankChart().setOption({
-        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: ps => `${ps[0].name}<br/>在产：${ps[0].value} 家` }, tipBase),
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: ps => `${ps[0].name}<br/>成品库存：${ps[0].value} 吨` }, tipBase),
         grid: { left: 8, right: 40, top: 6, bottom: 6, containLabel: true },
         xAxis: { type: 'value', splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
         yAxis: { type: 'category', inverse: true, data: stats.map(s => s.name), axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#cfe9ff', fontSize: 11 } },
         series: [{
           type: 'bar', barWidth: 10,
           data: stats.map((s, i) => ({
-            value: s.prod,
+            value: s.stock,
             itemStyle: { color: i < 3 ? new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#0066aa'},{offset:1,color:'#00d4ff'}]) : 'rgba(0,120,200,0.45)', borderRadius: [0, 3, 3, 0] }
           })),
           label: { show: true, position: 'right', color: '#8aa4bf', fontSize: 10 }
@@ -736,10 +758,11 @@
       document.getElementById('regionTbody').innerHTML = stats.map((s, i) => `
         <tr data-idx="${i}">
           <td>${s.name}</td>
-          <td class="ok-num">${s.prod}</td>
-          <td class="warn-num">${s.stop}</td>
-          <td class="num">${(s.workers/10000).toFixed(2)}万</td>
           <td class="num">${s.rooms}</td>
+          <td class="num">${s.stock}</td>
+          <td class="num">${(s.workers / 10000).toFixed(2)}万</td>
+          <td class="num">${s.inVeh}</td>
+          <td class="num">${s.outVeh}</td>
           <td class="num">${s.video}</td>
           <td class="${s.warns > 0 ? 'warn-num' : 'ok-num'}">${s.warns > 0 ? s.warns + ' 起' : '无'}</td>
           <td><span class="drill-link">下钻 ›</span></td>
@@ -756,17 +779,20 @@
 
     function renderEnterprise(node) {
       const m = mult(node.name, node.level);
-      const prod = Math.max(1, Math.round(BASE.prod * m));
-      const stop = Math.max(0, Math.round(BASE.stop * m));
-      const status = hash01(node.name + 'st') > 0.78 ? '停产' : (hash01(node.name + 'rp') > 0.85 ? '检修' : '在产');
-      const workers = Math.max(1, Math.round(48200 * m));
       const rooms = Math.max(1, Math.round(BASE.rooms * m));
-      const video = Math.max(1, Math.round(3752 * m));
-      const util = Math.round(70 + hash01(node.name + 'u') * 40);
-      const warns = Math.max(0, Math.round(Object.values(BASE.warns).reduce((a,b)=>a+b,0) * m));
-      document.getElementById('drillTitle').textContent = `${node.name} · 企业生产画像`;
+      const stock = Math.max(1, Math.round(BASE.stockTotal * m));
+      const workers = Math.max(1, Math.round(BASE.workers * m));
+      const inVeh = Math.max(0, Math.round(BASE.vehicleIn[7] * m));
+      const outVeh = Math.max(0, Math.round(BASE.vehicleOut[7] * m));
+      const video = Math.max(1, Math.round(BASE.videoTotal * m));
+      const warns = Math.max(0, Math.round(Object.values(BASE.warns).reduce((a, b) => a + b, 0) * m));
+      const util = Math.round(68 + hash01(node.name + 'u') * 40); // 库容利用率 %
+      const overCap = util > 100;
+      const turnover = Math.max(5, Math.round(22 - hash01(node.name + 't') * 10)); // 库存周转天数
+      const onlineRate = Math.round(96 + hash01(node.name + 'v') * 4);
+      document.getElementById('drillTitle').textContent = `${node.name} · 企业仓储画像`;
       document.getElementById('rankTitle').textContent = '企业信息';
-      document.getElementById('tableTitle').textContent = '生产关键指标';
+      document.getElementById('tableTitle').textContent = '仓储关键指标';
       rankChart.clear();
       document.getElementById('regionTbody').innerHTML = '';
       document.getElementById('drillContent').innerHTML = `
@@ -774,55 +800,64 @@
           <div class="ent-head">
             <h4>${node.name}</h4>
             <p>所属区域：${path.map(p => p.name).join(' / ')}</p>
-            <p>生产状态：${status} · 安全生产许可证有效 · 涉药工序在线监控</p>
-            <span class="ent-status ${status === '在产' ? 'ok' : 'warn'}">● ${status}</span>
+            <p>许可范围：烟花爆竹成品仓储 · 安全生产许可证有效 · 1.3级工库房在线监控</p>
+            <span class="ent-status ${overCap ? 'warn' : 'ok'}">● ${overCap ? '库存超库容预警中' : '仓储运行正常'}</span>
           </div>
           <div class="ent-kpis">
-            <div class="ent-kpi"><div class="lab">在产/停产</div><div class="val">${prod}/${stop}</div></div>
-            <div class="ent-kpi"><div class="lab">生产区作业人员</div><div class="val">${workers} 人</div></div>
-            <div class="ent-kpi"><div class="lab">产能利用率</div><div class="val">${util}%</div></div>
-            <div class="ent-kpi"><div class="lab">工库房</div><div class="val">${rooms} 栋</div></div>
+            <div class="ent-kpi"><div class="lab">仓库库房</div><div class="val">${rooms} 栋</div></div>
+            <div class="ent-kpi"><div class="lab">成品库存</div><div class="val ${overCap ? 'warn' : ''}">${stock} 吨</div></div>
+            <div class="ent-kpi"><div class="lab">库容利用率</div><div class="val ${overCap ? 'warn' : ''}">${util}%</div></div>
+            <div class="ent-kpi"><div class="lab">库存周转</div><div class="val">${turnover} 天</div></div>
+            <div class="ent-kpi"><div class="lab">库区作业人员</div><div class="val">${workers} 人</div></div>
+            <div class="ent-kpi"><div class="lab">今日进库车辆</div><div class="val">${inVeh} 辆</div></div>
+            <div class="ent-kpi"><div class="lab">今日出库车辆</div><div class="val">${outVeh} 辆</div></div>
             <div class="ent-kpi"><div class="lab">视频监测点</div><div class="val">${video} 路</div></div>
-            <div class="ent-kpi"><div class="lab">本月预警</div><div class="val ${warns>0?'warn':''}">${warns} 起</div></div>
+            <div class="ent-kpi"><div class="lab">视频在线率</div><div class="val ${onlineRate < 98 ? 'warn' : 'ok'}">${onlineRate}%</div></div>
+            <div class="ent-kpi"><div class="lab">本月预警</div><div class="val ${warns > 0 ? 'warn' : 'ok'}">${warns} 起</div></div>
+            <div class="ent-kpi"><div class="lab">持证上岗率</div><div class="val ok">98.6%</div></div>
+            <div class="ent-kpi"><div class="lab">人员资质到期</div><div class="val warn">${Math.max(0, Math.round(32 * m))} 人</div></div>
           </div>
         </div>
       `;
       document.getElementById('drillContent').style.gridTemplateColumns = '1fr';
     }
 
+    // 仓库实时预警列表（随层级缩放，展示全部要求的预警类型）
     function renderWarnList(node) {
       const m = mult(node.name, node.level);
+      // 各类型预警：标题、基础起数、等级、是否橙色、处置建议
       const items = [
-        ['停产作业预警', BASE.warns['停产作业'], '高危', false],
-        ['涉药机械运行时长预警', BASE.warns['涉药机械运行时长'], '高危', false],
-        ['工库房超员预警', BASE.warns['工库房超员'], '中危', true],
-        ['静电未释放预警', BASE.warns['静电未释放'], '中危', true],
-        ['非法入侵预警', BASE.warns['非法入侵'], '高危', false],
-        ['堵塞通道预警', BASE.warns['堵塞通道'], '中危', true],
-        ['超高堆垛预警', BASE.warns['超高堆垛'], '中危', true],
-        ['烟火识别预警', BASE.warns['烟火识别'], '高危', false],
-        ['产品不合格预警', BASE.warns['产品不合格'], '中危', true]
+        { title: '仓库超高/超量预警', base: BASE.warns['仓库超高/超量'], lv: 'high', warn: false },
+        { title: '温湿度异常预警', base: BASE.warns['温湿度异常'], lv: 'high', warn: false },
+        { title: '库区超员预警', base: BASE.warns['库区超员'], lv: 'mid', warn: true },
+        { title: '堵塞消防通道预警', base: BASE.warns['堵塞消防通道'], lv: 'mid', warn: true },
+        { title: '非法入侵预警', base: BASE.warns['非法入侵'], lv: 'high', warn: false },
+        { title: '摄像头偏移/遮挡报警', base: BASE.warns['摄像头偏移/遮挡'], lv: 'mid', warn: true },
+        { title: '无证装货预警', base: BASE.warns['无证装货'], lv: 'high', warn: false },
+        { title: '运输车辆无挡板预警', base: BASE.warns['运输车辆无挡板'], lv: 'mid', warn: true }
       ];
       let html = '';
-      items.forEach(([title, base, lv, warnCls], i) => {
-        const v = Math.max(0, Math.round(base * m));
+      items.forEach((it, i) => {
+        const v = Math.max(0, Math.round(it.base * m));
         if (v <= 0) return;
-        const cls = warnCls ? 'warn' : '';
+        const suggest = WARN_SUGGEST[it.title] || '现场核查处置';
+        const state = hash01(node.name + it.title) > 0.5 ? '处置中' : '待处置';
         html += `
-          <div class="warning-item ${cls}">
+          <div class="warning-item ${it.warn ? 'warn' : ''}">
             <div class="warning-info">
-              <div class="warning-title">${title}</div>
-              <div class="warning-meta">${node.name} · 本月累计 ${10 + i * 6} 条 · ${hash01(node.name+title)>0.5?'需复核':'已下发'}</div>
+              <div class="warning-title">${it.title}</div>
+              <div class="warning-meta">${node.name} · 本月累计 ${v} 起 · ${state} · 建议：${suggest}</div>
             </div>
-            <span class="warning-level ${lv === '高危' ? 'high' : 'mid'}">${v} 起</span>
+            <span class="warning-level ${it.lv}">${it.lv === 'high' ? '高危' : '中危'}</span>
           </div>`;
       });
       if (node.level === 4) {
-        html = '<div style="color:#8aa4bf;font-size:12px;padding:12px;text-align:center;">企业级视图：预警明细请见上方企业画像</div>';
+        html = '<div style="color:#8aa4bf;font-size:12px;padding:12px;text-align:center;">企业级视图：预警明细请见上方企业仓储画像</div>';
       }
       document.getElementById('warnList').innerHTML = html;
     }
 
+    // KPI 数字刷新（带动画）
     function setKpi(id, target, dec) {
       const el = document.getElementById(id);
       const unit = el.querySelector('.summary-unit');
@@ -843,11 +878,12 @@
       const node = curNode();
       const m = mult(node.name, node.level);
       renderCrumb();
+      // 还原 drillContent 结构（企业视图改过布局）
       const dc = document.getElementById('drillContent');
       if (!document.getElementById('rankChart')) {
         dc.innerHTML = `
           <div class="drill-box">
-            <h5 id="rankTitle">在产企业排名（家）</h5>
+            <h5 id="rankTitle">成品库存排名（吨）</h5>
             <div id="rankChart"></div>
           </div>
           <div class="drill-box">
@@ -855,7 +891,7 @@
             <div class="rtable-wrap">
               <table class="rtable">
                 <thead>
-                  <tr><th>名称</th><th>在产</th><th>停产</th><th>用工</th><th>工库房</th><th>视频</th><th>预警</th><th>操作</th></tr>
+                  <tr><th>名称</th><th>库房(栋)</th><th>库存(吨)</th><th>作业人员</th><th>进库</th><th>出库</th><th>视频</th><th>预警</th><th>操作</th></tr>
                 </thead>
                 <tbody id="regionTbody"></tbody>
               </table>
@@ -864,26 +900,27 @@
         dc.style.gridTemplateColumns = '1.1fr 1fr';
       }
       renderDrillContent();
-      renderStatus(m);
-      renderPower(m);
-      renderQual(m);
-      renderWarn(m);
+      renderStock(m);
+      renderVehicle(m);
+      renderVideo(m);
+      renderDispose(m);
       renderWarnType(m);
       renderTrend(m);
       renderWarnList(node);
 
-      setKpi('kpiProd', Math.round(BASE.prod * m), 0);
-      setKpi('kpiPower', +(BASE.power[7] * m).toFixed(0), 0);
-      setKpi('kpiWorkers', +(48200 * m / 10000).toFixed(2), 2);
-      setKpi('kpiOnSite', +(31200 * m / 10000).toFixed(2), 2);
       setKpi('kpiRoom', Math.round(BASE.rooms * m), 0);
-      setKpi('kpiVideo', Math.round(3752 * m), 0);
-      setKpi('kpiWarn', Math.max(1, Math.round(83 * m)), 0);
-      setKpi('kpiQual', Math.max(1, Math.round(8 * m)), 0);
-      document.getElementById('qualSoon').innerHTML = Math.max(0, Math.round(BASE.qualSoon * m)) + '<span style="font-size:12px">家</span>';
-      document.getElementById('qualOver').innerHTML = Math.max(0, Math.round(BASE.qualOver * m)) + '<span style="font-size:12px">家</span>';
-      document.getElementById('pQualSoon').innerHTML = Math.max(0, Math.round(BASE.pQualSoon * m)) + '<span style="font-size">人</span>';
-      document.getElementById('pQualOver').innerHTML = Math.max(0, Math.round(BASE.pQualOver * m)) + '<span style="font-size:12px">人</span>';
+      setKpi('kpiStock', Math.round(BASE.stockTotal * m), 0);
+      setKpi('kpiWorker', +(BASE.workers * m / 10000).toFixed(2), 2);
+      setKpi('kpiIn', Math.round(BASE.vehicleIn[7] * m), 0);
+      setKpi('kpiOut', Math.round(BASE.vehicleOut[7] * m), 0);
+      setKpi('kpiVideo', Math.round(BASE.videoTotal * m), 0);
+      setKpi('kpiWarn', Math.max(1, Math.round(Object.values(BASE.warns).reduce((a, b) => a + b, 0) * m)), 0);
+      setKpi('kpiQual', Math.max(1, Math.round(32 * m)), 0);
+
+      document.getElementById('qualSoon').innerHTML = Math.max(0, Math.round(23 * m)) + '<span style="font-size:12px">人</span>';
+      document.getElementById('qualOver').innerHTML = Math.max(0, Math.round(9 * m)) + '<span style="font-size:12px">人</span>';
+      document.getElementById('onDuty').innerHTML = Math.max(0, Math.round(1280 * m)) + '<span style="font-size:12px">人</span>';
+      document.getElementById('overCrowd').innerHTML = Math.max(0, Math.round(BASE.warns['库区超员'] * m)) + '<span style="font-size:12px">次</span>';
     }
 
     document.getElementById('btnBack').addEventListener('click', () => {
@@ -891,13 +928,12 @@
     });
 
     window.addEventListener('resize', () => {
-      [statusChart, powerChart, qualChart, warnChart, warnTypeChart, trendChart].forEach(c => c.resize());
+      [stockChart, vehicleChart, videoChart, disposeChart, warnTypeChart, trendChart].forEach(c => c.resize());
       const rc = document.getElementById('rankChart');
       if (rc) { const inst = echarts.getInstanceByDom(rc); if (inst) inst.resize(); }
     });
 
     refreshAll();
   </script>
-  </div>
 </body>
 </html>
