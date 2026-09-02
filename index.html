@@ -205,20 +205,12 @@
     }
     #jxMapChart { position: absolute; inset: 0; z-index: 2; }
 
-    /* Legend toolbar (floating on map) */
-    .map-toolbar {
-      position: absolute; bottom: 118px; left: 50%; transform: translateX(-50%); z-index: 6;
-      display: flex; gap: 16px;
-      background: rgba(4, 18, 38, 0.8);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(0, 150, 255, 0.25);
-      border-radius: 6px;
-      padding: 7px 16px;
-    }
-    .map-toolbar span { font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-    .map-toolbar i { width: 10px; height: 8px; border-radius: 2px; display: inline-block; }
-    .map-toolbar i.lg-dot { width: 9px; height: 9px; border-radius: 50%; }
-    .map-toolbar i.lg-grad { width: 22px; height: 9px; border-radius: 2px; background: linear-gradient(90deg,#0b3b6b,#38c8f5); }
+    /* Legend（并入全链条卡片标题行右侧，避免与卡片重叠遮挡） */
+    .chain-legend { margin-left: auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
+    .chain-legend > span { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 5px; white-space: nowrap; font-weight: 400; }
+    .chain-legend i { width: 10px; height: 8px; border-radius: 2px; display: inline-block; }
+    .chain-legend i.lg-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .chain-legend i.lg-grad { width: 22px; height: 9px; border-radius: 2px; background: linear-gradient(90deg,#0b3b6b,#38c8f5); }
 
     /* Breadcrumb (top-right of map) */
     .map-crumb {
@@ -253,11 +245,12 @@
       backdrop-filter: blur(10px);
       border: 1px solid rgba(0, 150, 255, 0.3);
       border-radius: 8px;
-      padding: 10px 18px 8px;
+      padding: 8px 18px 6px;
     }
     .chain-overlay h4 {
       font-size: 13px; color: var(--title); font-weight: 600;
-      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+      min-height: 16px;
     }
     .chain-overlay h4::before {
       content: ""; display: inline-block; width: 4px; height: 13px;
@@ -266,9 +259,9 @@
     .chain-flow { display: flex; justify-content: space-around; align-items: center; }
     .chain-node { text-align: center; }
     .chain-node .icon {
-      width: 42px; height: 42px; border-radius: 50%;
+      width: 36px; height: 36px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 5px; color: #fff; font-size: 16px; font-weight: 600;
+      margin: 0 auto 4px; color: #fff; font-size: 15px; font-weight: 600;
     }
     .chain-node .name { font-size: 12px; color: var(--text-dim); }
     .chain-arrow { width: 36px; height: 2px; background: linear-gradient(90deg, rgba(0,212,255,0.8), transparent); }
@@ -599,18 +592,17 @@
         </div>
         </div>
 
-        <!-- Legend -->
-        <div class="map-toolbar">
-          <span><i class="lg-dot" style="background:#ff4d4f"></i>高风险预警</span>
-          <span><i class="lg-dot" style="background:#ff9f2e"></i>中风险预警</span>
-          <span><i class="lg-dot" style="background:#ff4d4f;border:1px solid #fff"></i>预警车辆</span>
-          <span><i style="background:#ffd23f"></i>在途车辆</span>
-          <span><i style="background:#ff4dd2"></i>当日燃放活动</span>
-        </div>
-
-        <!-- Chain flow overlay -->
+        <!-- Chain flow overlay（图例已并入标题行右侧，避免遮挡） -->
         <div class="chain-overlay">
-          <h4>全链条关键节点</h4>
+          <h4>全链条关键节点
+            <span class="chain-legend">
+              <span><i class="lg-dot" style="background:#ff4d4f"></i>高风险预警</span>
+              <span><i class="lg-dot" style="background:#ff9f2e"></i>中风险预警</span>
+              <span><i class="lg-dot" style="background:#ff4d4f;border:1px solid #fff"></i>预警车辆</span>
+              <span><i style="background:#ffd23f"></i>在途车辆</span>
+              <span><i style="background:#ff4dd2"></i>当日燃放活动</span>
+            </span>
+          </h4>
           <div class="chain-flow">
             <div class="chain-node"><div class="icon" style="background:linear-gradient(135deg,#00a8ff,#0055aa);box-shadow:0 0 12px rgba(0,180,255,0.4);">料</div><div class="name">原材料</div></div>
             <div class="chain-arrow"></div>
@@ -1310,7 +1302,7 @@
           }
         },
         visualMap: hasGeo ? {
-          min: 0, max: vmax, left: 10, bottom: 130,
+          min: 0, max: vmax, left: 10, bottom: 118,
           text: ['多', '少'], calculable: false,
           inRange: { color: ['#0b3b6b', '#0f6aa8', '#17a2d8', '#38c8f5'] },
           textStyle: { color: '#8aa4bf', fontSize: 11 },
@@ -1318,7 +1310,7 @@
         } : null,
         geo: {
           map: activeMap, roam: false,
-          layoutCenter: ['50%', '55%'], layoutSize: '95%',
+          layoutCenter: ['50%', '53%'], layoutSize: '88%',
           itemStyle: { borderColor: 'rgba(0,212,255,0.7)', borderWidth: 1, areaColor: '#0a2a4a', shadowColor: 'rgba(0,180,255,0.45)', shadowBlur: 18 },
           emphasis: { itemStyle: { areaColor: 'rgba(0,180,255,0.4)' } }
         },
