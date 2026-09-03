@@ -282,9 +282,6 @@
     .col .panel:nth-child(3), .col-center .panel:nth-child(3) { animation-delay: .16s; }
     .col .panel:nth-child(4), .col-center .panel:nth-child(4) { animation-delay: .24s; }
 
-    .sys-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #51cf66; }
-    .sys-status i { width: 8px; height: 8px; border-radius: 50%; background: #51cf66; box-shadow: 0 0 6px #51cf66; animation: pulse 1.6s ease-in-out infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
 
     ::selection { background: rgba(0, 150, 255, 0.35); }
   </style>
@@ -311,7 +308,6 @@
       <a href="#">综合数据</a>
     </nav>
     <div class="header-right">
-      <div class="sys-status"><i></i>系统运行正常</div>
       <div class="weather">🌤 南昌 多云 28°C</div>
       <div class="time" id="clock">2026-08-28 14:22:51</div>
     </div>
