@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="YIiUBciihTN6V6OQMcHAxw">
+<head data-page-node-id="UNM8AYwNN3DEfVk4p5i7KZ">
+<meta charset="UTF-8" data-page-node-id="6NTIqlyXjVUwsZ78QdVN0l">
+<meta name="viewport" content="width=device-width,initial-scale=1" data-page-node-id="2o7bn2Imxy5LqAXCuTEDjN">
+<title>业务管理 · 江西省烟花爆竹产业全链条监管服务平台</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+  :root {
+    --bg: #050b14;
+    --panel: #0d1d36;
+    --panel-2: #112847;
+    --border: rgba(0, 150, 255, 0.25);
+    --border-2: rgba(0, 212, 255, 0.5);
+    --accent: #00d4ff;
+    --accent-2: #00a3cc;
+    --title: #e0f0ff;
+    --text: #c8dcf0;
+    --text-dim: #8aa4bf;
+    --ok: #22c55e;
+    --warn: #ff9f2e;
+    --danger: #ff4d4f;
+    --purple: #a855f7;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: "PingFang SC","Microsoft YaHei",sans-serif; }
+  body { width: 100vw; height: 100vh; overflow: hidden; }
+
+  .stage { position: fixed; inset: 0; }
+  .screen {
+    position: absolute; left: 50%; top: 50%;
+    width: 1920px; height: 1080px;
+    transform: translate(-50%,-50%) scale(1);
+    transform-origin: center center;
+    background: radial-gradient(ellipse at 50% 30%, #0d2440 0%, #050b14 70%);
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      linear-gradient(rgba(0,150,255,0.04) 1px, transparent 1px) 0 0 / 100% 40px,
+      linear-gradient(90deg, rgba(0,150,255,0.04) 1px, transparent 1px) 0 0 / 40px 100%;
+  }
+  .layout { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; padding: 12px 24px 18px; z-index: 1; }
+
+  /* ========== Header（与其他页一致） ========== */
+  header.header {
+    position: relative; z-index: 10;
+    height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: linear-gradient(180deg, rgba(6, 26, 55, 0.95) 0%, rgba(6, 26, 55, 0.6) 100%);
+    border-bottom: 1px solid rgba(0, 180, 255, 0.25);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+  .header::after {
+    content: ""; position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
+    width: 60%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-icon {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #00d4ff, #0066aa);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: bold; color: #fff;
+  }
+  .brand h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; color: var(--title); text-shadow: 0 0 12px rgba(0, 212, 255, 0.5); }
+  .nav { display: flex; gap: 8px; }
+  .nav a {
+    position: relative; padding: 8px 18px;
+    color: var(--text-dim); text-decoration: none; font-size: 14px;
+    border-radius: 4px; transition: all 0.25s;
+    background: rgba(0, 120, 200, 0.08); border: 1px solid transparent;
+  }
+  .nav a:hover { color: var(--accent); background: rgba(0, 180, 255, 0.12); }
+  .nav a.active {
+    color: #fff; background: linear-gradient(180deg, rgba(0, 150, 255, 0.25), rgba(0, 80, 160, 0.15));
+    border-color: rgba(0, 212, 255, 0.45);
+    box-shadow: 0 0 12px rgba(0, 180, 255, 0.25) inset, 0 0 8px rgba(0, 180, 255, 0.2);
+  }
+  .nav a.active::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  .header-right { display: flex; align-items: center; gap: 20px; color: var(--text-dim); font-size: 13px; }
+  .weather { display: flex; align-items: center; gap: 8px; }
+  .time { font-family: "DIN Alternate", "Arial Black", sans-serif; font-size: 16px; color: var(--accent); letter-spacing: 1px; }
+
+  /* ========== 后台主体：左菜单 + 右内容 ========== */
+  main.admin-body { flex: 1; display: flex; gap: 12px; min-height: 0; padding-top: 10px; }
+
+  .sidebar {
+    width: 218px; flex-shrink: 0;
+    display: flex; flex-direction: column;
+    background: linear-gradient(180deg, rgba(13,32,60,0.92), rgba(8,20,38,0.92));
+    border: 1px solid var(--border); border-radius: 6px;
+    box-shadow: 0 0 18px rgba(0,120,255,0.08) inset;
+    overflow: hidden;
+  }
+  .side-head {
+    height: 44px; flex-shrink: 0;
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 14px;
+    font-size: 15px; font-weight: 700; color: var(--title); letter-spacing: 1px;
+    background: linear-gradient(180deg, rgba(0,120,200,0.25), rgba(0,80,160,0.06));
+    border-bottom: 1px solid var(--border);
+  }
+  .side-head::before { content: ""; width: 4px; height: 16px; background: linear-gradient(180deg, #00d4ff, #0066aa); border-radius: 2px; box-shadow: 0 0 6px rgba(0,212,255,0.7); }
+  .side-menu { flex: 1; padding: 8px 8px; overflow-y: auto; }
+  .menu-item {
+    display: flex; align-items: center; gap: 9px;
+    height: 42px; padding: 0 10px; margin-bottom: 4px;
+    border-radius: 5px; cursor: pointer;
+    color: var(--text-dim); font-size: 13.5px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .menu-item .mi-ico { width: 20px; text-align: center; font-size: 15px; }
+  .menu-item .mi-txt { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .menu-item .mi-badge {
+    min-width: 20px; height: 17px; padding: 0 5px; line-height: 17px; text-align: center;
+    border-radius: 9px; font-size: 10.5px; font-weight: 700;
+    background: rgba(255,77,79,0.18); color: #ff7875; border: 1px solid rgba(255,77,79,0.45);
+  }
+  .menu-item:hover { color: var(--accent); background: rgba(0,180,255,0.1); }
+  .menu-item.active {
+    color: #fff; font-weight: 600;
+    background: linear-gradient(90deg, rgba(0,150,255,0.32), rgba(0,80,160,0.08));
+    border-color: rgba(0,212,255,0.4);
+    box-shadow: 0 0 12px rgba(0,180,255,0.18) inset;
+  }
+  .menu-item.active::before {
+    content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px;
+    background: var(--accent); border-radius: 2px; box-shadow: 0 0 8px var(--accent);
+  }
+  .side-foot {
+    flex-shrink: 0; padding: 10px 12px; font-size: 11px; color: var(--text-dim);
+    border-top: 1px solid var(--border); line-height: 1.7;
+  }
+  .side-foot b { color: var(--accent); }
+
+  .content {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column;
+    background: linear-gradient(180deg, rgba(10,24,46,0.7), rgba(6,16,30,0.7));
+    border: 1px solid var(--border); border-radius: 6px;
+    overflow: hidden;
+  }
+  .page { display: none; flex: 1; flex-direction: column; min-height: 0; }
+  .page.active { display: flex; }
+
+  /* 页头 */
+  .page-head {
+    flex-shrink: 0; height: 46px; padding: 0 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0,120,200,0.14), transparent);
+  }
+  .page-title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: var(--title); }
+  .page-title::before { content: ""; width: 4px; height: 16px; background: linear-gradient(180deg, #00d4ff, #0066aa); border-radius: 2px; box-shadow: 0 0 6px rgba(0,212,255,0.6); }
+  .crumb { font-size: 11.5px; color: var(--text-dim); }
+  .crumb b { color: var(--accent); font-weight: 500; }
+  .head-actions { display: flex; gap: 8px; }
+
+  /* 通用按钮 */
+  .btn {
+    height: 28px; padding: 0 13px; line-height: 26px;
+    font-size: 12px; color: var(--text); cursor: pointer;
+    background: rgba(0,120,200,0.14); border: 1px solid rgba(0,160,255,0.35); border-radius: 4px;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .btn:hover { color: #fff; background: rgba(0,180,255,0.24); border-color: var(--accent); box-shadow: 0 0 8px rgba(0,180,255,0.3); }
+  .btn.primary { background: linear-gradient(180deg, rgba(0,170,255,0.45), rgba(0,90,180,0.35)); border-color: var(--accent); color: #fff; }
+  .btn.danger { color: #ffb4b4; border-color: rgba(255,77,79,0.45); background: rgba(255,77,79,0.12); }
+  .btn.sm { height: 23px; line-height: 21px; padding: 0 9px; font-size: 11px; }
+  .btn.ghost { background: transparent; }
+
+  /* 筛选栏 */
+  .filter-bar {
+    flex-shrink: 0; padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    border-bottom: 1px dashed rgba(0,150,255,0.18);
+  }
+  .fld { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim); }
+  .fld > span { white-space: nowrap; }
+  .fld select, .fld input {
+    height: 28px; padding: 0 8px; font-size: 12px;
+    color: var(--text); background: rgba(6,20,40,0.9);
+    border: 1px solid rgba(0,150,255,0.3); border-radius: 4px; outline: none;
+    font-family: inherit;
+  }
+  .fld select { min-width: 108px; }
+  .fld input { min-width: 150px; }
+  .fld select:focus, .fld input:focus { border-color: var(--accent); box-shadow: 0 0 6px rgba(0,212,255,0.25); }
+  .fld input::placeholder { color: #55708c; }
+  .filter-bar .spacer { flex: 1; }
+
+  /* 内容滚动区 */
+  .page-body { flex: 1; min-height: 0; overflow-y: auto; padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 12px; }
+  .page-body::-webkit-scrollbar, .side-menu::-webkit-scrollbar, .tbl-wrap::-webkit-scrollbar { width: 7px; height: 7px; }
+  .page-body::-webkit-scrollbar-thumb, .side-menu::-webkit-scrollbar-thumb, .tbl-wrap::-webkit-scrollbar-thumb { background: rgba(0,160,255,0.32); border-radius: 4px; }
+  .page-body::-webkit-scrollbar-track, .side-menu::-webkit-scrollbar-track, .tbl-wrap::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+
+  /* 统计卡 */
+  .stat-row { display: flex; gap: 10px; flex-shrink: 0; }
+  .stat-card {
+    flex: 1; min-width: 0; padding: 10px 13px;
+    background: linear-gradient(135deg, rgba(17,40,71,0.85), rgba(10,24,44,0.7));
+    border: 1px solid var(--border); border-radius: 5px; position: relative; overflow: hidden;
+  }
+  .stat-card::after {
+    content: ""; position: absolute; right: -18px; top: -18px; width: 56px; height: 56px;
+    border-radius: 50%; background: radial-gradient(circle, rgba(0,212,255,0.16), transparent 70%);
+  }
+  .sc-label { font-size: 11.5px; color: var(--text-dim); display: flex; align-items: center; gap: 5px; }
+  .sc-value { font-size: 21px; font-weight: 700; color: var(--title); margin-top: 3px; font-family: "DIN Alternate","Arial Black",sans-serif; letter-spacing: 0.5px; }
+  .sc-value u { font-size: 11.5px; font-weight: 400; color: var(--text-dim); text-decoration: none; margin-left: 3px; font-family: inherit; }
+  .sc-sub { font-size: 10.5px; color: var(--text-dim); margin-top: 2px; }
+  .sc-sub.up { color: #4ade80; } .sc-sub.down { color: #ff7875; }
+  .stat-card.ok .sc-value { color: #86efac; }
+  .stat-card.warn .sc-value { color: var(--warn); }
+  .stat-card.danger .sc-value { color: #ff7875; }
+  .stat-card.accent .sc-value { color: var(--accent); }
+
+  /* 区块面板 */
+  .block { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 5px; background: rgba(9,22,42,0.55); overflow: hidden; }
+  .block-head {
+    flex-shrink: 0; height: 34px; padding: 0 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(90deg, rgba(0,120,200,0.18), transparent);
+    border-bottom: 1px solid rgba(0,150,255,0.18);
+  }
+  .block-head h3 { margin: 0; font-size: 13.5px; font-weight: 600; color: var(--title); display: flex; align-items: center; gap: 7px; }
+  .block-head h3::before { content: ""; width: 3px; height: 13px; background: var(--accent); border-radius: 2px; box-shadow: 0 0 5px var(--accent); }
+  .block-head .bh-right { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 10px; }
+  .block-body { padding: 10px 12px; min-height: 0; }
+  .cols-2 { display: flex; gap: 12px; }
+  .cols-2 > .block { flex: 1; min-width: 0; }
+  .chart { width: 100%; height: 100%; }
+
+  /* 表格 */
+  .tbl-wrap { overflow: auto; }
+  table.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.tbl thead th {
+    position: sticky; top: 0; z-index: 2;
+    height: 32px; padding: 0 8px; text-align: left; white-space: nowrap;
+    font-size: 11.5px; font-weight: 600; color: #a8c8e8;
+    background: linear-gradient(180deg, #123258, #0e2745);
+    border-bottom: 1px solid rgba(0,180,255,0.35);
+  }
+  table.tbl tbody td {
+    height: 31px; padding: 0 8px; white-space: nowrap;
+    border-bottom: 1px solid rgba(0,150,255,0.09); color: var(--text);
+  }
+  table.tbl tbody tr:nth-child(even) td { background: rgba(0,60,120,0.08); }
+  table.tbl tbody tr:hover td { background: rgba(0,180,255,0.12); }
+  table.tbl td.num, table.tbl th.num { text-align: right; font-family: "DIN Alternate","Arial Black",sans-serif; }
+  table.tbl td.ellip { max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+  table.tbl .ops { display: flex; gap: 6px; }
+  .link { color: var(--accent); cursor: pointer; }
+  .link:hover { text-decoration: underline; }
+  .link.danger { color: #ff7875; }
+
+  /* 标签 */
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 9px; font-size: 10.5px; line-height: 16px; border: 1px solid; white-space: nowrap; }
+  .tag.red { color: #ff7875; background: rgba(255,77,79,0.14); border-color: rgba(255,77,79,0.45); }
+  .tag.orange { color: #ffb265; background: rgba(255,159,46,0.14); border-color: rgba(255,159,46,0.45); }
+  .tag.yellow { color: #ffe066; background: rgba(255,214,102,0.12); border-color: rgba(255,214,102,0.42); }
+  .tag.green { color: #86efac; background: rgba(34,197,94,0.14); border-color: rgba(34,197,94,0.42); }
+  .tag.blue { color: #7dd3fc; background: rgba(0,180,255,0.13); border-color: rgba(0,180,255,0.42); }
+  .tag.gray { color: #9fb3c8; background: rgba(159,179,200,0.1); border-color: rgba(159,179,200,0.3); }
+  .tag.purple { color: #d8b4fe; background: rgba(168,85,247,0.14); border-color: rgba(168,85,247,0.42); }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+  .dot.g { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+  .dot.r { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+  .dot.y { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+
+  /* 开关 */
+  .sw { display: inline-block; width: 34px; height: 17px; border-radius: 9px; background: rgba(120,150,180,0.28); border: 1px solid rgba(150,180,210,0.3); position: relative; cursor: pointer; transition: all .2s; vertical-align: middle; }
+  .sw::after { content: ""; position: absolute; left: 1px; top: 1px; width: 13px; height: 13px; border-radius: 50%; background: #9fb3c8; transition: all .2s; }
+  .sw.on { background: rgba(0,180,255,0.35); border-color: var(--accent); }
+  .sw.on::after { left: 18px; background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+  /* 子 Tab */
+  .sub-tabs { display: flex; gap: 4px; flex-shrink: 0; padding: 8px 16px 0; border-bottom: 1px solid var(--border); }
+  .sub-tab { padding: 6px 15px; font-size: 12.5px; color: var(--text-dim); cursor: pointer; border-radius: 4px 4px 0 0; border: 1px solid transparent; border-bottom: none; transition: all .2s; }
+  .sub-tab:hover { color: var(--accent); }
+  .sub-tab.active { color: #fff; background: linear-gradient(180deg, rgba(0,150,255,0.28), rgba(0,80,160,0.08)); border-color: rgba(0,212,255,0.35); box-shadow: 0 -1px 6px rgba(0,180,255,0.2) inset; }
+
+  /* 企业画像 */
+  .profile-wrap { display: flex; gap: 12px; flex: 1; min-height: 0; }
+  .ent-list { width: 250px; flex-shrink: 0; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 5px; background: rgba(9,22,42,0.55); overflow: hidden; }
+  .ent-search { padding: 8px 9px; border-bottom: 1px solid rgba(0,150,255,0.18); }
+  .ent-search input { width: 100%; height: 27px; padding: 0 9px; font-size: 12px; color: var(--text); background: rgba(6,20,40,0.9); border: 1px solid rgba(0,150,255,0.3); border-radius: 4px; outline: none; font-family: inherit; }
+  .ent-items { flex: 1; overflow-y: auto; padding: 5px; }
+  .ent-item { padding: 7px 9px; border-radius: 4px; cursor: pointer; margin-bottom: 4px; border: 1px solid transparent; }
+  .ent-item:hover { background: rgba(0,180,255,0.1); }
+  .ent-item.active { background: linear-gradient(90deg, rgba(0,150,255,0.28), rgba(0,80,160,0.06)); border-color: rgba(0,212,255,0.4); }
+  .ent-item .ei-name { font-size: 12.5px; color: var(--title); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ent-item .ei-meta { font-size: 10.5px; color: var(--text-dim); margin-top: 2px; display: flex; justify-content: space-between; }
+  .profile-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+  .pf-basic { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px 14px; }
+  .pf-item { display: flex; font-size: 12px; line-height: 22px; }
+  .pf-item .k { color: var(--text-dim); width: 82px; flex-shrink: 0; }
+  .pf-item .v { color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .risk-score { display: flex; align-items: center; gap: 16px; }
+  .rs-num { text-align: center; }
+  .rs-num .n { font-size: 38px; font-weight: 700; font-family: "DIN Alternate","Arial Black",sans-serif; line-height: 1; }
+  .rs-num .t { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  /* 算法仓卡片 */
+  .algo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .algo-card {
+    padding: 11px 12px; border: 1px solid var(--border); border-radius: 5px;
+    background: linear-gradient(150deg, rgba(17,40,71,0.8), rgba(8,20,38,0.7));
+    position: relative; overflow: hidden; transition: all .2s; cursor: pointer;
+  }
+  .algo-card:hover { border-color: var(--border-2); box-shadow: 0 0 14px rgba(0,180,255,0.25); transform: translateY(-2px); }
+  .ac-top { display: flex; align-items: center; gap: 8px; }
+  .ac-ico { width: 30px; height: 30px; flex-shrink: 0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 15px; background: linear-gradient(135deg, rgba(0,180,255,0.28), rgba(0,90,180,0.15)); border: 1px solid rgba(0,180,255,0.35); }
+  .ac-name { font-size: 13px; color: var(--title); font-weight: 600; flex: 1; }
+  .ac-metrics { display: flex; margin-top: 9px; gap: 8px; }
+  .ac-metrics div { flex: 1; }
+  .ac-metrics .m-l { font-size: 10px; color: var(--text-dim); }
+  .ac-metrics .m-v { font-size: 13px; color: var(--accent); font-family: "DIN Alternate","Arial Black",sans-serif; }
+  .ac-foot { margin-top: 8px; padding-top: 7px; border-top: 1px dashed rgba(0,150,255,0.2); display: flex; align-items: center; justify-content: space-between; font-size: 10.5px; color: var(--text-dim); }
+  .bar-mini { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08); margin-top: 5px; overflow: hidden; }
+  .bar-mini i { display: block; height: 100%; border-radius: 2px; background: linear-gradient(90deg, #00a3cc, #00d4ff); }
+
+  /* 数据源卡 */
+  .ds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .ds-card { padding: 10px 12px; border: 1px solid var(--border); border-radius: 5px; background: rgba(12,28,52,0.6); }
+  .ds-top { display: flex; align-items: center; justify-content: space-between; }
+  .ds-name { font-size: 13px; color: var(--title); font-weight: 600; display: flex; align-items: center; gap: 7px; }
+  .ds-name i { font-style: normal; font-size: 15px; }
+  .ds-val { margin-top: 7px; font-size: 20px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate","Arial Black",sans-serif; }
+  .ds-val u { font-size: 11px; color: var(--text-dim); text-decoration: none; margin-left: 3px; font-family: inherit; font-weight: 400; }
+  .ds-meta { margin-top: 5px; display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-dim); }
+
+  /* 分页 */
+  .pager { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 8px 4px 0; font-size: 11.5px; color: var(--text-dim); }
+  .pager .pg { display: flex; gap: 4px; }
+  .pager .pg span { min-width: 24px; height: 22px; line-height: 20px; text-align: center; border: 1px solid rgba(0,150,255,0.28); border-radius: 3px; cursor: pointer; }
+  .pager .pg span.on { background: rgba(0,150,255,0.3); color: #fff; border-color: var(--accent); }
+
+  .empty-note { padding: 20px; text-align: center; color: var(--text-dim); font-size: 12px; }
+</style>
+</head>
+<body data-page-node-id="86VrSCyEkPCGvahAumIHqR">
+<div class="stage" data-page-node-id="rGCkOohJlYhyuioiHWDPF0">
+<div class="screen" id="screen" data-page-node-id="HcE0UWsAvUYwbReee4gXmQ">
+  <div class="layout" data-page-node-id="eZKjJL3KBbm0pXlAeIUMeR">
+
+    <!-- ===== Header ===== -->
+    <header class="header" data-page-node-id="N05TfP4n20BCSiAhsCu3AE">
+      <div class="brand" data-page-node-id="m0vRAxNCrB5hZD0OkBm4yL">
+        <div class="brand-icon" data-page-node-id="i7vFDXhyMDKarQ5uicjzdJ">烟</div>
+        <h1 data-page-node-id="IFE2KlmT1bd7cJ5Ns7QAZx">江西省烟花爆竹产业全链条监管服务平台</h1>
+      </div>
+      <nav class="nav" data-page-node-id="h8Aq8flfxb8tRvReYYxYXF">
+        <a href="index.html" data-page-node-id="r1DjaAR3Ee7z0kpxdMDd0G">态势总览</a>
+        <a href="purchase.html" data-page-node-id="QOI46kRqHgRZD0q2SA2BnW">采购态势</a>
+        <a href="production.html" data-page-node-id="EksLET3pj85YYDBryazqZA">生产态势</a>
+        <a href="warehouse.html" data-page-node-id="Ku7e3jDc9YyeC463bHpLjP">仓储态势</a>
+        <a href="#" data-page-node-id="UuxEyb3YCOUZrSIYDoAuf2">运输态势</a>
+        <a href="#" data-page-node-id="Ubk6bbgl8TmOvoJeGyvCWr">出口态势</a>
+        <a href="#" data-page-node-id="AmjCFbg8Oi7b1sFQ51elsN">零售态势</a>
+        <a href="#" data-page-node-id="fJ8Ao7FXds5cnK90xbpQGb">燃放态势</a>
+        <a href="monitor.html" data-page-node-id="B10dYWQxmN4LIy6TkKAqcW">智能监控中心</a>
+        <a class="active" href="admin.html" data-page-node-id="Ob7SVQ5vkKYkC6GQwm5yGX">业务管理</a>
+      </nav>
+      <div class="header-right" data-page-node-id="t6Jl7sYIiVKJF4VcXivk2Q">
+        <div class="weather" data-page-node-id="e1qq4A74RCcCanSqJtuRq3">🌤 南昌 多云 28°C</div>
+        <div class="time" id="clock" data-page-node-id="YdSAzKpbgwNIeKRuBOX6lb">2026-09-03 09:18:00</div>
+      </div>
+    </header>
+
+    <!-- ===== 后台主体 ===== -->
+    <main class="admin-body" data-page-node-id="OZl3IcFFXkoT4BIMliAZB1">
+
+      <!-- 左侧菜单 -->
+      <aside class="sidebar" data-page-node-id="v2yNyrALDJAH5rajuZdAcd">
+        <div class="side-head" data-page-node-id="hhWks2hs1Ei89ZJl2FnhVX">业务管理</div>
+        <div class="side-menu" id="sideMenu" data-page-node-id="AnP6852ybDxhzj9rqKIQpK">
+          <div class="menu-item active" data-key="overview" data-page-node-id="9kV5nlkrf0G2AmIdrTeEry"><span class="mi-ico" data-page-node-id="Kz0fatAKEvjQB662KgYNSP">📊</span><span class="mi-txt" data-page-node-id="5DcmjGThGmEIWgiEAZ9J1P">全链条综合数据展示</span></div>
+          <div class="menu-item" data-key="verify" data-page-node-id="EQq8JmIWTK33PFcB9X6qr2"><span class="mi-ico" data-page-node-id="0yZAaOoeFeEPzU2W9wZn8T">🚨</span><span class="mi-txt" data-page-node-id="BSP9v7iIvjCRGyooQVQhYh">重点预警核验</span><span class="mi-badge" data-page-node-id="lDn8BAZ7HGQnkKOzH1FXpX">86</span></div>
+          <div class="menu-item" data-key="profile" data-page-node-id="8OXo5Kir8xAR1qvxfiRs7d"><span class="mi-ico" data-page-node-id="jcKTkPBFehmCqfiididi9m">🏭</span><span class="mi-txt" data-page-node-id="sfa0UXKQjd7SrftWZl6ND6">企业画像</span></div>
+          <div class="menu-item" data-key="rules" data-page-node-id="ObJDGGMBPq0XrpJYkjpEc3"><span class="mi-ico" data-page-node-id="lm61imXJae2yemOjjE7IoO">⚙️</span><span class="mi-txt" data-page-node-id="lraoP16nDJVzi5NpiqALkG">全链条风险预警配置</span></div>
+          <div class="menu-item" data-key="news" data-page-node-id="iuxsuvtaKPBymtLOPri9fV"><span class="mi-ico" data-page-node-id="xKy7f0mOzui7EX4KHar83C">📰</span><span class="mi-txt" data-page-node-id="vtHVqsJtd4kL8Htwbfq6U0">资讯管理</span></div>
+          <div class="menu-item" data-key="system" data-page-node-id="kZid16Q12u4RPmnUQGAc0I"><span class="mi-ico" data-page-node-id="Tshttq7GLUIhqgDZXsfcAZ">🛠️</span><span class="mi-txt" data-page-node-id="612H7ZCdnAugac5gLqSQSi">综合管理</span></div>
+          <div class="menu-item" data-key="data" data-page-node-id="aEYFRWHjCNLd2jTZ98b1A7"><span class="mi-ico" data-page-node-id="8jGlfPF9k52LockULJRIzx">🔗</span><span class="mi-txt" data-page-node-id="9BHwZ2CIUXJxiKsZfluD9X">数据汇聚与服务发布</span></div>
+          <div class="menu-item" data-key="algo" data-page-node-id="1nD3CWQ6cNZ9Lw2YBHMZCQ"><span class="mi-ico" data-page-node-id="DbRaHBe9Ghq1hr5CWn8s5u">🧠</span><span class="mi-txt" data-page-node-id="cEz2ot9BsodqIrqVBz96X3">烟花爆竹AI算法仓</span></div>
+        </div>
+        <div class="side-foot" data-page-node-id="VhFxyOaDsoGS4vXlfgivVf">
+          当前账号：<b data-page-node-id="cUuSXULTkvCgiIYZp3qNvh">省应急管理厅 · 管理员</b><br data-page-node-id="kXH8CMgd8MolYxvYJOKeKo">
+          数据更新：<b id="footTime" data-page-node-id="3e005Sv9YWfByk97F9STZ2">2026-09-03 09:18:00</b>
+        </div>
+      </aside>
+
+      <!-- 右侧内容 -->
+      <section class="content" data-page-node-id="IYfJ23x4LswBIG9i4qYBhg">
+
+        <!-- ============ 1. 全链条综合数据展示 ============ -->
+        <div class="page active" id="p-overview" data-page-node-id="BIXCR9YAlJlcfFB418YKAF">
+          <div class="page-head" data-page-node-id="hehbqbVBBR8cv0xcEsjGCA">
+            <div data-page-node-id="b31US9CZgJo2Qhr6spXibB">
+              <div class="page-title" data-page-node-id="mdWmR5kfQzShLZj3Dy5TLk">全链条综合数据展示</div>
+              <div class="crumb" data-page-node-id="NvgXCfHZAQQYvVRehQZH9G">业务管理 / <b data-page-node-id="qXu7SfYpQ4qeCHrSTyK8XB">全链条综合数据展示</b></div>
+            </div>
+            <div class="head-actions" data-page-node-id="MEF3UPWDCGFFpDKSm0hIfK">
+              <div class="btn" data-page-node-id="mYVIPqvbmWLV26EME6T50k">导出报表</div>
+              <div class="btn primary" data-page-node-id="1wM0tXPVmiSXqftmctoMyo">生成分析简报</div>
+            </div>
+          </div>
+          <div class="filter-bar" data-page-node-id="vvmHnL99GcFdRWie39AOe4">
+            <div class="fld" data-page-node-id="U43mqF7m6b76aKYi3SImTp"><span data-page-node-id="UGNLw207UVw9mX69DKYHp4">统计周期</span><select data-page-node-id="jEuiGu7k2McwjilMFouiJy"><option data-page-node-id="BCLPF0PCN7D9aUAaEoaFGB">本月</option><option data-page-node-id="hT120d450Yyuy5TNHCd0dV">本季度</option><option data-page-node-id="NMc7nLn1lAS3kGqNHQcM2n">本年度</option><option data-page-node-id="dc32aFz9m6J9Qezti7jtFW">近 30 日</option></select></div>
+            <div class="fld" data-page-node-id="cCpJ0GCASuGcF2z6HXjaC1"><span data-page-node-id="IiXgAjOQOwkvQ1HT1H2N0V">区域</span><select data-page-node-id="c7cOXp7cgWRHBZeaGeSFHf"><option data-page-node-id="9IFRBHOJzAF8lqCseMWL2j">全省</option><option data-page-node-id="dpr0sq2t1bK8GYcmpx3apY">南昌市</option><option data-page-node-id="608wGC6DKiwEzFYfJK4Dpp">宜春市</option><option data-page-node-id="XLx7dEoFXvAeFWyuuk0oEx">萍乡市</option><option data-page-node-id="w60mmsUKKVQqYgzayaCIMu">赣州市</option><option data-page-node-id="mV4kC061aYCGxlXrqf2382">上饶市</option><option data-page-node-id="rcBMaOoyJPMJ4gxfNkoNQ8">九江市</option></select></div>
+            <div class="fld" data-page-node-id="sQvJwj0KeRnkFydxtzracP"><span data-page-node-id="H8GWymqAAUI56JD94ie2Mp">环节</span><select data-page-node-id="qsXhTkZsKEHyZZEKVSyV6v"><option data-page-node-id="AaCjVeOBIH5c49PGCEwlgm">全链条</option><option data-page-node-id="5xZPBGbfEGxPHhPrR9iWIY">采购</option><option data-page-node-id="JAnXGmUhbMHHBwTHZvjTh7">生产</option><option data-page-node-id="z2WsgpaXlU8nrX74Ef9Fkm">仓储</option><option data-page-node-id="SNKiSre4mNNj0HHFmLNQ1Q">运输</option><option data-page-node-id="iQYzLRAC2BFzpUCHtj6RY7">出口</option><option data-page-node-id="xxJUnhELux6uE3jxOzLBui">零售</option><option data-page-node-id="hg6UvDCRb1DGLRG1qqC6Zu">燃放</option></select></div>
+            <div class="fld" data-page-node-id="iWB41H65gvKClBtNXS5ELs"><span data-page-node-id="FeRG3SpCLRxa7fIgsaj0CY">企业类型</span><select data-page-node-id="w3cUA5JYlXIZncg7ACHo3s"><option data-page-node-id="Ugi1yeXbS5OAlgnA615lv1">全部</option><option data-page-node-id="DEFoACMwIAAXcVpBdaF7qw">生产企业</option><option data-page-node-id="huFa3XAFdyC88WYABVe0RM">批发企业</option><option data-page-node-id="pyK3thxymBGUh45KnOCurd">零售企业</option></select></div>
+            <div class="spacer" data-page-node-id="SW8V0pwCHEaEhzauiVtUOE"></div>
+            <div class="btn primary" data-page-node-id="Uy7jdghQ05z194YbmmDc7O">查询</div>
+            <div class="btn" data-page-node-id="iQCBab9toEl4YIOwAbc5Dx">重置</div>
+          </div>
+          <div class="page-body" data-page-node-id="GR1G8mru9Tm7OOxsyCbDOQ">
+            <div class="stat-row" data-page-node-id="zW27mbeAxYgnQRYYKIve3h">
+              <div class="stat-card accent" data-page-node-id="fNBQ6NoqzA09FBifdWPl5a"><div class="sc-label" data-page-node-id="KS7ItHYkBfbHZXdqUL9dIf">① 采购流入量</div><div class="sc-value" data-page-node-id="xBbFT1WmkprN1N02TwM1WP">1.86<u data-page-node-id="CK9TDPdedT94mCKL2xv0cX">万吨</u></div><div class="sc-sub up" data-page-node-id="3TW0hPqwJ1DXuSRRodwb7b">▲ 环比 +6.2%</div></div>
+              <div class="stat-card" data-page-node-id="B9ZWWG2VZPds9bF6KHfcuS"><div class="sc-label" data-page-node-id="FZQK22hoBEs1i4XlO25mze">② 生产产量</div><div class="sc-value" data-page-node-id="xCn3IhsBM8rv5G4gioXT7B">3,752<u data-page-node-id="uMhNGYv36HsgzSiUIAUu47">万箱</u></div><div class="sc-sub up" data-page-node-id="5fyd6CkF2btyJ0eqaTlONQ">▲ 环比 +3.8%</div></div>
+              <div class="stat-card" data-page-node-id="laaScnWt3UPnhPKZm5yoY0"><div class="sc-label" data-page-node-id="5CMusdBWsevDOCdkzRCqgE">③ 仓储在库</div><div class="sc-value" data-page-node-id="vW5P2SkDNcLUG6ZMu4FW6Z">86.4<u data-page-node-id="mfErqCQQ5XgyG03Gw8D33b">万箱</u></div><div class="sc-sub" data-page-node-id="gKPRxZrkPZAAj2dfuC9GUE">库容使用率 71.3%</div></div>
+              <div class="stat-card" data-page-node-id="ipHnKYFR6j6FKghLuOjmHv"><div class="sc-label" data-page-node-id="qjpq1mJqnyqWM4QClKwlpJ">④ 在途运输</div><div class="sc-value" data-page-node-id="n65brMCiFVYG1tVB9BB5R0">156<u data-page-node-id="pbKM244moMu1pACL5Sre3q">辆</u></div><div class="sc-sub" data-page-node-id="FeCtCxZmvNENcYruOS1jk8">GPS 在线 152 辆</div></div>
+              <div class="stat-card" data-page-node-id="a4SVLCfMqWH9FV2PD3kZiv"><div class="sc-label" data-page-node-id="gEf692o8jZpbtrS4HoZGg1">⑤ 出口报关</div><div class="sc-value" data-page-node-id="RIB58vyQsFW1XLaPO1Xa32">428<u data-page-node-id="pPByAecD19vCf5Dx6YbGVT">批次</u></div><div class="sc-sub up" data-page-node-id="PEARxhoNd2kGa9KMZQVYcE">▲ 同比 +11.4%</div></div>
+              <div class="stat-card" data-page-node-id="3QYBLq08iD7qO2AGoy9ZrN"><div class="sc-label" data-page-node-id="u8Eflv4DBzIsdY0lVyqBNd">⑥ 零售网点</div><div class="sc-value" data-page-node-id="AwlNwwnfcMX2DGM2LmmYWY">749<u data-page-node-id="gTJj6hABz392QRDCNXBEAY">家</u></div><div class="sc-sub" data-page-node-id="PYw1yCbozS2xhUlTyfBuxR">占比 60.1%</div></div>
+            </div>
+            <div class="cols-2" style="flex:1; min-height:250px;" data-page-node-id="VBzoG5izM2mvdU8XCqaCCp">
+              <div class="block" data-page-node-id="agtfBjYGGTeejH8y9AcarM">
+                <div class="block-head" data-page-node-id="6BdFB0NGzXLch1n4GaXsRJ"><h3 data-page-node-id="vSDw75ocdW2j8gGjchqzof">全链条流转量月度趋势</h3><div class="bh-right" data-page-node-id="V297X6zwSsdp649QMDwDLG"><span data-page-node-id="LHOFUlKytz4ZxJL122dOAi">单位：万箱 / 万吨</span></div></div>
+                <div class="block-body" style="flex:1; padding:6px 8px;" data-page-node-id="cdQLjR1JOr4Tj02RBKufXW"><div id="cTrend" class="chart" data-page-node-id="WNZPN1EMVw71moovhhRDTV"></div></div>
+              </div>
+              <div class="block" data-page-node-id="S2C5yNosiiKtAKDo6mIukg">
+                <div class="block-head" data-page-node-id="nxcle1zUm6qBvVAH2NO6S4"><h3 data-page-node-id="DVgaTP8HokfmDksi5xXzhs">各环节业务量与风险预警对比</h3><div class="bh-right" data-page-node-id="buNLy3EuSg57wWXuCGWbvG"><span data-page-node-id="It6VCnpDLIerIGKRE1kIY3">业务量 / 预警数</span></div></div>
+                <div class="block-body" style="flex:1; padding:6px 8px;" data-page-node-id="cPl5wtSO0BRa08EozuILcE"><div id="cChainBar" class="chart" data-page-node-id="WGkhu9qDAt2vgPEXkJ3HqX"></div></div>
+              </div>
+            </div>
+            <div class="block" style="flex:1;" data-page-node-id="8Mt4KfSEJuUEvHvRYnMt0F">
+              <div class="block-head" data-page-node-id="OJaxEHMZMsIORMUyOG1TNO"><h3 data-page-node-id="DjAg6FrMzs5V89uvQDtFDx">全链条环节数据明细</h3><div class="bh-right" data-page-node-id="nEAPYKW68SzL3HPAGFbWcw"><span data-page-node-id="6geWKva11Kq428GubZTVR6">共 7 个环节 · 数据截至 2026-09-03 09:00</span></div></div>
+              <div class="tbl-wrap" style="max-height:230px;" data-page-node-id="aRLfejrEuuiLl02T2gzPcj">
+                <table class="tbl" id="tblChain" data-page-node-id="O3zVpflJBUutbJrF0EcrMQ">
+                  <thead data-page-node-id="cSoHQgeLQE6LUdJbno9ETR"><tr data-page-node-id="83uBaMIBaLSeVCgACKjpDE">
+                    <th style="width:52px" data-page-node-id="RSkXWF7WoQQKrppZ853wVY">序号</th><th data-page-node-id="nxDW9DnmoqtZ9rcIK8Ot8O">环节</th><th class="num" data-page-node-id="clARi7bNrRSauiQ4OghiEF">主体数量</th><th class="num" data-page-node-id="H8FMcilH7a9NiqK31mZg95">今日业务量</th><th class="num" data-page-node-id="BXqTDYtOeXssDVPWyGQFkI">环比</th><th class="num" data-page-node-id="qoyC8pXONFEuDilDhyVnPn">风险预警</th><th class="num" data-page-node-id="FgvyBZU2qm3sKMAfAuxBX6">未处置</th><th class="num" data-page-node-id="ri3ng97AaK8VyqMCwgSGMn">数据完整率</th><th data-page-node-id="jwW4mACK9AVMnOx374FNCa">对接系统</th><th data-page-node-id="b7SKipnTitQ1sI9H4ou1HE">状态</th><th style="width:110px" data-page-node-id="548rNJGSiUqPvSdg7SdOca">操作</th>
+                  </tr></thead>
+                  <tbody data-page-node-id="Lt1vcFx4p4xWuFKZCUqCyb"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 2. 重点预警核验 ============ -->
+        <div class="page" id="p-verify" data-page-node-id="po5GtzAw8rk5FDjGAHGST5">
+          <div class="page-head" data-page-node-id="3MiNQ4dI2YIn7YSbcwVCyH">
+            <div data-page-node-id="IKFOpDjFGHcy64erdBAbrf">
+              <div class="page-title" data-page-node-id="Hg6bnbqRnoDP1hwVfb4CQp">重点预警核验</div>
+              <div class="crumb" data-page-node-id="tjgLLSFYKVUBczLqiQc0tu">业务管理 / <b data-page-node-id="C5GYnNEUvuUmGYtCsSyYYj">重点预警核验</b> · 对 AI 识别与物联感知产生的重点预警进行人工复核</div>
+            </div>
+            <div class="head-actions" data-page-node-id="EPwHwiJGgfsvTBKiLmkxAN">
+              <div class="btn" data-page-node-id="eWV51jWul1CaEi5RzCsU0P">导出核验台账</div>
+              <div class="btn primary" data-page-node-id="nJ0I4oJlXsl7pICEAE5CzE">批量核验通过</div>
+            </div>
+          </div>
+          <div class="filter-bar" data-page-node-id="h9HRN0qcRZzQT7in0H1UWE">
+            <div class="fld" data-page-node-id="mFhw9NPFKutz0KebzB7rrM"><span data-page-node-id="izyhiAwAUFKYKECusTFjoe">预警等级</span><select data-page-node-id="qpW2zvmufrzRE7X7m2uKr6"><option data-page-node-id="Sc8N0JhLLudWuUyfGArTzm">全部</option><option data-page-node-id="OQdPFloXQlXTbqQFkbwtND">红色（重大）</option><option data-page-node-id="X7ZGbUVFvgF0bTNCcAvamm">橙色（较大）</option><option data-page-node-id="fX7DHHkWcbQv9XaAahwym3">黄色（一般）</option></select></div>
+            <div class="fld" data-page-node-id="ahqD4Sphr5PAoAG1vKKLdF"><span data-page-node-id="8OStkepbd3jf0zByDWN6iP">核验状态</span><select data-page-node-id="f6HHmE5ylDvMCfs3Gwfvp7"><option data-page-node-id="wczwqO4GUaJF1Cxd8gVa89">待核验</option><option data-page-node-id="8eIA1lzYxRbD4gC6LbXsAU">已核验</option><option data-page-node-id="cqMSsqYtxXTkPhkQ8z4Aki">已驳回</option><option data-page-node-id="vzwiJG2UWQs0nbg6yu4dAh">超时未核验</option><option data-page-node-id="FKoFRpH5Tjqj0hUJcEyxso">全部</option></select></div>
+            <div class="fld" data-page-node-id="GxfOj1ihtQUJjL8g9MpgJJ"><span data-page-node-id="f1xzj7gle7s9E7RAcD9mf8">所属区域</span><select data-page-node-id="nGsWc6Hzbe86sjKHRkWG1J"><option data-page-node-id="o5ggTwUq6PJxjh1XE5gNh9">全省</option><option data-page-node-id="gBBEDhO4FevqhJHsjgDkkk">萍乡市</option><option data-page-node-id="a3e48psRCIHo5dAyAVUCQA">宜春市</option><option data-page-node-id="8x1wweK5yIx8Zkk99c2W6q">南昌市</option><option data-page-node-id="RvYgVeBOpa2aDqkLRHZ7Lz">赣州市</option><option data-page-node-id="9mCZmCFjHBBz0XNlrD1K1T">上饶市</option></select></div>
+            <div class="fld" data-page-node-id="y1nuadR5A7vjG8JPRlEVUl"><span data-page-node-id="TgSRyz5iaeXZtjQe4thgOD">预警来源</span><select data-page-node-id="E2AGzKelSXOV11QjZGvabJ"><option data-page-node-id="cJzGMbVe4YKPs5FLNynmgM">全部</option><option data-page-node-id="fIbMSOijnBtl4ePFpCmFm9">AI 视频识别</option><option data-page-node-id="QjdzQ5jNtuAy8YGNrFgpDM">物联网感知</option><option data-page-node-id="6eO5PFRf69ljyjx8JKjOD3">门禁人员</option><option data-page-node-id="ICC0hXYVAYIRn3RHyOlmQv">车辆 GPS</option><option data-page-node-id="Mk04DKx10WB6r9KaQoezBu">人工上报</option></select></div>
+            <div class="fld" data-page-node-id="iDfWCw5Eaat8hLOMua9kfd"><span data-page-node-id="uxJrhB8t8gg5LxfuDou4og">时间</span><input type="text" value="2026-08-27 ~ 2026-09-03" data-page-node-id="xlbGFdttYcYWK7DfJjCtQD"></div>
+            <div class="fld" data-page-node-id="ipxK4ETrvjuTZU0VRmME1U"><input type="text" placeholder="企业名称 / 预警编号" data-page-node-id="R84HeErH2luXkCEJYNHPpp"></div>
+            <div class="spacer" data-page-node-id="ybZU1joympQDHBrLATvKw6"></div>
+            <div class="btn primary" data-page-node-id="VAoFlfLVRmguxZZ5G3TvH8">查询</div>
+            <div class="btn" data-page-node-id="EZFWG6PfIepdnXooqNGRmI">重置</div>
+          </div>
+          <div class="page-body" data-page-node-id="UtHZfL2Uk7zC4KSqH90Bcm">
+            <div class="stat-row" data-page-node-id="at7c4ayeb9pc00i0djtYzy">
+              <div class="stat-card danger" data-page-node-id="YiZWC16GkhkzfX97WCSaEl"><div class="sc-label" data-page-node-id="7HRP4ockma6Oz94gnRnqpI">待核验</div><div class="sc-value" data-page-node-id="9BY5Rl0iJwBjtFgdmnu3mz">86</div><div class="sc-sub" data-page-node-id="EPXFQa1chDbkWqsLz1fzHD">红色 12 · 橙色 31 · 黄色 43</div></div>
+              <div class="stat-card ok" data-page-node-id="y33YJGDHA4dMN0lq6WNM91"><div class="sc-label" data-page-node-id="ghGhEpSrKwXYO9yWHVBmZb">已核验通过</div><div class="sc-value" data-page-node-id="2QZBPTDlsjnSRt0v3B1gxG">1,284</div><div class="sc-sub" data-page-node-id="wTqejVvxTQHysmv0Km16Ob">本月累计</div></div>
+              <div class="stat-card warn" data-page-node-id="wQNrqZmoBnmxuTvlaHOyeo"><div class="sc-label" data-page-node-id="Ewoptr6RZjZuEY4BT8vRli">已驳回</div><div class="sc-value" data-page-node-id="26Wy4b5aLSDKKRJp6nWLPz">76</div><div class="sc-sub" data-page-node-id="1F0hvkKhu3wSFzDXd63Fpv">误报率 5.6%</div></div>
+              <div class="stat-card danger" data-page-node-id="MdGVmf4s6gdV2syO5f5SqL"><div class="sc-label" data-page-node-id="EkWoBN0gTcrj0hQKkzUgOq">超时未核验</div><div class="sc-value" data-page-node-id="wGy1oaJvgDAXVAIAf4ZTJP">12</div><div class="sc-sub down" data-page-node-id="lIumTIG4GVGmlJIaZQAw5J">▲ 需立即督办</div></div>
+              <div class="stat-card accent" data-page-node-id="FXZOLIqvgy5clNeX3H87DZ"><div class="sc-label" data-page-node-id="enKpyWTkJJnd5g6mDGMo84">平均核验时长</div><div class="sc-value" data-page-node-id="04FRdueJGVzSOfe3JYcI7r">18.6<u data-page-node-id="YXPuDC3UgotY6MStoRfitK">分钟</u></div><div class="sc-sub up" data-page-node-id="5z1H19ikoM0fkZGxnVqROx">▼ 较上月 -4.2 分钟</div></div>
+              <div class="stat-card" data-page-node-id="ku5RWDsopq3VmqG7iXG2wy"><div class="sc-label" data-page-node-id="ZR3Ny3CnXIqzoK75M5GxAH">核验准确率</div><div class="sc-value" data-page-node-id="NbyylILjGaQqRpNGO7Fc3M">94.4<u data-page-node-id="7dZEgVGbxGThfGEBQjZVbB">%</u></div><div class="sc-sub" data-page-node-id="LXqXM8RJ4tLbYieE2KUXIR">考核基准 ≥ 90%</div></div>
+            </div>
+            <div class="block" style="flex:1;" data-page-node-id="CSbdEdxfysDCKK0ZB36AQQ">
+              <div class="block-head" data-page-node-id="HP8LJIsHAvoURCkSvPUNwB"><h3 data-page-node-id="Ni8vsnuicn0FxNEKzwl3UM">重点预警核验工作台</h3><div class="bh-right" data-page-node-id="2y10nLI9hcPanRqm1eo5jE"><span data-page-node-id="E8vEIVMiUAjcyRpOsKPozd">共 86 条待核验 · 每页 20 条</span><span class="link" data-page-node-id="E5qTsRRgqbBDj65F5QDP4L">核验手册</span></div></div>
+              <div class="tbl-wrap" style="max-height:420px;" data-page-node-id="P7nRuGMHdWOQWcG8HwkkWY">
+                <table class="tbl" id="tblVerify" data-page-node-id="ButepNDB4aDJpQGBBKnFz5">
+                  <thead data-page-node-id="G4cK1GkkkYqvBHyEdqoO2M"><tr data-page-node-id="RZUuWbZxzQ5FhZiBZSLOWH">
+                    <th style="width:42px" data-page-node-id="S3ccAk0TDG1hHgwHi0Ra0V"><input type="checkbox" data-page-node-id="SFfIzsOSyQYBFMCcrSAa4K"></th><th style="width:132px" data-page-node-id="mKyVjqBkprDbtlZe2U5i5R">预警编号</th><th data-page-node-id="HVqBtMhw8talRhUgOAuKJT">预警类型</th><th data-page-node-id="7vJTBLXChtuh1KZ4Tv3VOu">企业名称</th><th data-page-node-id="yXnqMAwK8qhBFQcdEkZG2S">所属区域</th><th style="width:70px" data-page-node-id="IBztekvIVz6I5vUaTa4LDY">等级</th><th data-page-node-id="uuHTNYwAxkJNIGV9Adqf2C">预警来源</th><th style="width:126px" data-page-node-id="roHFvpTiwsuEGuotVkCJCf">触发时间</th><th style="width:96px" data-page-node-id="AaGd8WQiZWBUG4GBPRfgBj">核验时限</th><th style="width:74px" data-page-node-id="usoYPaEHtGSTnBGTazzw7l">状态</th><th style="width:150px" data-page-node-id="DKNVkCdrqIg89YLr0v0d1q">操作</th>
+                  </tr></thead>
+                  <tbody data-page-node-id="2I7wNxl8Z4lyCHGnPS3OMY"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 3. 企业画像 ============ -->
+        <div class="page" id="p-profile" data-page-node-id="B4R2LsAunSazH3EBNu6r0s">
+          <div class="page-head" data-page-node-id="XFtqrqX1R48kKCFPJMBeau">
+            <div data-page-node-id="qmS3GePqUHQV5JhvjBuzkF">
+              <div class="page-title" data-page-node-id="PawqItRWcMSsbc1eN1J9GC">企业画像</div>
+              <div class="crumb" data-page-node-id="XTmwpMn5kWmWFeGqykORZz">业务管理 / <b data-page-node-id="F6mDVg5y78eJv41RiMlP88">企业画像</b> · 一企一档全景视图</div>
+            </div>
+            <div class="head-actions" data-page-node-id="JxGvBafFuBqE7qbd9gCFYE">
+              <div class="btn" data-page-node-id="8FKuDcYhX0G6fSAHxgwdET">导出档案</div>
+              <div class="btn primary" data-page-node-id="e3mzzXRal4okXFBN2Y9rKi">生成体检报告</div>
+            </div>
+          </div>
+          <div class="page-body" data-page-node-id="FgcJHMoLTXfP0QQgXWhJ1E">
+            <div class="stat-row" data-page-node-id="c7CkQcaRqcNLhIFxhJIHRX">
+              <div class="stat-card" data-page-node-id="h57s4edAIwgM2z7NFLjLAJ"><div class="sc-label" data-page-node-id="uAYeo35HFphG00Aq0sx1DN">企业总数</div><div class="sc-value" data-page-node-id="toFgvwIEGN1G9OkLDAp52w">1,247<u data-page-node-id="uT3IOZFo1IYOI1x2AwXgWU">家</u></div><div class="sc-sub" data-page-node-id="EW5gugS3jQBErA4F2Esc9M">生产 186 · 批发 312 · 零售 749</div></div>
+              <div class="stat-card accent" data-page-node-id="xUH6JVr9MhIYh2LJNFhZRB"><div class="sc-label" data-page-node-id="O7L3KCueyVRSeDK8dQXmxc">今日在产</div><div class="sc-value" data-page-node-id="950okr0WCJmckMuV70SYIX">142<u data-page-node-id="vzRojGr3R1vbOzj5XBfHd1">家</u></div><div class="sc-sub" data-page-node-id="Dc5UZueWjnwsYJX9WwMgtv">开工率 76.3%</div></div>
+              <div class="stat-card danger" data-page-node-id="VFTMGhIvpy8QmrGA3jZcEB"><div class="sc-label" data-page-node-id="anAbxR4TUzwVjVRG6vtQ5o">高风险企业</div><div class="sc-value" data-page-node-id="7lVy89ttFlX2Da7bbRqka5">18<u data-page-node-id="d7x5PMXW32QF8doVEcAcFt">家</u></div><div class="sc-sub down" data-page-node-id="VaLLccWLYNwVSMjQrHepgE">▲ 较上周 +3</div></div>
+              <div class="stat-card warn" data-page-node-id="dB3j9TXC72ZctduzKBEoDk"><div class="sc-label" data-page-node-id="BewlAv4tO7Xtuzi0apJZgI">中风险企业</div><div class="sc-value" data-page-node-id="EYapSFNawPEk5libLKiEjl">64<u data-page-node-id="c7xDCcyaGaTMrclOAC0rHH">家</u></div><div class="sc-sub" data-page-node-id="4tSmGQ1ywc8pbjBe2QD0XV">需加强监管</div></div>
+              <div class="stat-card ok" data-page-node-id="i5BF8vycHwYURk7QjgNYu2"><div class="sc-label" data-page-node-id="haoCylHXfPLXGrftQJ68Pn">低风险企业</div><div class="sc-value" data-page-node-id="V9X5JZcRhsktS94oVXEvtx">1,165<u data-page-node-id="lykqopaKyYPhnU62p0b2Im">家</u></div><div class="sc-sub" data-page-node-id="qAUdeOvEjt7DRs9bFdSZCP">占比 93.4%</div></div>
+            </div>
+            <div class="profile-wrap" data-page-node-id="WZN1cyKGdBACAMRZwYz9IQ">
+              <div class="ent-list" data-page-node-id="aOnIpLajSCwgnH8pm0YHYb">
+                <div class="ent-search" data-page-node-id="W5Ziw1xDAhaCdcB5b8gwF9"><input id="entSearch" type="text" placeholder="搜索企业名称 / 信用代码" data-page-node-id="qlR8E3PjhtCD59xKhEleAZ"></div>
+                <div class="ent-items" id="entList" data-page-node-id="thCj2tW9IPU2czauvNXQ6N"></div>
+              </div>
+              <div class="profile-main" data-page-node-id="gCGpGu69INtq4DjB98G7Ck">
+                <div class="block" data-page-node-id="purUPLUNUzPbC1UFVQ3F5T">
+                  <div class="block-head" data-page-node-id="bVukvkvIbLHX0oZXHPHTbd"><h3 id="pfName" data-page-node-id="rdX2so4gZX0wT6fECQ387f">企业基本信息</h3><div class="bh-right" data-page-node-id="FrwIe3wmoXvllyvPidKYIF"><span class="tag blue" id="pfType" data-page-node-id="JM3A8r7wLdJGTKN9EpUQ64">生产企业</span><span class="tag green" id="pfStatus" data-page-node-id="PWYuSnsin9GMIYEEuOd7bA">在产</span></div></div>
+                  <div class="block-body" data-page-node-id="ea3EJDNKEloPKMwssHc2Xu">
+                    <div class="pf-basic" id="pfBasic" data-page-node-id="2o1TD7QTYd982x2GRZy4qK"></div>
+                  </div>
+                </div>
+                <div class="cols-2" data-page-node-id="kuhIfK3D6Nu5fFSwqE4KcX">
+                  <div class="block" data-page-node-id="Pd4FjajwpONN1EPjnt0GAB">
+                    <div class="block-head" data-page-node-id="nujtOZUJbqcBHqCIcBA8Hm"><h3 data-page-node-id="2g9R36jesxJpOAwt5z6VeN">风险画像评分</h3><div class="bh-right" data-page-node-id="U5sBzyEvNGuSOxrJ9TzH4l"><span data-page-node-id="z01cHTKfzCmRLxHfQrYPgu">六维风险雷达</span></div></div>
+                    <div class="block-body" data-page-node-id="q9gCOGfv50tfXzdkz7tkxV">
+                      <div class="risk-score" data-page-node-id="EjChhbpf1M1k2L6LLv1D2W">
+                        <div class="rs-num" data-page-node-id="jBzayfiSw4sCJ5wkYPeHpD"><div class="n" id="pfScore" style="color:#ff9f2e" data-page-node-id="Y3AdO7uzHA9oBNeCNCSSmI">72</div><div class="t" data-page-node-id="H9GUkfp8RrWuR24I9EuLGD">综合安全分</div></div>
+                        <div id="cRadar" style="flex:1; height:186px;" data-page-node-id="HoDmfv1AQLzVhnj11rs7V6"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="block" data-page-node-id="tDB6Q7lMM2NO01Opy6yiQQ">
+                    <div class="block-head" data-page-node-id="zgsITIkkpPm8IL5MVv7IuD"><h3 data-page-node-id="AP4POa2Zl7ZCeTG1aGErzR">关键运行指标</h3><div class="bh-right" data-page-node-id="A8q6djduDJG4iDRgC3QMCe"><span data-page-node-id="UO6FECBt4uApCdNL7n6OAK">实时接入</span></div></div>
+                    <div class="block-body" data-page-node-id="XsZrAx9hIORp7FzcmJTQu3"><div class="pf-basic" id="pfKpi" style="grid-template-columns:repeat(2,1fr);" data-page-node-id="YOwfmjZEKvqCWQPnxOlbyV"></div></div>
+                  </div>
+                </div>
+                <div class="block" data-page-node-id="H6uiuHUQ5PivWlPuzVWXkp">
+                  <div class="block-head" data-page-node-id="9YGQJB2ryXiZdcipByzUFy"><h3 data-page-node-id="XeoyZU1dxiA8pXmfLBPU9h">近 30 日预警与监管记录</h3><div class="bh-right" data-page-node-id="OC7wRKk2GhupWeoqGpyfxG"><span class="link" data-page-node-id="bB0TSq8xJRwAdngOZsFViV">查看全部</span></div></div>
+                  <div class="tbl-wrap" style="max-height:172px;" data-page-node-id="lhSPXokDqelAHLWYdZJ52b">
+                    <table class="tbl" id="tblPfLog" data-page-node-id="NVhyJzOdPEqBTOyUElTdeV">
+                      <thead data-page-node-id="3LEcFPqUP5o2U5FhttI6kz"><tr data-page-node-id="syMdlbnpvVoHXbicQM3ubr"><th style="width:126px" data-page-node-id="XoRXgUOIUjPufMuoyrjl0s">时间</th><th data-page-node-id="ccOVVlmFhoKLkzsmNe2Nuu">事件类型</th><th data-page-node-id="FbfQPc5nOOhjQYW80ElwMn">内容摘要</th><th style="width:74px" data-page-node-id="x1nUvw9K9aYpjlPXg3PQe4">等级</th><th style="width:86px" data-page-node-id="7GdwLM7KzbDHNhMSjnETje">处置状态</th><th style="width:96px" data-page-node-id="7vbEjXEPJ1UwRQMvFZqhut">责任人</th><th style="width:100px" data-page-node-id="wlr8gMh2CrD6kq4cpXmxAg">操作</th></tr></thead>
+                      <tbody data-page-node-id="tpeAZ0fXpaSoyhdFC59laT"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 4. 全链条风险预警配置 ============ -->
+        <div class="page" id="p-rules" data-page-node-id="poz3dVDJLmLUFAskdiX6Ds">
+          <div class="page-head" data-page-node-id="FsMxODGcTpDseIe6naawje">
+            <div data-page-node-id="5rKDqrgabK0FPyyZWHy37V">
+              <div class="page-title" data-page-node-id="izlU9g1wyP9pZSS0jA8DxS">全链条风险预警配置</div>
+              <div class="crumb" data-page-node-id="BRi531MAzsFFbg9OZYwJUn">业务管理 / <b data-page-node-id="1UwAp4FF2iHBqsS8dhmORZ">全链条风险预警配置</b> · 按环节配置监测指标、阈值与推送策略</div>
+            </div>
+            <div class="head-actions" data-page-node-id="7C201LJHpW6QxQvM9cxVWN">
+              <div class="btn" data-page-node-id="L5AFtechfH9YAP6aqs7csG">导入规则</div>
+              <div class="btn" data-page-node-id="4Fd4tkWSDmWqXLokY2QIGx">导出规则</div>
+              <div class="btn primary" data-page-node-id="GB35BWaOVHKtvKOnvHsjBl">+ 新增规则</div>
+            </div>
+          </div>
+          <div class="sub-tabs" id="ruleTabs" data-page-node-id="16jbT8ACE6BSOaaQK1ul8Z">
+            <div class="sub-tab active" data-page-node-id="HpPbvOprnabe54Q7SeiKcu">采购环节</div>
+            <div class="sub-tab" data-page-node-id="dyelDgVICnZootZjInmees">生产环节</div>
+            <div class="sub-tab" data-page-node-id="n5tqbxecJGFM11ewnO5gHA">仓储环节</div>
+            <div class="sub-tab" data-page-node-id="DFScSm5gDn9CEicRHaM4qO">运输环节</div>
+            <div class="sub-tab" data-page-node-id="fsuftMvMnASvMxXw6syJbz">出口环节</div>
+            <div class="sub-tab" data-page-node-id="ER44XktEy6Cfj0IhmgIidz">零售环节</div>
+            <div class="sub-tab" data-page-node-id="Q2OGhLAnD9xE5ZqLLwwqbE">燃放环节</div>
+          </div>
+          <div class="filter-bar" data-page-node-id="inDgWjfFIlTFk5Mdj7dOow">
+            <div class="fld" data-page-node-id="kOdF8mMFmOmAoyXQNrTJaK"><span data-page-node-id="EmXTV3v6FhlBj9keGCEbDl">预警等级</span><select data-page-node-id="t7K928QLdK2T7y7RlUDl5h"><option data-page-node-id="9KLSby5es8JC8sQwPCN7E7">全部</option><option data-page-node-id="HABO0HVfQQ2LOZVh7SnHcM">红色</option><option data-page-node-id="mWjfWHdQRzGIQMYRfFnVLb">橙色</option><option data-page-node-id="csgbZMtPFk0yXGXo3FEZF9">黄色</option></select></div>
+            <div class="fld" data-page-node-id="fJHE7Inj8z7mbccsBkz2lM"><span data-page-node-id="pWT5vcErOeXU7uComFdLkA">启用状态</span><select data-page-node-id="6m0Weu1anNtBvEo7UMkBzf"><option data-page-node-id="3B0TJO4UzwXWHHVb7lcZy0">全部</option><option data-page-node-id="RuNp8vEeaRlhVimGPzkn1h">已启用</option><option data-page-node-id="ErgImouA1XtMkdUWi3fyeQ">已停用</option></select></div>
+            <div class="fld" data-page-node-id="i8SpK62OHloKa1MMf1AhyQ"><span data-page-node-id="MpEGlMcuWpCfF5qGs1zg8k">推送方式</span><select data-page-node-id="Ou3cA2eI08Hs2fpsftkEiI"><option data-page-node-id="HJnqlbVfNlVAjMbBIUaCkT">全部</option><option data-page-node-id="kF0XQMNB5wKdn6zC4gKXSb">平台消息</option><option data-page-node-id="0vMfGVc3jHzXcdSQfMHluO">短信</option><option data-page-node-id="XyCPvsdpl83UzXDXvRZ9IL">语音外呼</option><option data-page-node-id="54pVBUDNb3FWYHDVVfa1AB">APP 推送</option></select></div>
+            <div class="fld" data-page-node-id="MDCnalVSxa96XKFH1ZK4JH"><input type="text" placeholder="规则名称 / 编码" data-page-node-id="Qrls8xIJ1pFBTJwgXBGM2Y"></div>
+            <div class="spacer" data-page-node-id="RYCWnGfshE6a9SJWjVoTDn"></div>
+            <div class="stat-pill" style="font-size:11.5px;color:var(--text-dim)" data-page-node-id="jNRNCAbvebBqq6UfK2rY5M">当前环节共 <b style="color:var(--accent)" id="ruleCount" data-page-node-id="Duxy7WS8PZJNZEcmVSEMcS">12</b> 条规则 · 已启用 <b style="color:#86efac" id="ruleOn" data-page-node-id="3H7ox2ZorD7SXg6BEKDD5i">10</b></div>
+          </div>
+          <div class="page-body" data-page-node-id="8LebBDPfi0XZXFS5SuBxjQ">
+            <div class="block" style="flex:1;" data-page-node-id="EiDHz9vFOypkw2NDSbkxCg">
+              <div class="block-head" data-page-node-id="vCVhBzGF8VA2tIJnYnKDBa"><h3 id="ruleTitle" data-page-node-id="iG3Rq7SWfQClp0n21lYM7u">采购环节 · 预警规则清单</h3><div class="bh-right" data-page-node-id="FecSBiXz3kGfsFyPGoq81k"><span class="link" data-page-node-id="LYUJQcAX12NuwmwVwFWIRc">批量启用</span><span class="link" data-page-node-id="T5FNKyafbNv6xVbZOCgBnu">批量停用</span><span class="link danger" data-page-node-id="Vi2UB6Ea8LzKaZH7CF3s11">批量删除</span></div></div>
+              <div class="tbl-wrap" style="max-height:560px;" data-page-node-id="9IZizghDX9gYuuqhpfCHzv">
+                <table class="tbl" id="tblRules" data-page-node-id="AuJEHWQukUIJcQyqG2Lrub">
+                  <thead data-page-node-id="Uv0ToHyDx1r5Ga6SIkngh5"><tr data-page-node-id="gBwG9wMCerFPedBDTL6oiR">
+                    <th style="width:42px" data-page-node-id="zAuI4zQ5woT5MMsDJTSuSI"><input type="checkbox" data-page-node-id="AdOQjPT6ObDgipwsL8ssp7"></th><th style="width:112px" data-page-node-id="v5pvwZOLrb38YCs8Qk0ecJ">规则编码</th><th data-page-node-id="nZcJxylqPPe3a4Cujw1eKd">规则名称</th><th data-page-node-id="WSXYrZeCopubWNXxth2paM">监测指标</th><th data-page-node-id="mZVSq46sMFiBsfvFs4Feam">触发条件</th><th style="width:64px" data-page-node-id="UJl2lBl86HdZlCEg8pYlhC">等级</th><th data-page-node-id="Q5UpYDFcGcZMf3fkOS4PpQ">推送方式</th><th data-page-node-id="SAcdRdOexgiTvGCMv3Wy7h">通知对象</th><th style="width:60px" data-page-node-id="1dllqA1RsnFNKZHFLfkeLN">启用</th><th style="width:130px" data-page-node-id="ABXC1P36g08EaD0YYsHmgi">操作</th>
+                  </tr></thead>
+                  <tbody data-page-node-id="am6nUf9TqB35VCjDa735WZ"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 5. 资讯管理 ============ -->
+        <div class="page" id="p-news" data-page-node-id="8bRzdDFqYDZWFHKIBEGNg1">
+          <div class="page-head" data-page-node-id="ycOBy0LxQXXC2OEz872WTt">
+            <div data-page-node-id="YxAJkXR7plUKF4kec7UsQ6">
+              <div class="page-title" data-page-node-id="jxl4TtPAaCuhF9PzMEU8kN">资讯管理</div>
+              <div class="crumb" data-page-node-id="Q6f9vrXdkDMLQdVStxs3Ch">业务管理 / <b data-page-node-id="XWifCzF1PpgVqzwiOiDk3n">资讯管理</b> · 政策法规、通知公告与行业动态发布</div>
+            </div>
+            <div class="head-actions" data-page-node-id="FTQ70EBNmQSI0gYP2b3JW8">
+              <div class="btn" data-page-node-id="RbzNKOHG9qEFNBiGYvEPRl">栏目管理</div>
+              <div class="btn primary" data-page-node-id="Ff4ZjYoa9CqHaeUvCoKFLG">+ 发布资讯</div>
+            </div>
+          </div>
+          <div class="filter-bar" data-page-node-id="eq0I7dgyCVaAupysb5d3DO">
+            <div class="fld" data-page-node-id="bSE4kPNKhrqJS0U7loDoNX"><span data-page-node-id="zEd9TU21qpnbICxQjlD7Ba">栏目</span><select data-page-node-id="DSVaJXgqLH2G2mBkjEzBg0"><option data-page-node-id="u43kFY6eQECAz3d3GMmzBD">全部</option><option data-page-node-id="OHVXb3ClhcjtWDKBvJVCA9">政策法规</option><option data-page-node-id="dOhAYgF3i3GnIvo6BalgfV">通知公告</option><option data-page-node-id="5VcPr8j8qSeEUwazJLfE4B">行业动态</option><option data-page-node-id="oBCRVTFUXC2lO4CvGWiB9l">安全警示</option><option data-page-node-id="tG417CpWzSIdqrMX8TCnzX">培训资料</option></select></div>
+            <div class="fld" data-page-node-id="9Cvwa8mNQuAuOAWT9hKEOq"><span data-page-node-id="c75LxIt9ebqQ9YRBJWamDE">状态</span><select data-page-node-id="nKGkDWTMaQRaDJnmKkN0iN"><option data-page-node-id="8AdopRDI24dtUECBDBOlNi">全部</option><option data-page-node-id="y4zMKxtjk5P4VLKAwmFLLG">已发布</option><option data-page-node-id="TXP7mg3F6w0seQIYyEjGw3">草稿</option><option data-page-node-id="F2TdHamqVegH2R9nyl1TpP">已下架</option><option data-page-node-id="OTUbL6Q03nlfauVtBSIWle">待审核</option></select></div>
+            <div class="fld" data-page-node-id="bnbV4BVQoH2b6N1GWgwReA"><span data-page-node-id="HJMNwMJ0rXz2rFuiiZG6Hp">发布单位</span><select data-page-node-id="CUuFBJRKXeS56jzFgN5KOD"><option data-page-node-id="mtZ0mzaXjuQceyGZa2yUjN">全部</option><option data-page-node-id="D2dVbiXQBZdS51GDSS2Fc6">省应急管理厅</option><option data-page-node-id="gO080DZkXs9DRd62uv6Z7u">市县应急局</option><option data-page-node-id="4v3WtnRvhDY4jSt4MDa0E5">行业协会</option></select></div>
+            <div class="fld" data-page-node-id="Ln1h8b19uyKOaYDgYH8Cyc"><input type="text" placeholder="资讯标题关键词" data-page-node-id="BlbWXc1yl4fgl5T4bbQKy8"></div>
+            <div class="spacer" data-page-node-id="68zse6ElwxrHux5KbcVFIs"></div>
+            <div class="btn primary" data-page-node-id="xnStomDQr0nAEztLDPNMnb">查询</div>
+            <div class="btn" data-page-node-id="L5b2a6DWX4WbQYcxy8xccJ">重置</div>
+          </div>
+          <div class="page-body" data-page-node-id="WBHI4D2JYjGEEenQ9Mx3kE">
+            <div class="stat-row" data-page-node-id="Rawfq1Fy2oPxY7enGMosCw">
+              <div class="stat-card" data-page-node-id="Od62InWDivgHd3flE3hr6C"><div class="sc-label" data-page-node-id="m1BlmA74ZGMnwSiky5BeQO">资讯总数</div><div class="sc-value" data-page-node-id="sO9YHSt3ikrzxkukGrAQuE">1,286<u data-page-node-id="ogcBpJUukLBAVcZrUKPg2Y">条</u></div><div class="sc-sub" data-page-node-id="OncNYF7Y4OF0pWxzCQS3xy">覆盖 5 个栏目</div></div>
+              <div class="stat-card accent" data-page-node-id="DtzRB10NvyyZMy8V6qGf3V"><div class="sc-label" data-page-node-id="mdcDOb2lDBY9fVEetK6HT2">本月发布</div><div class="sc-value" data-page-node-id="GO6wCusH7sCXJs99b0UDpr">42<u data-page-node-id="iA8fNyYghK72edGGSTNphB">条</u></div><div class="sc-sub up" data-page-node-id="TjI1bgTIFsLhxHvZmzg4LG">▲ 环比 +8 条</div></div>
+              <div class="stat-card warn" data-page-node-id="bgbDLxtVKwFeOsUb5MAVgl"><div class="sc-label" data-page-node-id="4AIyWL3B3DU24GFKuTkPT6">待审核</div><div class="sc-value" data-page-node-id="ePDkDfb1B09dZTfj7ujM4B">7<u data-page-node-id="Yx4bdQiPwbBr0VEbSXyE31">条</u></div><div class="sc-sub" data-page-node-id="ZQP3EKWzhKGJLbXIrhX8Hy">需在 24h 内处理</div></div>
+              <div class="stat-card ok" data-page-node-id="7EkiF2X3yQIRaxmxKcGyql"><div class="sc-label" data-page-node-id="5J5A9W0lkBJVrrazH0Hfmv">累计浏览</div><div class="sc-value" data-page-node-id="3ishE3f41blSF225eHYCQ9">38.6<u data-page-node-id="0e4EjLkJBjD7b5cGGpPPxE">万次</u></div><div class="sc-sub" data-page-node-id="3SrqzvtrYXYBA2UWUkwJry">日均 1,842 次</div></div>
+            </div>
+            <div class="block" style="flex:1;" data-page-node-id="flmdzmaeBsnTZSaucXFKm9">
+              <div class="block-head" data-page-node-id="PZm0JxsqvyQb7EkcU5RC7B"><h3 data-page-node-id="3982WSZY9FbU70OabExnjm">资讯列表</h3><div class="bh-right" data-page-node-id="Oalj0MvuuD5PxX7nVfDsEf"><span data-page-node-id="Fp8QkJ0BCLfOAFqUZAhRvS">共 1,286 条 · 每页 20 条</span></div></div>
+              <div class="tbl-wrap" style="max-height:470px;" data-page-node-id="9vvAUBp6d4wniHjNaGdVmP">
+                <table class="tbl" id="tblNews" data-page-node-id="XUibSEgCysQzYnRT9XzfxM">
+                  <thead data-page-node-id="vboqYghoGxbKzITCrWUBbf"><tr data-page-node-id="fl3iHn6qMsGFE5z5sOFand">
+                    <th style="width:42px" data-page-node-id="vS8sHSFJjprCSEgkWGM0Tq"><input type="checkbox" data-page-node-id="0t0eQdfO6ej3dJ8obkmM0L"></th><th style="width:44px" data-page-node-id="QepnD1mbGBZJbxPQUcXkIZ">序号</th><th class="ellip" data-page-node-id="ifixk4iTWAGEyrRFZx4KIT">标题</th><th style="width:86px" data-page-node-id="FA9VWWy3gpsEF4AoI5jogp">栏目</th><th style="width:126px" data-page-node-id="HgyyOSpxk2HZDLcqmitJ9c">来源</th><th style="width:76px" data-page-node-id="9z0bb6yHZAiSeedbT81JUk">发布人</th><th style="width:126px" data-page-node-id="ZNc6op7aLQy2O5pnTHiaH5">发布时间</th><th class="num" style="width:78px" data-page-node-id="oVG1exqUIzr4OWKvYqFygq">浏览量</th><th style="width:52px" data-page-node-id="Yt4zTjtJniHvQIu61Qg9Eu">置顶</th><th style="width:72px" data-page-node-id="yDHqMH49ifsQOX5c8LEjMr">状态</th><th style="width:130px" data-page-node-id="u8yRKAGwGKnLyB7EHlnu0W">操作</th>
+                  </tr></thead>
+                  <tbody data-page-node-id="5p02Xz8a2V91NzleAJElfi"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 6. 综合管理 ============ -->
+        <div class="page" id="p-system" data-page-node-id="tiA54jYC3BBvH0KNrJBeN6">
+          <div class="page-head" data-page-node-id="8Q8YsCSsow1BUVM9Z1eoy9">
+            <div data-page-node-id="qod5FBoeCjCOmudJx0Nrcx">
+              <div class="page-title" data-page-node-id="zX75EjWP9KKhyPumsRqFo4">综合管理</div>
+              <div class="crumb" data-page-node-id="2zdjAzHBmnmCDWsV0PHNyW">业务管理 / <b data-page-node-id="6ANQN1Jd6ru4x8Xcu9cKLm">综合管理</b> · 用户、角色、组织、日志与系统参数</div>
+            </div>
+            <div class="head-actions" data-page-node-id="6wJEApdqff0wDjD0cus7dv">
+              <div class="btn" data-page-node-id="94zgSEmsKztQAtvp8UPTtk">操作指引</div>
+              <div class="btn primary" data-page-node-id="yA68VqBKxtnBSEbwO3Y9E4">+ 新增</div>
+            </div>
+          </div>
+          <div class="sub-tabs" id="sysTabs" data-page-node-id="MCAcRJojxAuIM13zQ75OOj">
+            <div class="sub-tab active" data-page-node-id="QLWxC1CQ99s7YPGE2aBeIX">用户管理</div>
+            <div class="sub-tab" data-page-node-id="rvNMpI8GFZx6ku6b17R82d">角色权限</div>
+            <div class="sub-tab" data-page-node-id="BFHe9AkxDCCeh5OsviB0o1">组织架构</div>
+            <div class="sub-tab" data-page-node-id="Gc94N33sCNEyuumAA0v2vr">日志审计</div>
+            <div class="sub-tab" data-page-node-id="PjSicPZGIueUKr8STbjI6n">数据字典</div>
+            <div class="sub-tab" data-page-node-id="ucej5m84QyDC7JwKFNBhAA">系统参数</div>
+          </div>
+          <div class="filter-bar" id="sysFilter" data-page-node-id="1EKZt1GrGONYYsjqDYeHrT">
+            <div class="fld" data-page-node-id="VTQ40EIE46QL53hJTSrtev"><span data-page-node-id="pg1J6Sbo6LS4YRJFMHh68B">账号/姓名</span><input type="text" placeholder="请输入关键字" data-page-node-id="PKH6cdsdnLQ6dRWko5ChuG"></div>
+            <div class="fld" data-page-node-id="jcC7DKP18DZWgPKaJKAyh6"><span data-page-node-id="Qsbx48oKNCM8MvBkNJuR4n">所属单位</span><select data-page-node-id="p7guxf3R6ADmCCkYjsjVNX"><option data-page-node-id="CLNbmmM1GWaTTvF30LEho9">全部</option><option data-page-node-id="CzwtbwyJDaEQEL3vtJTffP">省应急管理厅</option><option data-page-node-id="7lQ1VE5IvPTGbxsSWG1sj5">南昌市应急局</option><option data-page-node-id="xdHi3FdTFeEV2QcS7RXmDL">萍乡市应急局</option><option data-page-node-id="xchHvJSIBXuNPlROLxieeS">宜春市应急局</option></select></div>
+            <div class="fld" data-page-node-id="AvBFZAHpRPnMoMM0EzhVME"><span data-page-node-id="iCriBkaYVrEzaDwsHE1Kjk">状态</span><select data-page-node-id="e8EQdTMQKn8jYt3PUKlYVi"><option data-page-node-id="f9L50J1cGcy01dohsstTPt">全部</option><option data-page-node-id="pFjTSWQfSvC6M8jic9XXtZ">启用</option><option data-page-node-id="BGAUBJ9k3SVEt7ltruVSBo">停用</option></select></div>
+            <div class="spacer" data-page-node-id="4V4w9n854zsvnQJcQ6tLfw"></div>
+            <div class="btn primary" data-page-node-id="uW4I93IYK1dSQNw6Nt8gIF">查询</div>
+            <div class="btn" data-page-node-id="BC7tM8j4XT1krcBFkhI4FD">重置</div>
+          </div>
+          <div class="page-body" id="sysBody" data-page-node-id="MAKdGk2JeWgMmJMebEy1u2">
+            <div class="block" style="flex:1;" data-page-node-id="EGGA4N23RcHnR0m71UuGjA">
+              <div class="block-head" data-page-node-id="LBOhzjZmn5kTuEv9vMGAyZ"><h3 id="sysTitle" data-page-node-id="bESiZvFt8eETQm0uY5QKhC">用户列表</h3><div class="bh-right" data-page-node-id="Otc5TKwmRXtLjrUBrPwZG7"><span data-page-node-id="sxoRhZnf9FJqO8BRVTS8Of">共 328 个账号 · 在线 96</span><span class="link" data-page-node-id="Hg3mC92pyV2dFpzYVWfrKN">批量导入</span></div></div>
+              <div class="tbl-wrap" style="max-height:560px;" data-page-node-id="MbUtx87h2rZyhNyeb3jM35">
+                <table class="tbl" id="tblSys" data-page-node-id="asQlXztRj9Gcj8i08ym4eb">
+                  <thead data-page-node-id="gw6LE1WR4XaUsghGnWfnYZ"><tr data-page-node-id="tOwfx5m02uPXLAOi2ggYla">
+                    <th style="width:42px" data-page-node-id="XSN1oJaD5oLTIJOBU76mdC"><input type="checkbox" data-page-node-id="acJZdcXphvOLSKjR3Jdoux"></th><th style="width:52px" data-page-node-id="P5ZwtuDwGJnV5jwhsxCwpb">序号</th><th style="width:112px" data-page-node-id="9n4sQE9JwpkV8bnO4lidFk">账号</th><th style="width:82px" data-page-node-id="G9ptd5An3H6PSwxi3OD8Nm">姓名</th><th data-page-node-id="lnvqaieHrbYdAJvLqAxKpE">所属单位</th><th style="width:112px" data-page-node-id="6zIkClxAX7LLYn8HyOvESK">角色</th><th style="width:112px" data-page-node-id="mX18MA0Up5w6VASyv0zpOb">手机号</th><th style="width:126px" data-page-node-id="yYmijq8IFpHwiw2bYGMFky">最后登录</th><th style="width:64px" data-page-node-id="52iy6WV4bU8MpBBy8IOH2S">状态</th><th style="width:140px" data-page-node-id="kkkNlz8CmMnJO9jtIdrkve">操作</th>
+                  </tr></thead>
+                  <tbody data-page-node-id="7v2EhrexVPyEG327GWJ5yN"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 7. 数据汇聚与服务发布 ============ -->
+        <div class="page" id="p-data" data-page-node-id="HoUZUyPEQoCdb4afzRH3og">
+          <div class="page-head" data-page-node-id="GQjwAstmXAFqlDko5YHJNb">
+            <div data-page-node-id="63v0vZZWCvIEUGn3IOHHm7">
+              <div class="page-title" data-page-node-id="5ouxQc5xZX1f3zxEAhDWh0">数据汇聚与服务发布</div>
+              <div class="crumb" data-page-node-id="yeJFnNHjW3mWzK7OHy4pyG">业务管理 / <b data-page-node-id="sNylO7IfWblXXq6SmkE17H">数据汇聚与服务发布</b> · 跨部门数据接入、治理与共享服务目录</div>
+            </div>
+            <div class="head-actions" data-page-node-id="E5bfjWZJKmwc1BZAv0t1GS">
+              <div class="btn" data-page-node-id="GyhBgPm9YbT9wCk6SISh1S">数据质量报告</div>
+              <div class="btn primary" data-page-node-id="uW4n4fppHpRwlgwzWAD48k">+ 新增数据源</div>
+            </div>
+          </div>
+          <div class="filter-bar" data-page-node-id="HUUyr0igprmvdUCAySJuUN">
+            <div class="fld" data-page-node-id="prSNCQmHoWJGpKCxSBHdPz"><span data-page-node-id="XOtrNDYnpFtpXCv2sSGkUf">数据领域</span><select data-page-node-id="NwKMsfmaYwOnAeqCDXxyHg"><option data-page-node-id="EEE6t4RCzyPis1j7U0AKK8">全部</option><option data-page-node-id="n57zpZd1i41XE7vuVComuw">企业资质</option><option data-page-node-id="RJqCzkjUJRcHDBc1hksdVW">生产经营</option><option data-page-node-id="En2v8OvK3R4L6GMnwXsYiF">仓储物流</option><option data-page-node-id="aAoakk7l38IhhI0aJpA5tX">执法检查</option><option data-page-node-id="OGLkkblhgrrpCNlNPjlKeG">视频物联</option></select></div>
+            <div class="fld" data-page-node-id="0nxRT7Bys7YP2toEST7EHf"><span data-page-node-id="w9T7HG5rcgt1X9stkzxfs6">对接状态</span><select data-page-node-id="TXEKogEntQX7GpBihCBuLA"><option data-page-node-id="DI2z1nqtIexyP80pYWNTGF">全部</option><option data-page-node-id="RrYz7Fg8cyj7AIDX6FvZqo">已接入</option><option data-page-node-id="SmSeDU75wcuVdR6y6MHKSp">联调中</option><option data-page-node-id="JjY4qjCw8r1Akf1LJKTU8b">已中断</option></select></div>
+            <div class="fld" data-page-node-id="cTM6IGeO9jR3NGns9qYrLr"><span data-page-node-id="5JSQXu07HOU1YrKdbUfawX">更新频率</span><select data-page-node-id="lyddtzWIE18e93y0RDCwXb"><option data-page-node-id="LQVUGTrceV9fr0rkrukGW6">全部</option><option data-page-node-id="6l1FLDEB9Qdi588EsXe3to">实时</option><option data-page-node-id="JV960ITokaZ7OdmeFgdCL4">小时</option><option data-page-node-id="AzdAI8dY8oFG3aJeKiY5Rb">每日</option><option data-page-node-id="lBUdeveczqKSdfkQMcjkEC">每月</option></select></div>
+            <div class="spacer" data-page-node-id="0ZaQm69r2v8e4lYXeqDfOH"></div>
+            <div class="btn primary" data-page-node-id="7ltDpgWHEyYMnLiJLFGuqj">查询</div>
+            <div class="btn" data-page-node-id="DjYMb2MKxFCHAmPVDgXziI">重置</div>
+          </div>
+          <div class="page-body" data-page-node-id="aSghECEGdJWm809pnPivUT">
+            <div class="stat-row" data-page-node-id="E6KwdZp2hAdRGjHNNhDDBP">
+              <div class="stat-card accent" data-page-node-id="0YuEe9z6kQFBxcwwF9z00y"><div class="sc-label" data-page-node-id="k0VyJQTCKp6yfVvIBEG0v0">接入数据源</div><div class="sc-value" data-page-node-id="MX5Q7BfV25zZibDZRuv6t3">6<u data-page-node-id="6ePK3CDCIaZAH6MzHTid0R">个部门</u></div><div class="sc-sub" data-page-node-id="VXLEKbbHcCWDaDmvzEUM9E">目录 128 类 · 表 426 张</div></div>
+              <div class="stat-card" data-page-node-id="PU6I5UY4hfqZORtSXuq7RM"><div class="sc-label" data-page-node-id="FtdhvsiNu1CRj0R0KhNRXq">累计汇聚数据</div><div class="sc-value" data-page-node-id="u6AZgUu2PnDSSJ2EBxPGLM">8.42<u data-page-node-id="cDvSRw7LK1X11RQRDR0O6V">亿条</u></div><div class="sc-sub up" data-page-node-id="M14Hsvcj7fVckFZPpOJHoE">▲ 今日 +186.4 万条</div></div>
+              <div class="stat-card ok" data-page-node-id="AeFfSg0rtL6cdoYDBHTkIn"><div class="sc-label" data-page-node-id="2st1ZkSThutT3VmDxSYUG9">数据完整率</div><div class="sc-value" data-page-node-id="1FyrXF8PB0nZfRtVMHI12a">97.6<u data-page-node-id="syedfcnBLmGyyYnk4L5PDr">%</u></div><div class="sc-sub" data-page-node-id="DwQ6P4P3AmCG1IDDqktRqk">考核基准 ≥ 95%</div></div>
+              <div class="stat-card" data-page-node-id="7eUCTUfAmy4lBd0j1HptRv"><div class="sc-label" data-page-node-id="dhT2Ltrs9O6EHR1ZFPuILC">对外服务</div><div class="sc-value" data-page-node-id="DF8RMf4tH0oLW49EcTOBOP">64<u data-page-node-id="6NPWtd1yVtBnKxmvTzo8DK">个</u></div><div class="sc-sub" data-page-node-id="NLnqGUEhKnkYIsdSNuMPGE">累计调用 1,286 万次</div></div>
+              <div class="stat-card warn" data-page-node-id="GceIpO1VvAsdbOm0DIrJHT"><div class="sc-label" data-page-node-id="EuSBYPvVjBFyeDvG75rVFr">异常接口</div><div class="sc-value" data-page-node-id="Dx41JgB9cq7NckT1uTBtlg">3<u data-page-node-id="CeeGwrhlIA04D6USbn7GR4">个</u></div><div class="sc-sub down" data-page-node-id="c5DprnZYV5oEXzQEXWHQVQ">▲ 需运维跟进</div></div>
+            </div>
+            <div class="block" data-page-node-id="e61GPfhXlmOLNwKb3i4bTk">
+              <div class="block-head" data-page-node-id="sEb8xDA22s5uwHsHhFk7wz"><h3 data-page-node-id="7t8xBoBPHamBEgaWedI3Er">部门数据接入概览</h3><div class="bh-right" data-page-node-id="Bj17eR6y4dtXVuHmTz2uSu"><span data-page-node-id="R9hcFPB6DFJalBK0iTD7QN">数据截至 2026-09-03 09:00</span></div></div>
+              <div class="block-body" data-page-node-id="sZs5AtL1GOEeJurGuGqb5i"><div class="ds-grid" id="dsGrid" data-page-node-id="zP4qjfCsN0AvmlhbOIq2bq"></div></div>
+            </div>
+            <div class="cols-2" style="min-height:210px;" data-page-node-id="7o09238CUvJeDDjRnI82HR">
+              <div class="block" data-page-node-id="vtaAIibDOPl5m8vOwEBU6M">
+                <div class="block-head" data-page-node-id="g7giktNdzrQLcxiyH46BCv"><h3 data-page-node-id="m2cUATWWp1cC97skwbeL9V">各部门数据接入量排行</h3><div class="bh-right" data-page-node-id="bSO90PHLuQ9Fd2yEDiLYJh"><span data-page-node-id="sXwhFdm1ELb5gDGcvHe2OE">单位：万条</span></div></div>
+                <div class="block-body" style="flex:1; padding:6px 8px;" data-page-node-id="Pr2cmw8N5Q1EIfA1gcFGJ7"><div id="cDsBar" class="chart" data-page-node-id="vSQW70q5tthukUEyqS0SLP"></div></div>
+              </div>
+              <div class="block" data-page-node-id="1RLmJVZVDkBuzoJO0B7Eww">
+                <div class="block-head" data-page-node-id="BAjRMr5gN37hPQeb9Re8Ic"><h3 data-page-node-id="krlNBvpXEJenkduJU6Ttbu">近 30 日数据接入趋势</h3><div class="bh-right" data-page-node-id="GR9qNry2ZgflM3CXPCqbag"><span data-page-node-id="6C4xI3eGKsXSyy3Une0B8Z">单位：万条 / 日</span></div></div>
+                <div class="block-body" style="flex:1; padding:6px 8px;" data-page-node-id="O4WZEoH8m9drUG6p4f44EM"><div id="cDsLine" class="chart" data-page-node-id="CAZLPloBgFIAFaImac8RAw"></div></div>
+              </div>
+            </div>
+            <div class="block" style="flex:1;" data-page-node-id="l3FoKtbYoijBgO5NzPvsPR">
+              <div class="block-head" data-page-node-id="Mp0RMxHzPyMKxb5gJBVAFw"><h3 data-page-node-id="s5EXEcmUplCytvBo89sWWR">数据共享服务目录</h3><div class="bh-right" data-page-node-id="nkFzo5Zb3loqkq3QF7he1t"><span data-page-node-id="vQi9ol8s8BJzBWs8AcrKfo">共 64 个服务</span><span class="link" data-page-node-id="e9IXxFVTMAMKKxinloz9cD">申请接入</span></div></div>
+              <div class="tbl-wrap" style="max-height:230px;" data-page-node-id="67CJHe1jK1C33gDXSCzvTg">
+                <table class="tbl" id="tblSvc" data-page-node-id="YyUqmwsHwYweGEjmJlblG5">
+                  <thead data-page-node-id="FbGfCwqUSxDXvtJYE2wHyK"><tr data-page-node-id="wfsOMAclmzU71ftmz2guLj">
+                    <th style="width:52px" data-page-node-id="Y0XiaYnEzDiLQtIJcLwrlj">序号</th><th data-page-node-id="S6ct7m2ggmB8HmdRP8twKe">服务名称</th><th style="width:132px" data-page-node-id="5TPFjwD36ohjEmcx65PHb5">服务编码</th><th data-page-node-id="cP8CLLoC7EagmemVbZNWr7">提供部门</th><th data-page-node-id="U0b5vGaq35fyEb1BOBTkfG">调用方</th><th style="width:82px" data-page-node-id="uYi2s8GC7aFZwYMrVvTKSU">更新频率</th><th class="num" style="width:86px" data-page-node-id="Htxc5TuBNC8LA6TcdNwIEb">今日调用</th><th class="num" style="width:92px" data-page-node-id="VRrGeWB7vnB20f8v13klcR">累计调用</th><th style="width:70px" data-page-node-id="c1KHwaVyHT3lZf7dQ5mgNT">SLA</th><th style="width:64px" data-page-node-id="PSYZgvbn7Cxul7M6c1gpEv">状态</th><th style="width:110px" data-page-node-id="wlXOqjKba04BGSZ278YMQI">操作</th>
+                  </tr></thead>
+                  <tbody data-page-node-id="cDNDDT2nVxGmgnRF5vr4jQ"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 8. 烟花爆竹AI算法仓 ============ -->
+        <div class="page" id="p-algo" data-page-node-id="h4aJzOpzG47Mxv6gMAmoPO">
+          <div class="page-head" data-page-node-id="haCT1aMoYchMQjEo4W52BH">
+            <div data-page-node-id="D0cdbKTCBVjh76YcJoLkOK">
+              <div class="page-title" data-page-node-id="tEFQCQ70DQ672mgHI1ehrT">烟花爆竹AI算法仓</div>
+              <div class="crumb" data-page-node-id="KkKTGF7zJcgv305xlS3bt0">业务管理 / <b data-page-node-id="wntbRiKNjoGxKlVNdGeUw5">烟花爆竹AI算法仓</b> · 算法注册、版本管理与边缘下发</div>
+            </div>
+            <div class="head-actions" data-page-node-id="EGsVvcRAGQDTHYhoUFAkgt">
+              <div class="btn" data-page-node-id="cUqS3BGOJY8wByJHsr7HQu">模型仓库</div>
+              <div class="btn" data-page-node-id="mDkP84G2DE2QvgvKdiGkTz">批量下发</div>
+              <div class="btn primary" data-page-node-id="TKGjihOG9brhc5seJ4iZGQ">+ 注册算法</div>
+            </div>
+          </div>
+          <div class="filter-bar" data-page-node-id="HsH9jR2wke1snYBA0XMC7Q">
+            <div class="fld" data-page-node-id="xJu11uMM5R07tXDwY1fKZD"><span data-page-node-id="y7c3x9gHohABemEmpAse9H">算法类别</span><select data-page-node-id="SV3sR6joJTMfLecO7Qp7Bi"><option data-page-node-id="aSZqGQguFKBivH6SeIUDWn">全部</option><option data-page-node-id="rCMPvYinC3aprMWlYJpSde">烟火检测</option><option data-page-node-id="KsyG4OJxvYwoHOVa9KmvLU">人员行为</option><option data-page-node-id="XQI54rXoaUdDG5Pntpvdlx">作业合规</option><option data-page-node-id="7eFHrYB7GoCJfZQL15EDhw">仓储环境</option><option data-page-node-id="WGSM6zIjfvvLrIzZ8j3hLH">机械设备</option></select></div>
+            <div class="fld" data-page-node-id="FondMUtmpC2UiRKW6oDmFj"><span data-page-node-id="SBnqGIQZ4mGmazfQ8mpFnK">部署状态</span><select data-page-node-id="kf0aXOZxIQ1VS0EswNcs9I"><option data-page-node-id="v1YHQjOvqlfgALnu9fmFPF">全部</option><option data-page-node-id="eVoVcTDAAf9KhnVxh0lJB4">已部署</option><option data-page-node-id="C2c7p5GlaNAYPfVftr5DZR">测试中</option><option data-page-node-id="ILLEWbE7bq7h361l5ZGx6v">已下线</option></select></div>
+            <div class="fld" data-page-node-id="IfuqnwSXMK0JxiT2LcEQJB"><input type="text" placeholder="算法名称 / 编号" data-page-node-id="dPj3OflHgnqVroe4y8N5Hd"></div>
+            <div class="spacer" data-page-node-id="yYi8zxEQCBq6jKspmdaiwd"></div>
+            <div class="btn primary" data-page-node-id="nqrEmC4xBhqQc4UUuaPe3m">查询</div>
+            <div class="btn" data-page-node-id="fnFAKbTtgb5Otg7OTa3aqr">重置</div>
+          </div>
+          <div class="page-body" data-page-node-id="Qdm1JIv7gcmNpvEKeIoHX5">
+            <div class="stat-row" data-page-node-id="nTToEvQDEtxVrHRm2ecKbR">
+              <div class="stat-card accent" data-page-node-id="C6o2fYbs3XVYSriK8G5IlS"><div class="sc-label" data-page-node-id="fvnAwwAlNIkq33kP5Jl2FR">算法总数</div><div class="sc-value" data-page-node-id="GAZDSnLdGz3b4TkRqLaQy2">12<u data-page-node-id="FPWbhTWX1VvMJKuaMxgs0r">个</u></div><div class="sc-sub" data-page-node-id="0oifizePROA65MLpIzO5u9">已部署 11 · 测试中 1</div></div>
+              <div class="stat-card" data-page-node-id="lLE0e0BnXuO8deESgQEnf1"><div class="sc-label" data-page-node-id="WCVTEKPCgAqrWsovhhWZPB">部署边缘盒子</div><div class="sc-value" data-page-node-id="uGGkvJou5S8M6fuEE1bnuY">1,286<u data-page-node-id="ffcFKlyyNOsa0yU9u4TXk8">台</u></div><div class="sc-sub" data-page-node-id="XY79wCgRnkuqUwNVv9JvvH">覆盖 142 家在产企业</div></div>
+              <div class="stat-card" data-page-node-id="zASPoSynJUEFl1pkU0Ztxj"><div class="sc-label" data-page-node-id="cy8fNtug5i0SaQABdH2061">日均推理调用</div><div class="sc-value" data-page-node-id="vLOr36QNNIBmh0fzAAEx5y">486.2<u data-page-node-id="BG2xDDNppVF1f8sDmHWXbC">万次</u></div><div class="sc-sub up" data-page-node-id="DZB1v9nHqpWcjiJxElEys7">▲ 环比 +12.6%</div></div>
+              <div class="stat-card ok" data-page-node-id="uzZ023Gm76mOCvZILUpBBv"><div class="sc-label" data-page-node-id="m1uenh5POhFp0VSmWO0LQv">平均识别准确率</div><div class="sc-value" data-page-node-id="ZK6NjOR59QSBlUvYE8OUoE">99.94<u data-page-node-id="xcyTMWnA4ghWzqopkspNAe">%</u></div><div class="sc-sub" data-page-node-id="QPNc9I3kvFWqCabBpWE37c">较上月 +0.02%</div></div>
+              <div class="stat-card warn" data-page-node-id="hz7vBcOED1y6dSdP9kVfX5"><div class="sc-label" data-page-node-id="Fbgcqp8GFZEnOu2Wud1SKF">今日命中告警</div><div class="sc-value" data-page-node-id="OBWiVJkheqiCVN3N9g5bSn">186<u data-page-node-id="98DIH1HkTdexjHGEFcqRLG">次</u></div><div class="sc-sub" data-page-node-id="SJroN2PpBBfiFcMS6TNSua">已核验 148 次</div></div>
+              <div class="stat-card danger" data-page-node-id="xlTU6YCo2sDIjaakPEXxK6"><div class="sc-label" data-page-node-id="yyXuJmSExPSBBO1I8vuEB2">误报率</div><div class="sc-value" data-page-node-id="eIi3ekxylfkIPfJPCQwxsB">0.86<u data-page-node-id="c0TaZzSxYrsGvk6mnhgdg0">%</u></div><div class="sc-sub" data-page-node-id="ILKPyPH0apHy3CSZ5dOU9q">考核基准 ≤ 2%</div></div>
+            </div>
+            <div class="block" data-page-node-id="dlGdGo65jgk7pXNfhtMdB1">
+              <div class="block-head" data-page-node-id="d6jFGqoFt82iuilpbomGSy"><h3 data-page-node-id="BRYZDehlHMEAN8CI0q5ZBy">算法列表</h3><div class="bh-right" data-page-node-id="BGhTaAx1LmaCmCU0bHtztn"><span data-page-node-id="a3B9nI0zAEDPkBBh0oh1Qa">共 12 个算法 · 支持一键下发至边缘盒子</span></div></div>
+              <div class="block-body" data-page-node-id="EhsVbgncCtyxGhM7YwsnWK"><div class="algo-grid" id="algoGrid" data-page-node-id="bNBgIKCb7G2qUSQDK1Ym5T"></div></div>
+            </div>
+            <div class="block" style="flex:1;" data-page-node-id="Br9VNYqmCn10gzVPXpysVs">
+              <div class="block-head" data-page-node-id="B5Vigsxk6BD4AbCV9AI1A5"><h3 data-page-node-id="Zkx83uZ1XRPU2y2PWAkvir">模型版本与迭代记录</h3><div class="bh-right" data-page-node-id="BgDl0ktBEqKDym50Go1hVE"><span class="link" data-page-node-id="VL74DrHGmT5Zm7ZH4UUl38">训练任务管理</span></div></div>
+              <div class="tbl-wrap" style="max-height:210px;" data-page-node-id="f6DEBiPs3hMzOQJNabz55t">
+                <table class="tbl" id="tblModel" data-page-node-id="Om0mh7fbEbsFPM3pDqSHkh">
+                  <thead data-page-node-id="AKvzRggHNpSFDwGBE3CRja"><tr data-page-node-id="Gq5WjM05UObn0KBd5jRAvA">
+                    <th style="width:52px" data-page-node-id="DXzmudKKLgI1qXQ98hX72H">序号</th><th data-page-node-id="ngMh4HHwqwPy4sHQlOoeKW">算法名称</th><th style="width:78px" data-page-node-id="RoUPXG6dt6MK6jWeQRDFBg">版本</th><th style="width:96px" data-page-node-id="Hz1FPijK8boPKWDU5kZPqk">训练样本</th><th style="width:78px" data-page-node-id="uq6xbc4ndgvYwAYtCDTgJB">准确率</th><th style="width:78px" data-page-node-id="tzOI1RYzNRe2Ds3NWQHPbi">召回率</th><th style="width:96px" data-page-node-id="xzu2Cyo6HnUvXrcsxRKip2">发布时间</th><th style="width:82px" data-page-node-id="Y3PfcYgG6n6HnFw56a9Aq6">部署台数</th><th style="width:82px" data-page-node-id="mcGhxIRg0esoIaTnBFelKJ">框架</th><th style="width:64px" data-page-node-id="wGavgCS2pe8abjLFznugC9">状态</th><th style="width:120px" data-page-node-id="kcIDD8ubmp0nuLkgYgoIpq">操作</th>
+                  </tr></thead>
+                  <tbody data-page-node-id="zt0lrwIP0nZ5NFQgH9GH7B"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+</div>
+</div>
+
+<script>
+  // ============ 缩放 ============
+  function fitScreen() {
+    var s = document.getElementById('screen');
+    var k = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    s.style.transform = 'translate(-50%,-50%) scale(' + k + ')';
+  }
+  window.addEventListener('resize', function () {
+    fitScreen();
+    resizeAllCharts();
+  });
+  fitScreen();
+
+  // ============ 时钟 ============
+  function tick() {
+    var d = new Date();
+    var p = function (n) { return n < 10 ? '0' + n : '' + n; };
+    var t = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    var c = document.getElementById('clock'); if (c) c.textContent = t;
+    var f = document.getElementById('footTime'); if (f) f.textContent = t;
+  }
+  tick(); setInterval(tick, 1000);
+
+  // ============ 图表管理 ============
+  var chartMap = {};
+  function initChart(id, option) {
+    var el = document.getElementById(id);
+    if (!el || chartMap[id]) return;
+    chartMap[id] = echarts.init(el);
+    chartMap[id].setOption(option);
+  }
+  function resizeAllCharts() {
+    for (var k in chartMap) { if (chartMap[k]) chartMap[k].resize(); }
+  }
+  var AXIS = { color: '#8aa4bf', fontSize: 10 };
+  var SPLIT = { lineStyle: { color: 'rgba(0,150,255,0.1)' } };
+  var TIP = { trigger: 'axis', backgroundColor: 'rgba(8,20,40,0.92)', borderColor: '#00d4ff', textStyle: { color: '#c8dcf0', fontSize: 11 } };
+
+  var CHART_FACTORY = {
+    overview: function () {
+      initChart('cTrend', {
+        grid: { left: 38, right: 14, top: 34, bottom: 22 },
+        tooltip: TIP,
+        legend: { data: ['采购', '生产', '仓储', '运输'], right: 6, top: 2, textStyle: { color: '#8aa4bf', fontSize: 10 }, itemWidth: 12, itemHeight: 7 },
+        xAxis: { type: 'category', data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月'], axisLine: { lineStyle: { color: 'rgba(0,150,255,0.25)' } }, axisLabel: AXIS, axisTick: { show: false } },
+        yAxis: { type: 'value', axisLine: { show: false }, splitLine: SPLIT, axisLabel: AXIS },
+        series: [
+          { name: '采购', type: 'line', smooth: true, symbol: 'none', data: [1.32, 1.18, 1.46, 1.52, 1.61, 1.68, 1.75, 1.86], lineStyle: { width: 2, color: '#00d4ff' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(0,212,255,0.28)' }, { offset: 1, color: 'rgba(0,212,255,0)' }]) } },
+          { name: '生产', type: 'line', smooth: true, symbol: 'none', data: [2860, 2420, 3180, 3340, 3420, 3560, 3680, 3752], lineStyle: { width: 2, color: '#22c55e' } },
+          { name: '仓储', type: 'line', smooth: true, symbol: 'none', data: [62.4, 58.6, 66.2, 70.8, 74.6, 79.2, 83.1, 86.4], lineStyle: { width: 2, color: '#ff9f2e' } },
+          { name: '运输', type: 'line', smooth: true, symbol: 'none', data: [118, 96, 132, 138, 142, 148, 152, 156], lineStyle: { width: 2, color: '#a855f7' } }
+        ]
+      });
+      initChart('cChainBar', {
+        grid: { left: 38, right: 34, top: 22, bottom: 22 },
+        tooltip: TIP,
+        legend: { data: ['业务量', '风险预警'], right: 6, top: 0, textStyle: { color: '#8aa4bf', fontSize: 10 }, itemWidth: 12, itemHeight: 7 },
+        xAxis: { type: 'category', data: ['采购', '生产', '仓储', '运输', '出口', '零售', '燃放'], axisLine: { lineStyle: { color: 'rgba(0,150,255,0.25)' } }, axisLabel: AXIS, axisTick: { show: false } },
+        yAxis: [{ type: 'value', name: '业务量', nameTextStyle: AXIS, axisLine: { show: false }, splitLine: SPLIT, axisLabel: AXIS },
+                { type: 'value', name: '预警', nameTextStyle: AXIS, axisLine: { show: false }, splitLine: { show: false }, axisLabel: AXIS }],
+        series: [
+          { name: '业务量', type: 'bar', barWidth: 16, data: [1860, 3752, 864, 156, 428, 749, 86], itemStyle: { borderRadius: [3, 3, 0, 0], color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: '#00d4ff' }, { offset: 1, color: 'rgba(0,120,200,0.25)' }]) } },
+          { name: '风险预警', type: 'line', yAxisIndex: 1, smooth: true, symbol: 'circle', symbolSize: 5, data: [26, 128, 64, 38, 12, 46, 8], lineStyle: { width: 2, color: '#ff4d4f' }, itemStyle: { color: '#ff4d4f' } }
+        ]
+      });
+    },
+    profile: function () { renderRadar(); },
+    data: function () {
+      initChart('cDsBar', {
+        grid: { left: 92, right: 34, top: 14, bottom: 20 },
+        tooltip: TIP,
+        xAxis: { type: 'value', axisLine: { show: false }, splitLine: SPLIT, axisLabel: AXIS },
+        yAxis: { type: 'category', data: ['应急管理厅', '公安厅', '市场监管局', '交通运输厅', '南昌海关', '国网电力'], axisLine: { lineStyle: { color: 'rgba(0,150,255,0.25)' } }, axisLabel: AXIS, axisTick: { show: false } },
+        series: [{ type: 'bar', barWidth: 13, data: [2684, 1862, 1428, 1186, 786, 474], itemStyle: { borderRadius: [0, 3, 3, 0], color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color: 'rgba(0,120,200,0.4)' }, { offset: 1, color: '#00d4ff' }]) }, label: { show: true, position: 'right', color: '#c8dcf0', fontSize: 10 } }]
+      });
+      initChart('cDsLine', {
+        grid: { left: 38, right: 14, top: 22, bottom: 22 },
+        tooltip: TIP,
+        xAxis: { type: 'category', boundaryGap: false, data: Array.from({ length: 30 }, function (_, i) { var d = new Date(2026, 7, 5 + i); return (d.getMonth() + 1) + '/' + d.getDate(); }), axisLine: { lineStyle: { color: 'rgba(0,150,255,0.25)' } }, axisLabel: { color: '#8aa4bf', fontSize: 9, interval: 5 }, axisTick: { show: false } },
+        yAxis: { type: 'value', name: '万条', nameTextStyle: AXIS, axisLine: { show: false }, splitLine: SPLIT, axisLabel: AXIS },
+        series: [{ type: 'line', smooth: true, symbol: 'none', data: [142, 148, 136, 152, 168, 172, 158, 146, 162, 176, 182, 168, 154, 148, 166, 178, 186, 192, 176, 162, 158, 172, 184, 196, 188, 174, 168, 182, 194, 186], lineStyle: { width: 2, color: '#00d4ff' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(0,212,255,0.32)' }, { offset: 1, color: 'rgba(0,212,255,0)' }]) } }]
+      });
+    }
+  };
+
+  // ============ 菜单切换 ============
+  var inited = {};
+  var MENU_TITLE = {
+    overview: '全链条综合数据展示', verify: '重点预警核验', profile: '企业画像', rules: '全链条风险预警配置',
+    news: '资讯管理', system: '综合管理', data: '数据汇聚与服务发布', algo: '烟花爆竹AI算法仓'
+  };
+  document.querySelectorAll('.menu-item').forEach(function (item) {
+    item.addEventListener('click', function () {
+      var key = item.getAttribute('data-key');
+      document.querySelectorAll('.menu-item').forEach(function (m) { m.classList.remove('active'); });
+      item.classList.add('active');
+      document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('active'); });
+      document.getElementById('p-' + key).classList.add('active');
+      if (CHART_FACTORY[key] && !inited[key]) { inited[key] = true; CHART_FACTORY[key](); }
+      else { resizeAllCharts(); }
+    });
+  });
+
+  // ============ 表格渲染工具 ============
+  function fill(id, rows) {
+    var tb = document.querySelector('#' + id + ' tbody');
+    if (!tb) return;
+    tb.innerHTML = rows.map(function (r) {
+      return '<tr>' + r.map(function (c, i) { return '<td' + (typeof c === 'object' ? ' class="' + (c.cls || '') + '"' : '') + '>' + (typeof c === 'object' ? c.v : c) + '</td>'; }).join('') + '</tr>';
+    }).join('');
+  }
+
+  // ---- 1. 全链条环节明细 ----
+  var CHAIN = [
+    ['采购', '312 家', '1,860 吨', '+6.2%', 26, 6, '98.2%', '危化品采购备案系统', 'green'],
+    ['生产', '186 家', '3,752 万箱', '+3.8%', 128, 24, '99.1%', '生产许可与工房管理系统', 'green'],
+    ['仓储', '428 座', '86.4 万箱', '+2.1%', 64, 11, '97.8%', '仓储温湿度与库存系统', 'orange'],
+    ['运输', '1,286 辆', '156 车次', '+4.6%', 38, 8, '96.4%', '危货车辆 GPS 监控平台', 'orange'],
+    ['出口', '46 家', '428 批次', '+11.4%', 12, 2, '99.6%', '海关报关单一窗口', 'green'],
+    ['零售', '749 家', '12.6 万箱', '+1.8%', 46, 9, '95.2%', '零售网点登记系统', 'yellow'],
+    ['燃放', '86 场', '79 场已批', '+8.0%', 8, 1, '98.8%', '燃放活动审批系统', 'green']
+  ];
+  fill('tblChain', CHAIN.map(function (r, i) {
+    return [i + 1, r[0], { v: r[1], cls: 'num' }, { v: r[2], cls: 'num' }, { v: r[3], cls: 'num' }, { v: r[4], cls: 'num' }, { v: r[5], cls: 'num' }, { v: r[6], cls: 'num' }, r[7],
+      '<span class="tag ' + r[8] + '">' + (r[8] === 'green' ? '运行正常' : r[8] === 'orange' ? '重点关注' : '待提升') + '</span>',
+      '<span class="link">明细</span> <span class="link">下钻</span>'];
+  }));
+
+  // ---- 2. 重点预警核验 ----
+  var VERIFY = [
+    ['YJ20260903001', '工房超员作业', '上栗县金坪烟花制造有限公司', '萍乡市/上栗县', '红色', 'AI 视频识别', '09-03 08:42:16', '剩 12 分钟'],
+    ['YJ20260903002', '烟雾火焰告警', '万载县黄茅出口花炮厂', '宜春市/万载县', '红色', 'AI 视频识别', '09-03 08:26:04', '剩 26 分钟'],
+    ['YJ20260903003', '仓库温湿度超限', '萍乡市安源区兴盛烟花仓储中心', '萍乡市/安源区', '橙色', '物联网感知', '09-03 08:11:38', '剩 42 分钟'],
+    ['YJ20260903004', '静电释放未检测', '芦溪县银河烟花制造有限公司', '萍乡市/芦溪县', '橙色', '门禁人员', '09-03 07:58:22', '超时 8 分钟'],
+    ['YJ20260903005', '危货车辆偏离路线', '赣 A·T7821（江西危运物流）', '南昌市/新建区', '橙色', '车辆 GPS', '09-03 07:46:10', '剩 58 分钟'],
+    ['YJ20260903006', '涉药机械运行超限', '万载县双桥爆竹制造有限公司', '宜春市/万载县', '黄色', '物联网感知', '09-03 07:32:55', '剩 86 分钟'],
+    ['YJ20260903007', '违规吸烟识别', '上栗县桐木镇花炮二厂', '萍乡市/上栗县', '黄色', 'AI 视频识别', '09-03 07:14:29', '剩 96 分钟'],
+    ['YJ20260903008', '成品超高堆垛', '袁州区慈化镇烟花总厂', '宜春市/袁州区', '黄色', 'AI 视频识别', '09-03 06:58:47', '剩 118 分钟'],
+    ['YJ20260903009', '安全通道堵塞', '湘东区下埠烟花制造有限公司', '萍乡市/湘东区', '黄色', 'AI 视频识别', '09-03 06:41:33', '超时 22 分钟'],
+    ['YJ20260903010', '人员无证上岗', '樟树市临江烟花制造有限公司', '宜春市/樟树市', '橙色', '门禁人员', '09-03 06:22:18', '剩 64 分钟'],
+    ['YJ20260903011', '夜间违规入库', '南昌县向塘烟花爆竹仓储中心', '南昌市/南昌县', '红色', '门禁人员', '09-03 05:47:52', '超时 46 分钟'],
+    ['YJ20260903012', '装卸作业无监护', '进贤县李渡烟花集团仓储部', '南昌市/进贤县', '黄色', '人工上报', '09-03 05:16:40', '剩 132 分钟']
+  ];
+  fill('tblVerify', VERIFY.map(function (r) {
+    var lv = r[4] === '红色' ? 'red' : r[4] === '橙色' ? 'orange' : 'yellow';
+    var over = r[7].indexOf('超时') >= 0;
+    return [
+      '<input type="checkbox">',
+      '<span style="color:#7dd3fc">' + r[0] + '</span>',
+      r[1], r[2], r[3],
+      '<span class="tag ' + lv + '">' + r[4] + '</span>',
+      r[5], r[6],
+      '<span style="color:' + (over ? '#ff7875' : '#8aa4bf') + '">' + r[7] + '</span>',
+      '<span class="tag ' + (over ? 'red' : 'blue') + '">' + (over ? '超时未核验' : '待核验') + '</span>',
+      '<span class="link">核验</span> <span class="link">驳回</span> <span class="link">详情</span>'
+    ];
+  }));
+
+  // ---- 3. 企业画像 ----
+  var ENTS = [
+    { n: '上栗县金坪烟花制造有限公司', c: '91360322MA38XK2L7B', t: '生产企业', a: '萍乡市上栗县金山镇花炮工业园', f: '李建国', p: '1380799****', e: '2011-06-18', lic: '赣烟安许证〔2025〕0362号', exp: '2028-06-17', s: '在产', lv: '红', score: 58, risk: [72, 64, 58, 81, 46, 88] },
+    { n: '万载县黄茅出口花炮厂', c: '91360922MA37QW8M1D', t: '生产企业', a: '宜春市万载县黄茅镇前进路 88 号', f: '张志明', p: '1390795****', e: '2008-09-24', lic: '赣烟安许证〔2024〕1108号', exp: '2027-09-23', s: '在产', lv: '红', score: 61, risk: [68, 71, 62, 74, 52, 79] },
+    { n: '萍乡市安源区兴盛烟花仓储中心', c: '91360300MA39RT4N5X', t: '批发企业', a: '萍乡市安源区高新园仓储物流区', f: '王德海', p: '1370799****', e: '2014-03-11', lic: '赣烟经许证〔2025〕2043号', exp: '2028-03-10', s: '运营', lv: '橙', score: 72, risk: [48, 56, 44, 62, 58, 66] },
+    { n: '江西危运物流有限公司', c: '91360100MA35HP6K9W', t: '批发企业', a: '南昌市新建区望城新区兴业大道', f: '陈立新', p: '1350791****', e: '2013-11-05', lic: '赣烟经许证〔2024〕0871号', exp: '2027-11-04', s: '运营', lv: '橙', score: 76, risk: [42, 38, 72, 56, 61, 54] },
+    { n: '芦溪县银河烟花制造有限公司', c: '91360323MA38YN7P2Q', t: '生产企业', a: '萍乡市芦溪县银河镇河下村', f: '刘春华', p: '1360799****', e: '2010-08-16', lic: '赣烟安许证〔2025〕0621号', exp: '2028-08-15', s: '在产', lv: '黄', score: 81, risk: [36, 44, 38, 48, 52, 42] },
+    { n: '袁州区慈化镇烟花总厂', c: '91360902MA37MJ3H6R', t: '生产企业', a: '宜春市袁州区慈化镇工业小区', f: '周国平', p: '1380795****', e: '2007-05-22', lic: '赣烟安许证〔2024〕0288号', exp: '2027-05-21', s: '在产', lv: '黄', score: 84, risk: [32, 28, 42, 44, 38, 46] },
+    { n: '南昌县向塘烟花爆竹仓储中心', c: '91360121MA38KP9L4V', t: '批发企业', a: '南昌市南昌县向塘镇物流大道', f: '吴建华', p: '1390791****', e: '2012-10-30', lic: '赣烟经许证〔2025〕1355号', exp: '2028-10-29', s: '运营', lv: '黄', score: 86, risk: [28, 34, 36, 40, 44, 32] },
+    { n: '樟树市临江烟花制造有限公司', c: '91360982MA36WT2Y8N', t: '生产企业', a: '宜春市樟树市临江镇临江大道', f: '郑永康', p: '1370795****', e: '2009-04-09', lic: '赣烟安许证〔2025〕0714号', exp: '2028-04-08', s: '在产', lv: '黄', score: 88, risk: [26, 30, 32, 38, 34, 28] }
+  ];
+  var KPI_TPL = [
+    ['从业人员', '186 人'], ['工房数量', '24 栋（1.3 级 12 栋）'],
+    ['视频接入', '48 路'], ['AI 边缘盒子', '16 台'],
+    ['涉药机械', '32 台'], ['门禁节点', '18 个'],
+    ['当前库存', '1.86 万箱'], ['今日产量', '428 箱']
+  ];
+  var PF_LOG = [
+    ['09-03 08:42', 'AI 预警', '装药工房 A 区检测到 6 人作业，超出核定 4 人', '红', '待核验', '李明'],
+    ['09-01 15:20', '监管检查', '省厅第三检查组现场检查，发现 2 项一般隐患', '黄', '整改中', '李建国'],
+    ['08-28 09:36', 'AI 预警', '1.3 级成品库通道堆放杂物，判定通道堵塞', '橙', '已处置', '张伟'],
+    ['08-22 14:08', '资质核查', '特种作业人员证件到期提醒（3 人）', '黄', '已处置', '刘芳'],
+    ['08-15 10:42', '物联告警', '2 号库房温度 32.6℃ 超限，已启动通风', '橙', '已处置', '王强']
+  ];
+  var curEnt = 0;
+  function renderEntList() {
+    document.getElementById('entList').innerHTML = ENTS.map(function (e, i) {
+      var c = e.lv === '红' ? 'r' : e.lv === '橙' ? 'y' : 'g';
+      return '<div class="ent-item' + (i === curEnt ? ' active' : '') + '" data-i="' + i + '">' +
+        '<div class="ei-name"><span class="dot ' + c + '"></span>' + e.n + '</div>' +
+        '<div class="ei-meta"><span>' + e.t + ' · ' + e.a.split('/')[0].slice(0, 10) + '</span><span style="color:' + (e.lv === '红' ? '#ff7875' : e.lv === '橙' ? '#ffb265' : '#86efac') + '">风险 ' + e.score + '</span></div></div>';
+    }).join('');
+    document.querySelectorAll('.ent-item').forEach(function (el) {
+      el.addEventListener('click', function () { curEnt = +el.getAttribute('data-i'); renderProfile(); renderEntList(); });
+    });
+  }
+  function renderProfile() {
+    var e = ENTS[curEnt];
+    document.getElementById('pfName').textContent = e.n;
+    document.getElementById('pfType').textContent = e.t;
+    var st = document.getElementById('pfStatus');
+    st.textContent = e.s;
+    st.className = 'tag ' + (e.s === '在产' ? 'green' : 'blue');
+    document.getElementById('pfBasic').innerHTML = [
+      ['统一社会信用代码', e.c], ['企业类型', e.t], ['法定代表人', e.f], ['联系电话', e.p],
+      ['注册地址', e.a], ['成立时间', e.e], ['安全生产许可证', e.lic], ['许可证有效期', e.exp],
+      ['风险等级', e.lv + '色（' + (e.lv === '红' ? '高风险' : e.lv === '橙' ? '中风险' : '低风险') + '）'], ['监管责任人', '省厅危化监管处 · 李明'], ['所属网格', e.a.split('市')[0] + '市 · 三级网格'], ['在线状态', e.s]
+    ].map(function (r) { return '<div class="pf-item"><div class="k">' + r[0] + '</div><div class="v">' + r[1] + '</div></div>'; }).join('');
+    var sc = document.getElementById('pfScore');
+    sc.textContent = e.score;
+    sc.style.color = e.lv === '红' ? '#ff7875' : e.lv === '橙' ? '#ff9f2e' : '#86efac';
+    document.getElementById('pfKpi').innerHTML = KPI_TPL.map(function (r) {
+      return '<div class="pf-item"><div class="k">' + r[0] + '</div><div class="v">' + r[1] + '</div></div>';
+    }).join('');
+    fill('tblPfLog', PF_LOG.map(function (r) {
+      var lv = r[3] === '红' ? 'red' : r[3] === '橙' ? 'orange' : 'yellow';
+      return [r[0], r[1], '<span class="ellip" title="' + r[2] + '">' + r[2] + '</span>', '<span class="tag ' + lv + '">' + r[3] + '</span>',
+        '<span class="tag ' + (r[4] === '已处置' ? 'green' : r[4] === '整改中' ? 'orange' : 'red') + '">' + r[4] + '</span>', r[5],
+        '<span class="link">详情</span> <span class="link">督办</span>'];
+    }));
+    if (chartMap['cRadar']) { chartMap['cRadar'].setOption({ series: [{ data: [{ value: e.risk, name: '风险指数' }] }] }); }
+  }
+  function renderRadar() {
+    var e = ENTS[curEnt];
+    var el = document.getElementById('cRadar');
+    chartMap['cRadar'] = echarts.init(el);
+    chartMap['cRadar'].setOption({
+      tooltip: { backgroundColor: 'rgba(8,20,40,0.92)', borderColor: '#00d4ff', textStyle: { color: '#c8dcf0', fontSize: 11 } },
+      radar: {
+        center: ['50%', '54%'], radius: '64%',
+        indicator: [{ name: '生产安全', max: 100 }, { name: '仓储管理', max: 100 }, { name: '运输合规', max: 100 }, { name: '人员资质', max: 100 }, { name: '设备状态', max: 100 }, { name: '历史违规', max: 100 }],
+        axisName: { color: '#8aa4bf', fontSize: 10 },
+        splitLine: { lineStyle: { color: 'rgba(0,150,255,0.18)' } },
+        splitArea: { areaStyle: { color: ['rgba(0,120,200,0.06)', 'rgba(0,60,120,0.06)'] } },
+        axisLine: { lineStyle: { color: 'rgba(0,150,255,0.18)' } }
+      },
+      series: [{ type: 'radar', symbolSize: 4, data: [{ value: e.risk, name: '风险指数', lineStyle: { color: '#ff9f2e', width: 2 }, itemStyle: { color: '#ff9f2e' }, areaStyle: { color: 'rgba(255,159,46,0.22)' } }] }]
+    });
+  }
+  renderEntList(); renderProfile();
+  document.getElementById('entSearch').addEventListener('input', function () {
+    var kw = this.value.trim();
+    document.querySelectorAll('.ent-item').forEach(function (el) {
+      el.style.display = (!kw || el.textContent.indexOf(kw) >= 0) ? '' : 'none';
+    });
+  });
+
+  // ---- 4. 风险预警配置 ----
+  var RULE_TABS = ['采购环节', '生产环节', '仓储环节', '运输环节', '出口环节', '零售环节', '燃放环节'];
+  var RULES = {
+    '采购环节': [
+      ['CG-01', '黑火药采购超量预警', '单次采购量', '单次 > 500kg 或 月度累计 > 5t', '红', '平台消息+短信', '企业安全员/县局'],
+      ['CG-02', '原材料供应商未备案', '供应商资质', '供应商不在白名单内', '橙', '平台消息', '企业采购负责人'],
+      ['CG-03', '采购流向异常', '采购→入库匹配率', '匹配率 < 90%', '橙', '平台消息+APP', '县局监管员'],
+      ['CG-04', '采购频次突增', '月度采购次数', '环比增幅 > 60%', '黄', '平台消息', '企业安全员'],
+      ['CG-05', '剧毒原料临期未用', '库存滞留时长', '滞留 > 90 天', '黄', '平台消息', '企业库管员'],
+      ['CG-06', '采购单据缺失', '单据上传完整率', '完整率 < 95%', '黄', '平台消息', '企业采购负责人']
+    ],
+    '生产环节': [
+      ['SC-01', '工房超员作业', 'AI 识别工房人数', '1.1 级工房 > 2 人 / 1.3 级 > 4 人', '红', '平台消息+语音外呼', '企业负责人/县局'],
+      ['SC-02', '烟雾火焰识别', '视频 AI 识别', '检测到烟雾或明火', '红', '平台消息+语音外呼', '企业负责人/消防'],
+      ['SC-03', '静电释放未检测', '门禁静电检测', '进入涉药工房未静电检测', '橙', '平台消息+APP', '车间主任'],
+      ['SC-04', '涉药机械连续运行超限', '机械运行时长', '连续运行 > 4 小时', '橙', '平台消息', '设备管理员'],
+      ['SC-05', '违规吸烟识别', '视频 AI 识别', '生产区检测到吸烟行为', '橙', '平台消息+语音外呼', '安全管理员'],
+      ['SC-06', '人员无证上岗', '特种作业资质', '涉药工序人员无有效证件', '红', '平台消息+短信', '企业负责人/市局'],
+      ['SC-07', '未佩戴防护用品', '视频 AI 识别', '未戴安全帽/防静电服', '黄', '平台消息', '车间主任'],
+      ['SC-08', '工房温湿度超限', '物联温湿度', '温度 > 32℃ 或 湿度 > 75%', '橙', '平台消息', '车间主任'],
+      ['SC-09', '夜间违规生产', '门禁+视频', '22:00—06:00 涉药工房有人', '红', '平台消息+语音外呼', '企业负责人/县局'],
+      ['SC-10', '药物滞留违规', '工房药物存量', '超过核定存量 110%', '红', '平台消息+短信', '企业负责人'],
+      ['SC-11', '安全通道堵塞', '视频 AI 识别', '疏散通道被占用 > 60s', '橙', '平台消息', '安全管理员'],
+      ['SC-12', '生产设备异常停机', '机械状态监测', '非计划停机 > 30 分钟', '黄', '平台消息', '设备管理员']
+    ],
+    '仓储环节': [
+      ['CC-01', '库房温湿度超限', '温湿度传感器', '温度 > 33℃ 或 湿度 > 78%', '红', '平台消息+语音外呼', '库管员/企业负责人'],
+      ['CC-02', '成品超高堆垛', '视频 AI 识别', '堆垛高度 > 2.5m', '橙', '平台消息', '库管员'],
+      ['CC-03', '库存超核定储量', '库存重量/箱数', '超过核定储量 100%', '红', '平台消息+短信', '企业负责人/县局'],
+      ['CC-04', '库区人员入侵', '视频 AI 识别', '非工作时间检测到人员', '橙', '平台消息+语音外呼', '库管员/安保'],
+      ['CC-05', '出入库账实不符', '出入库流水核对', '差异率 > 3%', '橙', '平台消息', '库管员/财务'],
+      ['CC-06', '消防器材失效', '巡检记录', '灭火器超期未检', '黄', '平台消息', '安全管理员'],
+      ['CC-07', '库区静电接地异常', '静电接地监测', '接地电阻 > 100Ω', '橙', '平台消息', '设备管理员'],
+      ['CC-08', '长期滞留未流转', '库存滞留时长', '滞留 > 180 天', '黄', '平台消息', '库管员']
+    ],
+    '运输环节': [
+      ['YS-01', '危货车辆偏离路线', 'GPS 轨迹比对', '偏离备案路线 > 500m', '橙', '平台消息+短信', '押运员/运输企业'],
+      ['YS-02', '车辆超速行驶', 'GPS 车速', '高速 > 80km/h 或 国道 > 60km/h', '橙', '平台消息', '驾驶员/运输企业'],
+      ['YS-03', '违规停靠滞留', 'GPS 停留', '非指定区域停留 > 30 分钟', '橙', '平台消息+语音外呼', '押运员/交警'],
+      ['YS-04', '驾驶员疲劳驾驶', '驾驶时长', '连续驾驶 > 4 小时', '橙', '平台消息+语音外呼', '驾驶员/运输企业'],
+      ['YS-05', '人车资质不符', '资质比对', '驾驶员/押运员证件失效', '红', '平台消息+短信', '运输企业/市局'],
+      ['YS-06', '车厢温湿度异常', '车载温湿度', '温度 > 35℃', '黄', '平台消息', '押运员'],
+      ['YS-07', '电子运单缺失', '运单匹配', '无匹配电子运单', '黄', '平台消息', '运输企业']
+    ],
+    '出口环节': [
+      ['CK-01', '报关品类与许可不符', '报关单/许可证', '品类不在许可范围内', '红', '平台消息+短信', '出口企业/海关'],
+      ['CK-02', '出口批次超限', '单批出口量', '单批 > 核定值', '橙', '平台消息', '出口企业'],
+      ['CK-03', '危险品运输文件缺失', '单证完整率', '缺少 MSDS/危包证', '橙', '平台消息', '出口企业/货代'],
+      ['CK-04', '口岸滞留超时', '口岸停留时长', '滞留 > 72 小时', '黄', '平台消息', '出口企业'],
+      ['CK-05', '目的国合规提醒', '目的国法规库', '目的国政策变更', '黄', '平台消息', '出口企业']
+    ],
+    '零售环节': [
+      ['LS-01', '零售网点超量储存', '库存箱数', '超过核定储量', '红', '平台消息+短信', '网点负责人/县局'],
+      ['LS-02', '无证经营识别', '许可证比对', '无有效零售许可证', '红', '平台消息+短信', '县局/市场监管'],
+      ['LS-03', '网点违规住人', '视频 AI 识别', '经营场所夜间有人留宿', '橙', '平台消息', '网点负责人'],
+      ['LS-04', '周边安全距离不足', '空间比对', '距学校/医院 < 100m', '橙', '平台消息', '县局'],
+      ['LS-05', '禁燃区违规销售', '电子围栏', '位于禁燃区范围内', '红', '平台消息+短信', '网点负责人/公安'],
+      ['LS-06', '购销台账缺失', '台账上传', '连续 3 日未上报', '黄', '平台消息', '网点负责人']
+    ],
+    '燃放环节': [
+      ['RF-01', '未审批燃放活动', '审批单比对', '无有效审批单', '红', '平台消息+语音外呼', '主办单位/公安'],
+      ['RF-02', '燃放区人员超限', '视频 AI 识别', '警戒区人数超预案', '橙', '平台消息', '现场指挥'],
+      ['RF-03', '气象条件不适宜', '气象数据', '风力 > 5 级或湿度 < 30%', '橙', '平台消息', '现场指挥'],
+      ['RF-04', '未按时清场', '清场记录', '燃放后 2h 未完成清场', '黄', '平台消息', '主办单位'],
+      ['RF-05', '哑弹未及时处理', '哑弹处置记录', '超过 24h 未处置', '橙', '平台消息', '主办单位/消防']
+    ]
+  };
+  function renderRules(tab) {
+    var rows = RULES[tab] || [];
+    document.getElementById('ruleTitle').textContent = tab + ' · 预警规则清单';
+    document.getElementById('ruleCount').textContent = rows.length;
+    document.getElementById('ruleOn').textContent = rows.length - (tab === '燃放环节' ? 1 : 2);
+    fill('tblRules', rows.map(function (r, i) {
+      var lv = r[4] === '红' ? 'red' : r[4] === '橙' ? 'orange' : 'yellow';
+      var on = i < rows.length - (tab === '燃放环节' ? 1 : 2);
+      return ['<input type="checkbox">', '<span style="color:#7dd3fc">' + r[0] + '</span>', r[1], r[2], r[3],
+        '<span class="tag ' + lv + '">' + r[4] + '</span>', r[5], r[6],
+        '<span class="sw' + (on ? ' on' : '') + '" onclick="this.classList.toggle(\'on\')"></span>',
+        '<span class="link">编辑</span> <span class="link">复制</span> <span class="link danger">删除</span>'];
+    }));
+  }
+  renderRules('采购环节');
+  document.querySelectorAll('#ruleTabs .sub-tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('#ruleTabs .sub-tab').forEach(function (x) { x.classList.remove('active'); });
+      t.classList.add('active');
+      renderRules(t.textContent.trim());
+    });
+  });
+
+  // ---- 5. 资讯管理 ----
+  var NEWS = [
+    ['江西省烟花爆竹生产企业安全生产标准化评审标准（2026 修订）', '政策法规', '省应急管理厅', '张伟', '2026-09-02 16:24', 2846, true, '已发布'],
+    ['关于加强汛期烟花爆竹仓储安全管理的紧急通知', '通知公告', '省应急管理厅', '李明', '2026-09-01 09:12', 3982, true, '已发布'],
+    ['上栗县推进花炮产业智能化改造 涉药工序机器人替代率达 62%', '行业动态', '萍乡市应急局', '陈静', '2026-08-30 14:38', 1264, false, '已发布'],
+    ['警示：万载县某企业因静电防护不到位引发燃爆事故', '安全警示', '省应急管理厅', '王强', '2026-08-28 10:05', 5642, true, '已发布'],
+    ['烟花爆竹经营（零售）许可证办理指南（最新版）', '培训资料', '省应急管理厅', '刘芳', '2026-08-26 15:47', 1876, false, '已发布'],
+    ['2026 年第三季度全省烟花爆竹质量监督抽查情况通报', '通知公告', '省市场监管局', '周敏', '2026-08-25 11:20', 2244, false, '已发布'],
+    ['烟花爆竹 烟火药 危险性分类定级方法（GB/T 标准解读）', '政策法规', '国家标委会', '李强', '2026-08-22 09:36', 1582, false, '已发布'],
+    ['宜春市开展烟花爆竹运输车辆专项执法行动', '行业动态', '宜春市应急局', '赵磊', '2026-08-20 16:52', 968, false, '已发布'],
+    ['汛期高温天气涉药工房作业安全提示', '安全警示', '省应急管理厅', '王强', '2026-08-18 08:14', 3128, false, '已发布'],
+    ['全省烟花爆竹安全监管人员业务培训班（第三期）通知', '培训资料', '省应急管理厅', '刘芳', '2026-08-15 14:28', 1128, false, '待审核'],
+    ['关于启用新版烟花爆竹流向追溯码的公告', '通知公告', '省应急管理厅', '张伟', '2026-08-12 10:44', 2364, false, '已发布'],
+    ['出口烟花爆竹检验监管新规解读与应对建议', '政策法规', '南昌海关', '孙涛', '2026-08-08 15:16', 1446, false, '已下架']
+  ];
+  fill('tblNews', NEWS.map(function (r, i) {
+    var st = r[7] === '已发布' ? 'green' : r[7] === '待审核' ? 'orange' : 'gray';
+    var cat = { '政策法规': 'blue', '通知公告': 'purple', '行业动态': 'green', '安全警示': 'red', '培训资料': 'yellow' }[r[1]];
+    return ['<input type="checkbox">', i + 1, '<span title="' + r[0] + '">' + r[0] + '</span>',
+      '<span class="tag ' + cat + '">' + r[1] + '</span>', r[2], r[3], r[4], { v: r[5].toLocaleString(), cls: 'num' },
+      r[6] ? '<span class="tag orange">置顶</span>' : '<span style="color:#5a7a96">—</span>',
+      '<span class="tag ' + st + '">' + r[7] + '</span>',
+      '<span class="link">编辑</span> <span class="link">' + (r[7] === '已发布' ? '下架' : '发布') + '</span> <span class="link danger">删除</span>'];
+  }));
+
+  // ---- 6. 综合管理 ----
+  var SYS_DATA = {
+    '用户管理': { title: '用户列表', head: ['账号', '姓名', '所属单位', '角色', '手机号', '最后登录', '状态'], rows: [
+      ['jxyj_zhangwei', '张伟', '江西省应急管理厅', '省级管理员', '1380791****', '2026-09-03 08:42', '启用'],
+      ['jxyj_liming', '李明', '江西省应急管理厅', '危化监管员', '1390791****', '2026-09-03 08:36', '启用'],
+      ['pxsyj_chenjing', '陈静', '萍乡市应急管理局', '市级管理员', '1370799****', '2026-09-03 08:21', '启用'],
+      ['ycsyj_zhaolei', '赵磊', '宜春市应急管理局', '市级审核员', '1360795****', '2026-09-03 07:58', '启用'],
+      ['slx_wangqiang', '王强', '萍乡市上栗县应急局', '县级监管员', '1350799****', '2026-09-03 07:44', '启用'],
+      ['wzx_liufang', '刘芳', '宜春市万载县应急局', '县级监管员', '1380795****', '2026-09-02 18:12', '启用'],
+      ['ncyjj_zhoumin', '周敏', '南昌市应急管理局', '市级审核员', '1370791****', '2026-09-02 17:36', '启用'],
+      ['jxyj_suntao', '孙涛', '江西省应急管理厅', '数据分析员', '1390792****', '2026-09-02 16:08', '启用'],
+      ['gzsyj_hujun', '胡军', '赣州市应急管理局', '市级管理员', '1350797****', '2026-09-02 15:22', '停用'],
+      ['srsyj_xuling', '徐玲', '上饶市应急管理局', '市级审核员', '1360793****', '2026-09-02 14:50', '启用']
+    ]},
+    '角色权限': { title: '角色权限矩阵', head: ['角色名称', '角色编码', '数据范围', '菜单权限', '用户数', '创建时间'], rows: [
+      ['省级管理员', 'ROLE_PROV_ADMIN', '全省', '全部 8 项菜单', 6, '2024-01-08'],
+      ['危化监管员', 'ROLE_PROV_INSP', '全省', '预警核验/企业画像/风险配置', 18, '2024-01-08'],
+      ['数据分析员', 'ROLE_PROV_DATA', '全省', '综合数据/数据汇聚', 8, '2024-02-14'],
+      ['市级管理员', 'ROLE_CITY_ADMIN', '本市', '除系统参数外全部', 11, '2024-01-08'],
+      ['市级审核员', 'ROLE_CITY_AUDIT', '本市', '预警核验/企业画像/资讯管理', 24, '2024-03-22'],
+      ['县级监管员', 'ROLE_CNTY_INSP', '本县', '预警核验/企业画像', 96, '2024-01-08'],
+      ['企业安全员', 'ROLE_ENT_SAFETY', '本企业', '综合数据/企业画像', 142, '2024-05-16'],
+      ['只读访客', 'ROLE_GUEST', '全省', '综合数据（只读）', 23, '2025-08-05']
+    ]},
+    '组织架构': { title: '组织架构', head: ['机构名称', '机构编码', '上级机构', '机构层级', '在册人员', '联系电话'], rows: [
+      ['江西省应急管理厅', 'ORG_360000', '—', '省级', 32, '0791-8623****'],
+      ['南昌市应急管理局', 'ORG_360100', '江西省应急管理厅', '市级', 28, '0791-8388****'],
+      ['萍乡市应急管理局', 'ORG_360300', '江西省应急管理厅', '市级', 34, '0799-6832****'],
+      ['宜春市应急管理局', 'ORG_360900', '江西省应急管理厅', '市级', 26, '0795-3226****'],
+      ['赣州市应急管理局', 'ORG_360700', '江西省应急管理厅', '市级', 30, '0797-8391****'],
+      ['上栗县应急管理局', 'ORG_360322', '萍乡市应急管理局', '县级', 42, '0799-3662****'],
+      ['万载县应急管理局', 'ORG_360922', '宜春市应急管理局', '县级', 38, '0795-8821****'],
+      ['袁州区应急管理局', 'ORG_360902', '宜春市应急管理局', '县级', 24, '0795-3228****']
+    ]},
+    '日志审计': { title: '操作日志审计', head: ['操作时间', '操作账号', '所属单位', '操作模块', '操作内容', 'IP 地址'], rows: [
+      ['2026-09-03 08:42:16', 'jxyj_zhangwei', '省应急管理厅', '预警核验', '核验通过 YJ20260903001 工房超员', '10.28.16.42'],
+      ['2026-09-03 08:31:08', 'jxyj_liming', '省应急管理厅', '风险配置', '修改规则 SC-01 阈值 2 人→4 人', '10.28.16.55'],
+      ['2026-09-03 08:12:44', 'pxsyj_chenjing', '萍乡市应急局', '企业画像', '查看上栗县金坪烟花画像', '10.36.22.18'],
+      ['2026-09-03 07:58:20', 'jxyj_suntao', '省应急管理厅', '数据汇聚', '手动触发市场监管局数据同步', '10.28.16.71'],
+      ['2026-09-03 07:36:52', 'jxyj_zhangwei', '省应急管理厅', '资讯管理', '发布《汛期仓储安全管理紧急通知》', '10.28.16.42'],
+      ['2026-09-02 18:04:31', 'slx_wangqiang', '上栗县应急局', '预警核验', '驳回 YJ20260902087（误报）', '10.39.18.66'],
+      ['2026-09-02 17:22:09', 'jxyj_zhangwei', '省应急管理厅', '综合管理', '新增用户 gzsyj_hujun（市级管理员）', '10.28.16.42'],
+      ['2026-09-02 16:48:57', 'jxyj_suntao', '省应急管理厅', '算法仓', '下发算法 v2.4.1 至 186 台边缘盒子', '10.28.16.71']
+    ]},
+    '数据字典': { title: '数据字典', head: ['字典编码', '字典名称', '字典项数', '所属分类', '最近更新', '状态'], rows: [
+      ['DICT_ENT_TYPE', '企业类型', 6, '主体基础', '2026-07-18', '启用'],
+      ['DICT_RISK_LEVEL', '风险等级', 4, '风险预警', '2026-08-02', '启用'],
+      ['DICT_ALARM_TYPE', '预警类型', 32, '风险预警', '2026-08-26', '启用'],
+      ['DICT_WORKSHOP_LV', '工房危险等级', 3, '生产安全', '2026-05-11', '启用'],
+      ['DICT_PROCESS', '涉药工序', 12, '生产安全', '2026-06-24', '启用'],
+      ['DICT_CARGO_TYPE', '货物品类', 18, '仓储物流', '2026-04-09', '启用'],
+      ['DICT_REGION', '行政区划', 112, '主体基础', '2026-03-30', '启用'],
+      ['DICT_ALGO', 'AI 算法类别', 5, '算法仓', '2026-08-19', '启用']
+    ]},
+    '系统参数': { title: '系统参数配置', head: ['参数编码', '参数名称', '参数值', '参数说明', '生效范围', '状态'], rows: [
+      ['SYS_ALARM_TIMEOUT', '预警核验时限', '60 分钟', '超过时限自动升级督办', '全省', '启用'],
+      ['SYS_VIDEO_RETENTION', '视频存储周期', '90 天', '超过周期自动归档', '全省', '启用'],
+      ['SYS_AI_THRESHOLD', 'AI 识别置信度', '0.85', '低于阈值不产生预警', '全省', '启用'],
+      ['SYS_DATA_SYNC', '数据同步频率', '15 分钟', '跨部门数据同步间隔', '全省', '启用'],
+      ['SYS_GPS_INTERVAL', 'GPS 上报间隔', '30 秒', '危货车辆位置上报频率', '全省', '启用'],
+      ['SYS_TEMP_LIMIT', '库房温度上限', '33 ℃', '超过上限触发橙色预警', '全省', '启用'],
+      ['SYS_REPORT_TIME', '日报生成时间', '每日 06:00', '自动生成前一日监管日报', '全省', '启用'],
+      ['SYS_BACKUP_CYCLE', '数据备份周期', '每日 02:00', '全量备份保留 30 天', '全省', '启用']
+    ]}
+  };
+  function renderSys(tab) {
+    var d = SYS_DATA[tab];
+    document.getElementById('sysTitle').textContent = d.title;
+    var th = document.querySelectorAll('#tblSys thead th');
+    // 前 3 列固定（复选/序号），后 2 列固定（状态/操作），中间列按数据渲染
+    var mid = d.head.map(function (h) { return '<th>' + h + '</th>'; }).join('');
+    document.querySelector('#tblSys thead tr').innerHTML =
+      '<th style="width:42px"><input type="checkbox"></th>' + mid.replace('<th>状态</th>', '') +
+      '<th style="width:64px">状态</th><th style="width:140px">操作</th>';
+    var rows = d.rows.map(function (r, i) {
+      var cells = r.map(function (c, j) {
+        if (d.head[j] === '状态') return '<span class="tag ' + (c === '启用' ? 'green' : c === '停用' ? 'gray' : 'orange') + '">' + c + '</span>';
+        if (d.head[j] === '菜单权限' || d.head[j] === '操作内容' || d.head[j] === '参数说明') return '<span title="' + c + '">' + c + '</span>';
+        if (d.head[j] === '角色编码' || d.head[j] === '字典编码' || d.head[j] === '参数编码' || d.head[j] === '机构编码' || d.head[j] === '操作账号') return '<span style="color:#7dd3fc">' + c + '</span>';
+        return c;
+      });
+      // 无状态列时补占位
+      var hasStatus = d.head.indexOf('状态') >= 0;
+      var body = cells.map(function (c) { return '<td>' + c + '</td>'; }).join('');
+      var statusCell = hasStatus ? '' : '<span class="tag green">正常</span>';
+      return '<tr><td><input type="checkbox"></td>' + body + (hasStatus ? '' : '<td>' + statusCell + '</td>') +
+        '<td><span class="link">编辑</span> <span class="link">授权</span> <span class="link danger">删除</span></td></tr>';
+    });
+    document.querySelector('#tblSys tbody').innerHTML = rows.join('');
+  }
+  renderSys('用户管理');
+  document.querySelectorAll('#sysTabs .sub-tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('#sysTabs .sub-tab').forEach(function (x) { x.classList.remove('active'); });
+      t.classList.add('active');
+      renderSys(t.textContent.trim());
+    });
+  });
+
+  // ---- 7. 数据汇聚 ----
+  var DS = [
+    { n: '省应急管理厅', i: '🏛️', v: '2,684', u: '万条', m: ['企业许可/执法检查/隐患排查', '实时 · 42 张表'], s: 'green', st: '已接入' },
+    { n: '省公安厅', i: '🚓', v: '1,862', u: '万条', m: ['危货运输/禁燃区/人员资质', '每日 · 36 张表'], s: 'green', st: '已接入' },
+    { n: '省市场监管局', i: '🏢', v: '1,428', u: '万条', m: ['企业登记/质量监督抽检', '每日 · 28 张表'], s: 'orange', st: '联调中' },
+    { n: '省交通运输厅', i: '🚚', v: '1,186', u: '万条', m: ['危运车辆/电子运单/轨迹', '实时 · 24 张表'], s: 'green', st: '已接入' },
+    { n: '南昌海关', i: '⚓', v: '786', u: '万条', m: ['出口报关/危险品检验', '每日 · 18 张表'], s: 'green', st: '已接入' },
+    { n: '国网江西电力', i: '⚡', v: '474', u: '万条', m: ['企业用电负荷/停产识别', '小时 · 12 张表'], s: 'red', st: '异常' }
+  ];
+  document.getElementById('dsGrid').innerHTML = DS.map(function (d) {
+    return '<div class="ds-card"><div class="ds-top"><div class="ds-name"><i>' + d.i + '</i>' + d.n + '</div><span class="tag ' + d.s + '">' + d.st + '</span></div>' +
+      '<div class="ds-val">' + d.v + '<u>' + d.u + '</u></div>' +
+      '<div class="ds-meta"><span>' + d.m[0] + '</span><span>' + d.m[1] + '</span></div></div>';
+  }).join('');
+  var SVC = [
+    ['企业资质核验服务', 'SVC_JX_ENT_001', '省应急管理厅', '公安/市监/海关', '实时', 12864, '1,286万', '99.98%'],
+    ['烟花爆竹流向追溯服务', 'SVC_JX_FLW_002', '省应急管理厅', '交通/公安', '实时', 8624, '986万', '99.95%'],
+    ['危货车辆轨迹服务', 'SVC_JX_GPS_003', '省交通运输厅', '应急/公安', '实时', 6428, '764万', '99.92%'],
+    ['出口报关数据服务', 'SVC_JX_CUS_004', '南昌海关', '应急/商务', '每日', 1246, '186万', '99.88%'],
+    ['企业用电监测服务', 'SVC_JX_PWR_005', '国网江西电力', '应急管理厅', '小时', 3862, '428万', '99.76%'],
+    ['执法检查结果服务', 'SVC_JX_LAW_006', '省应急管理厅', '市县应急局', '每日', 864, '96万', '99.90%'],
+    ['视频 AI 分析服务', 'SVC_JX_AIV_007', '省应急管理厅', '市县/企业', '实时', 18642, '2,186万', '99.99%'],
+    ['风险预警推送服务', 'SVC_JX_ALM_008', '省应急管理厅', '全渠道', '实时', 9642, '1,124万', '99.97%']
+  ];
+  fill('tblSvc', SVC.map(function (r, i) {
+    return [i + 1, r[0], '<span style="color:#7dd3fc">' + r[1] + '</span>', r[2], r[3], r[4],
+      { v: r[5].toLocaleString(), cls: 'num' }, { v: r[6], cls: 'num' },
+      '<span class="tag green">' + r[7] + '</span>', '<span class="tag green"><span class="dot g"></span>运行中</span>',
+      '<span class="link">详情</span> <span class="link">监控</span>'];
+  }));
+
+  // ---- 8. AI 算法仓 ----
+  var ALGOS = [
+    { i: '🔥', n: '烟雾火焰检测', c: '烟火检测', v: 'v2.4.1', acc: 99.94, call: 128.6, box: 1286, st: 'green', stx: '已部署' },
+    { i: '🚷', n: '人员入侵识别', c: '人员行为', v: 'v2.3.6', acc: 99.86, call: 96.4, box: 1186, st: 'green', stx: '已部署' },
+    { i: '👥', n: '工房超员识别', c: '作业合规', v: 'v2.4.0', acc: 99.91, call: 86.2, box: 1264, st: 'green', stx: '已部署' },
+    { i: '⚡', n: '静电释放检测', c: '作业合规', v: 'v1.8.2', acc: 99.72, call: 62.8, box: 986, st: 'green', stx: '已部署' },
+    { i: '🚧', n: '安全通道堵塞', c: '仓储环境', v: 'v2.1.4', acc: 99.68, call: 48.6, box: 864, st: 'green', stx: '已部署' },
+    { i: '📦', n: '超高堆垛识别', c: '仓储环境', v: 'v2.0.8', acc: 99.62, call: 36.4, box: 786, st: 'green', stx: '已部署' },
+    { i: '⚙️', n: '机械异常识别', c: '机械设备', v: 'v1.6.5', acc: 99.54, call: 28.2, box: 642, st: 'green', stx: '已部署' },
+    { i: '🚭', n: '违规吸烟识别', c: '人员行为', v: 'v2.2.1', acc: 99.88, call: 24.6, box: 1128, st: 'green', stx: '已部署' },
+    { i: '⛑️', n: '防护用品穿戴', c: '作业合规', v: 'v1.9.3', acc: 99.46, call: 22.4, box: 928, st: 'green', stx: '已部署' },
+    { i: '🌡️', n: '温湿度异常识别', c: '仓储环境', v: 'v1.4.2', acc: 99.98, call: 18.6, box: 1064, st: 'green', stx: '已部署' },
+    { i: '🚗', n: '装卸作业监护', c: '作业合规', v: 'v1.2.0', acc: 99.38, call: 12.4, box: 428, st: 'green', stx: '已部署' },
+    { i: '🧪', n: '药物滞留检测', c: '烟火检测', v: 'v0.9.1', acc: 98.86, call: 6.8, box: 86, st: 'orange', stx: '测试中' }
+  ];
+  document.getElementById('algoGrid').innerHTML = ALGOS.map(function (a) {
+    return '<div class="algo-card">' +
+      '<div class="ac-top"><div class="ac-ico">' + a.i + '</div><div class="ac-name">' + a.n + '</div><span class="tag ' + a.st + '">' + a.stx + '</span></div>' +
+      '<div style="font-size:10.5px;color:#8aa4bf;margin-top:6px">' + a.c + ' · ' + a.v + '</div>' +
+      '<div class="ac-metrics"><div><div class="m-l">准确率</div><div class="m-v">' + a.acc + '%</div><div class="bar-mini"><i style="width:' + (a.acc - 96) / 4 * 100 + '%"></i></div></div>' +
+      '<div><div class="m-l">日均调用</div><div class="m-v">' + a.call + ' 万次</div></div>' +
+      '<div><div class="m-l">部署盒子</div><div class="m-v">' + a.box + ' 台</div></div></div>' +
+      '<div class="ac-foot"><span>昇腾 CANN · ATC 转换</span><span><span class="link">配置</span> · <span class="link">下发</span></span></div></div>';
+  }).join('');
+  var MODELS = [
+    ['烟雾火焰检测', 'v2.4.1', '12.6 万张', '99.94%', '99.62%', '2026-08-12', '1,286 台', 'MindSpore', '已部署'],
+    ['工房超员识别', 'v2.4.0', '8.4 万张', '99.91%', '99.48%', '2026-08-05', '1,264 台', 'MindSpore', '已部署'],
+    ['人员入侵识别', 'v2.3.6', '9.8 万张', '99.86%', '99.32%', '2026-07-22', '1,186 台', 'PyTorch→ATC', '已部署'],
+    ['违规吸烟识别', 'v2.2.1', '6.2 万张', '99.88%', '99.16%', '2026-07-08', '1,128 台', 'MindSpore', '已部署'],
+    ['温湿度异常识别', 'v1.4.2', '18.6 万条', '99.98%', '99.86%', '2026-06-26', '1,064 台', 'LightGBM', '已部署'],
+    ['安全通道堵塞', 'v2.1.4', '5.6 万张', '99.68%', '98.94%', '2026-06-14', '864 台', 'MindSpore', '已部署'],
+    ['药物滞留检测', 'v0.9.1', '2.8 万张', '98.86%', '97.42%', '2026-08-28', '86 台', 'PyTorch→ATC', '测试中']
+  ];
+  fill('tblModel', MODELS.map(function (r, i) {
+    return [i + 1, r[0], '<span style="color:#7dd3fc">' + r[1] + '</span>', r[2], r[3], r[4], r[5], r[6], r[7],
+      '<span class="tag ' + (r[8] === '已部署' ? 'green' : 'orange') + '">' + r[8] + '</span>',
+      '<span class="link">版本</span> <span class="link">回滚</span>'];
+  }));
+
+  // 初始渲染概览图表
+  inited['overview'] = true;
+  CHART_FACTORY.overview();
+</script>
+</body>
+</html>
