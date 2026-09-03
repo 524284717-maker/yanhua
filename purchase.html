@@ -262,21 +262,34 @@
     .rtable tbody tr:hover .drill-link { background: rgba(0,150,255,0.2); }
 
     /* Enterprise detail (leaf level) */
-    .ent-detail { flex: 1; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+    .ent-detail { flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; min-height: 0; }
     .ent-head {
       background: linear-gradient(135deg, rgba(0,100,180,0.2), rgba(0,60,110,0.1));
-      border: 1px solid rgba(0,150,255,0.3); border-radius: 8px; padding: 14px;
+      border: 1px solid rgba(0,150,255,0.3); border-radius: 8px; padding: 8px 12px;
     }
-    .ent-head h4 { font-size: 16px; color: #fff; margin-bottom: 6px; }
-    .ent-head p { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
-    .ent-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .ent-kpi { background: rgba(0,0,0,0.22); border: 1px solid rgba(0,150,255,0.15); border-radius: 8px; padding: 12px 8px; text-align: center; }
-    .ent-kpi .lab { font-size: 11px; color: var(--text-dim); }
-    .ent-kpi .val { font-size: 20px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate", "Arial Black", sans-serif; margin-top: 4px; }
+    .ent-head h4 { font-size: 15px; color: #fff; margin-bottom: 2px; }
+    .ent-head p { font-size: 11px; color: var(--text-dim); line-height: 1.45; }
+    .ent-kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+    .ent-kpi { background: rgba(0,0,0,0.22); border: 1px solid rgba(0,150,255,0.15); border-radius: 8px; padding: 8px 4px; text-align: center; }
+    .ent-kpi .lab { font-size: 10px; color: var(--text-dim); }
+    .ent-kpi .val { font-size: 16px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate", "Arial Black", sans-serif; margin-top: 3px; }
     .ent-kpi .val.warn { color: var(--danger); }
-    .ent-status { display: inline-block; margin-top: 8px; font-size: 11px; padding: 3px 10px; border-radius: 10px; }
+    .ent-status { display: inline-block; margin-top: 4px; font-size: 11px; padding: 2px 10px; border-radius: 10px; }
     .ent-status.ok { color: #51cf66; border: 1px solid rgba(81,207,102,0.5); background: rgba(81,207,102,0.1); }
     .ent-status.warn { color: var(--danger); border: 1px solid rgba(255,77,79,0.5); background: rgba(255,77,79,0.1); }
+    .ent-mat-title { font-size: 13px; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .ent-mat-title::before { content: ""; width: 3px; height: 11px; background: var(--accent); border-radius: 2px; }
+    .ent-mat { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .ent-mat thead th {
+      color: var(--text-dim); font-weight: 500; text-align: left; padding: 5px 10px;
+      background: rgba(0,150,255,0.08); border-bottom: 1px solid rgba(0,180,255,0.35);
+      white-space: nowrap;
+    }
+    .ent-mat thead th.num, .ent-mat td.num { text-align: right; }
+    .ent-mat tbody td { padding: 4.5px 10px; color: var(--text); border-bottom: 1px solid rgba(0,150,255,0.12); white-space: nowrap; }
+    .ent-mat tbody tr:last-child td { border-bottom: none; }
+    .ent-mat tbody tr:nth-child(odd) { background: rgba(0,0,0,0.14); }
+    .ent-mat td.num { font-family: "DIN Alternate", "Arial Black", sans-serif; color: #cfeaff; }
 
     /* Warning list */
     .warning-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
@@ -1164,7 +1177,41 @@
           <div class="ent-kpi"><div class="lab">本月采购订单</div><div class="val">${Math.max(1, Math.round(326 * node.buy / ROOT.buy))} 笔</div></div>
           <div class="ent-kpi"><div class="lab">未处置预警</div><div class="val ${over ? 'warn' : ''}">${over ? 1 : 0} 起</div></div>
         </div>
+        <div class="ent-mat-title">原材料采购明细（本月）</div>
+        <table class="ent-mat">
+          <thead>
+            <tr><th>原材料</th><th class="num">采购量(吨)</th><th class="num">消耗(吨)</th><th class="num">库存(吨)</th><th class="num">均价(元/吨)</th></tr>
+          </thead>
+          <tbody>${entMaterials(node).map(r => `
+            <tr>
+              <td>${r.name}</td>
+              <td class="num">${fmt(r.buy)}</td>
+              <td class="num">${fmt(r.use)}</td>
+              <td class="num">${fmt(r.stock)}</td>
+              <td class="num">${r.price.toFixed(2)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
       `;
+    }
+
+    // 企业原材料采购明细：以典型烟火药剂原料配比为基准，按企业规模（采购药量/全省企业均值）确定性浮动；库存含期初结转
+    function entMaterials(node) {
+      const defs = [
+        { name: '高氯酸钾', base: 25, useR: 0.72, stockR: 0.92, price: 9.20 },
+        { name: '硝酸钾', base: 25, useR: 0.84, stockR: 0.44, price: 6.80 },
+        { name: '硫磺', base: 25, useR: 0.88, stockR: 0.68, price: 3.40 },
+        { name: '木炭', base: 9, useR: 0.89, stockR: 0.67, price: 2.10 },
+        { name: '镁铝合金粉', base: 11, useR: 0.73, stockR: 1.09, price: 26.50 },
+        { name: '引线', base: 5, useR: 0.80, stockR: 0.80, price: 1.80 }
+      ];
+      const k = 0.6 + (node.buy / 3.2) * 0.5 + hash01(node.name + 'mat') * 0.25;
+      return defs.map((d, i) => {
+        const buy = Math.max(1, Math.round(d.base * k));
+        const use = Math.round(buy * (d.useR + (hash01(node.name + 'u' + i) - 0.5) * 0.06));
+        const stock = Math.max(0, Math.round(buy * (d.stockR + (hash01(node.name + 's' + i) - 0.5) * 0.08)));
+        return { name: d.name, buy, use, stock, price: d.price };
+      });
     }
 
     // 超产能预警列表（与当前层级预警数、区域名称自洽）
