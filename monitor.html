@@ -172,21 +172,30 @@
 
   .video-stage {
     position: relative; flex: 1;
-    background:
-      radial-gradient(ellipse at 30% 20%, rgba(40,80,140,0.35) 0%, transparent 60%),
-      radial-gradient(ellipse at 70% 80%, rgba(20,40,80,0.4) 0%, transparent 60%),
-      linear-gradient(180deg, #0a1830 0%, #050b14 100%);
+    background: #050b14;
     overflow: hidden;
   }
-  /* 监控画面里的元素：建筑/烟囱/通道（CSS 绘制） */
-  .scene { position: absolute; inset: 0; opacity: 0.85; }
-  .scene .b { position: absolute; background: linear-gradient(180deg, #1a3556 0%, #0d1f3a 100%); border: 1px solid rgba(120,180,255,0.15); }
-  .scene .b::before { content: ""; position: absolute; inset: 6px; background-image: radial-gradient(circle, rgba(180,210,255,0.18) 1px, transparent 1.5px); background-size: 8px 8px; }
-  .scene .chimney { position: absolute; width: 6px; background: linear-gradient(180deg, #2a4870, #0d1f3a); border: 1px solid rgba(120,180,255,0.2); }
-  .scene .chimney::after { content: ""; position: absolute; left: -3px; top: -4px; width: 12px; height: 4px; background: #1a3556; border-radius: 50%; }
-  .scene .belt { position: absolute; height: 6px; background: linear-gradient(90deg, #8b6f1e, #d4a92e); border: 1px solid rgba(255,210,80,0.4); }
-  .scene .belt::before { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(90deg, transparent 0 6px, rgba(0,0,0,0.4) 6px 8px); }
-  .scene .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 30%; background: linear-gradient(180deg, transparent, rgba(0,0,0,0.55)); }
+  /* 监控画面底图（工房实景）+ 蓝调滤镜 */
+  .video-bg {
+    position: absolute; inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.92) saturate(0.78) contrast(1.05) hue-rotate(-6deg);
+    transform: scale(1.04); /* 轻微放大，避免边缘留缝 */
+  }
+  .video-tint {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(15,50,90,0.12) 0%, rgba(5,15,30,0.38) 100%);
+    pointer-events: none;
+  }
+  /* 时码水印（监控风格左上角台标） */
+  .video-stamp {
+    position: absolute; left: 6px; bottom: 6px;
+    font-family: "DIN Alternate", "Consolas", monospace;
+    font-size: 10px; color: rgba(0,212,255,0.65);
+    text-shadow: 0 0 4px rgba(0,0,0,0.7);
+    letter-spacing: 0.4px; pointer-events: none; z-index: 2;
+  }
 
   /* AI 识别框 */
   .ai-box {
@@ -340,7 +349,7 @@
       <a href="#" data-page-node-id="y4LuZ0ECGEkUcHSoEJB95B">零售态势</a>
       <a href="#" data-page-node-id="EeUivDJDwudFo0EbHhGIWD">燃放态势</a>
       <a class="active" href="monitor.html" data-page-node-id="kEEazinfhpTJFAlXl1Ankb">智能监控中心</a>
-      <a href="#" data-page-node-id="ZB9yIobEvt4em7yMiopksA">综合数据</a>
+      <a href="#" data-page-node-id="ZB9yIobEvt4em7yMiopksA">业务管理</a>
     </nav>
     <div class="header-right" data-page-node-id="2pNHC5iNuM9OX8WZnEZ3U2">
       <div class="weather" data-page-node-id="FQ4FRXbWmhMvIeSIrS9BFg">🌤 南昌 多云 28°C</div>
@@ -386,13 +395,9 @@
               <span class="live-tag" data-page-node-id="vZE7AtCCQPuOMYq6LBMHA3"><i data-page-node-id="09NEbJ3419LBb0m7BN17cB"></i>LIVE</span>
               <span class="video-id" data-page-node-id="7vfasKBPibzIAUrCDyqYil">CAM-0812</span>
             </div>
-            <div class="scene" data-page-node-id="XkcyjIDotAtsLrWAJQV7hQ">
-              <div class="b" style="left:8%;bottom:18%;width:30%;height:42%;" data-page-node-id="17TFnt4NDzCPzutNwr5zDq"></div>
-              <div class="b" style="left:42%;bottom:18%;width:22%;height:55%;" data-page-node-id="88EDDrRpDjmJHsB50USgpI"></div>
-              <div class="b" style="left:68%;bottom:18%;width:24%;height:38%;" data-page-node-id="V5wCLRMrJoEOBLWGqzESHD"></div>
-              <div class="chimney" style="left:30%;bottom:60%;height:24%;" data-page-node-id="wc7fYZE9nvyMbxG7buM5wy"></div>
-              <div class="ground" data-page-node-id="7pNkCBNiPFySWk7i2QiUd0"></div>
-            </div>
+            <div class="video-bg" style="background-image:url('assets/cam/cam1.jpg')"></div>
+            <div class="video-tint"></div>
+            <div class="video-stamp">CAM-0812 · 10:42:18</div>
           </div>
           <div class="video-info" data-page-node-id="jU1YVxo5uERAIcGXcGA8QE">
             <div class="video-name" data-page-node-id="6KRHoHXxE7cGnvQqf5KDaK">CAM-0812 · 13栋工库房 A区</div>
@@ -408,13 +413,9 @@
               <span class="live-tag" data-page-node-id="RE27iC3G7HtvS7fJUAlUlp"><i data-page-node-id="K1Nqyr4tVO0AgTMeqHPEaD"></i>LIVE</span>
               <span class="video-id" data-page-node-id="ccsgf7yLqosNze60K6vrmN">CAM-0816</span>
             </div>
-            <div class="scene" data-page-node-id="TePQsKWVFevQkul3GxDUAZ">
-              <div class="b" style="left:10%;bottom:20%;width:25%;height:48%;" data-page-node-id="gyifSwM52s5u5Z1RI4oV5g"></div>
-              <div class="b" style="left:38%;bottom:20%;width:28%;height:42%;" data-page-node-id="rPtxHV1LjFuSRBEcWx1jtS"></div>
-              <div class="b" style="left:69%;bottom:20%;width:22%;height:55%;" data-page-node-id="hZVZXtG8Pa4bnOa3MdVGeI"></div>
-              <div class="chimney" style="left:55%;bottom:62%;height:22%;" data-page-node-id="NeV9GUFoKsSWJluC08inft"></div>
-              <div class="ground" data-page-node-id="aacG4xc1rxIgnA679z8NzB"></div>
-            </div>
+            <div class="video-bg" style="background-image:url('assets/cam/cam2.jpg')"></div>
+            <div class="video-tint"></div>
+            <div class="video-stamp">CAM-0816 · 10:42:18</div>
           </div>
           <div class="video-info" data-page-node-id="iY6coHrCyv4HE3coRGGDS6">
             <div class="video-name" data-page-node-id="J480vDTgtFoKDESnPDoKur">CAM-0816 · 13栋工库房 C区</div>
@@ -430,11 +431,9 @@
               <span class="live-tag" data-page-node-id="9BRw6emCYyyLstuJzHorst"><i data-page-node-id="G4KOZOjG48fDv4mMq1xhh9"></i>LIVE</span>
               <span class="video-id" data-page-node-id="WX6GCYlGcU7OELIb6PYCGD">CAM-0921</span>
             </div>
-            <div class="scene" data-page-node-id="yQpMArMvv9WylHmhtInfdT">
-              <div class="b" style="left:15%;bottom:25%;width:35%;height:35%;" data-page-node-id="1eRSiJNPQRFWg6A9ogcPkg"></div>
-              <div class="b" style="left:55%;bottom:25%;width:30%;height:48%;" data-page-node-id="iyHqqMMBetGxfUBzt25x2N"></div>
-              <div class="ground" data-page-node-id="AiN6mBHmAypq1UA0DdfB3P"></div>
-            </div>
+            <div class="video-bg" style="background-image:url('assets/cam/cam3.jpg')"></div>
+            <div class="video-tint"></div>
+            <div class="video-stamp">CAM-0921 · 10:42:18</div>
           </div>
           <div class="video-info" data-page-node-id="OkJQaLiIB3qfbcQNQU7AIy">
             <div class="video-name" data-page-node-id="GN4DRXNLV2ifQLHclFtrf2">CAM-0921 · 危险品廊道 B段</div>
@@ -450,13 +449,9 @@
               <span class="live-tag" data-page-node-id="qvpLj8G8jiXSY1FCg6TzPO"><i data-page-node-id="KqYpO9fAFxGJM4FJ95qe1Z"></i>LIVE</span>
               <span class="video-id" data-page-node-id="f4vROO1B45rNmjkaWVY9Kw">CAM-0925</span>
             </div>
-            <div class="scene" data-page-node-id="UtZWKYYE0QmMPiQJO7znSA">
-              <div class="b" style="left:8%;bottom:20%;width:28%;height:50%;" data-page-node-id="gyPMYtir7QifiQnIL3NS2M"></div>
-              <div class="b" style="left:40%;bottom:20%;width:24%;height:42%;" data-page-node-id="TzCJ4DhxqqYqM0SruxF70y"></div>
-              <div class="b" style="left:68%;bottom:20%;width:24%;height:55%;" data-page-node-id="7ATqoch1A1OToXYWrw7Lfi"></div>
-              <div class="chimney" style="left:25%;bottom:70%;height:18%;" data-page-node-id="aIWzeK1FFo9ZA0i4XYHGFl"></div>
-              <div class="ground" data-page-node-id="8SQgefOoKRmGtPJBlzKiaz"></div>
-            </div>
+            <div class="video-bg" style="background-image:url('assets/cam/cam4.jpg')"></div>
+            <div class="video-tint"></div>
+            <div class="video-stamp">CAM-0925 · 10:42:18</div>
           </div>
           <div class="video-info" data-page-node-id="YsR4OP0MoFHUyglzLngae7">
             <div class="video-name" data-page-node-id="UQjii3OKOrRlSrVSzvsDVE">CAM-0925 · 危险品廊道 C段</div>
@@ -472,12 +467,9 @@
               <span class="live-tag" data-page-node-id="uxPlKlSZcYKZg1fA2VgNPh"><i data-page-node-id="9RQauzCrYhtrEppat8jMFt"></i>LIVE</span>
               <span class="video-id" data-page-node-id="ZK9Pw5O6yu5TZXCwbIo60M">CAM-1032</span>
             </div>
-            <div class="scene" data-page-node-id="CchDxZTAAQyq1OiiIJDZPL">
-              <div class="b" style="left:6%;bottom:25%;width:30%;height:55%;" data-page-node-id="8RtMzd8CgtwBX6ChCu1XUs"></div>
-              <div class="belt" style="left:8%;bottom:42%;width:84%;" data-page-node-id="FOSoDpPSdQYLcPd1WXmFQA"></div>
-              <div class="b" style="left:60%;bottom:25%;width:34%;height:48%;" data-page-node-id="B5GR2ZEmzFLXdIzv91igGa"></div>
-              <div class="ground" data-page-node-id="Dz1gwr8YKJrVYDaS0oThMR"></div>
-            </div>
+            <div class="video-bg" style="background-image:url('assets/cam/cam5.jpg')"></div>
+            <div class="video-tint"></div>
+            <div class="video-stamp">CAM-1032 · 10:42:18</div>
           </div>
           <div class="video-info" data-page-node-id="AxBTQ9FrvS1I3Cbvrqtrkq">
             <div class="video-name" data-page-node-id="OJQ1BlL9wbG1qu1OMo8M8A">CAM-1032 · 库区出口 主通道</div>
@@ -493,16 +485,12 @@
               <span class="live-tag" data-page-node-id="ojh1LXvIbIM9m5mPL53cGV"><i data-page-node-id="cel3cPMVwSDBugXAy6FL6u"></i>LIVE</span>
               <span class="video-id" data-page-node-id="YBAspP1iSDTwTWbs6jSm8g">CAM-1045</span>
             </div>
-            <div class="scene" data-page-node-id="W2p8WNPMcO7C3z96lt31g1">
-              <div class="b" style="left:6%;bottom:25%;width:30%;height:55%;" data-page-node-id="PehHdX3SsforV3RAyTADzI"></div>
-              <div class="belt" style="left:8%;bottom:42%;width:84%;" data-page-node-id="FpJ7fw7DAHKwU1brsFWrrX"></div>
-              <div class="b" style="left:60%;bottom:25%;width:34%;height:48%;" data-page-node-id="TYrV7AthssBGrgB6yAT8Wv"></div>
-              <div class="chimney" style="left:80%;bottom:73%;height:14%;" data-page-node-id="2QyVQmV5zCyBrXtADtSoLN"></div>
-              <div class="ground" data-page-node-id="Zb6xHFcgc7XT6DLNC6zTOh"></div>
-            </div>
-            <!-- AI 识别框：烟囱炽热 -->
-            <div class="ai-box" style="right:14%;bottom:30%;width:14%;height:32%;" data-page-node-id="RRL5w0kt2G31UOCEKkeKmc">
-              <span class="ai-tag" data-page-node-id="79r0PNpQxAw0EppFfSMWRz">🔥 AI识别 · 烟囱炽热</span>
+            <div class="video-bg" style="background-image:url('assets/cam/cam6.jpg')"></div>
+            <div class="video-tint"></div>
+            <div class="video-stamp">CAM-1045 · 10:42:18</div>
+            <!-- AI 识别框：人员闯入贴标工位 -->
+            <div class="ai-box" style="left:46%;bottom:28%;width:30%;height:46%;" data-page-node-id="RRL5w0kt2G31UOCEKkeKmc">
+              <span class="ai-tag" data-page-node-id="79r0PNpQxAw0EppFfSMWRz">⚠ AI识别 · 区域闯入</span>
             </div>
           </div>
           <div class="video-info" data-page-node-id="bOHEDvDdxqf56MeGRnRDtE">
