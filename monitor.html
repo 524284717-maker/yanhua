@@ -32,7 +32,7 @@
   .screen {
     position: absolute; left: 50%; top: 50%;
     width: 1920px; height: 1080px;
-    transform: translate(-50%,-50%) scale(min(100vw/1920, 100vh/1080));
+    transform: translate(-50%,-50%) scale(1);
     transform-origin: center center;
     background: radial-gradient(ellipse at 50% 30%, #0d2440 0%, #050b14 70%);
   }
@@ -140,7 +140,7 @@
   }
 
   /* ===== 视频监控区 ===== */
-  .video-section { flex: 1.2; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
+  .video-section { flex: 1.05; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
   .video-grid {
     flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);
     gap: 10px; min-height: 0;
@@ -207,15 +207,15 @@
   .video-foot .ok-dot::before { content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #22c55e; margin-right: 4px; box-shadow: 0 0 4px #22c55e; vertical-align: middle; }
 
   /* ===== 物联网感知监测 ===== */
-  .iot-section { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
+  .iot-section { flex: 1.15; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
   .iot-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; min-height: 0; }
   .iot-col { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
   .iot-card {
     background: linear-gradient(180deg, rgba(13,29,54,0.9) 0%, rgba(8,20,40,0.7) 100%);
     border: 1px solid var(--border); border-radius: 6px;
-    padding: 10px 12px; display: flex; flex-direction: column; min-height: 0;
+    padding: 9px 11px; display: flex; flex-direction: column; min-height: 0;
   }
-  .iot-card .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .iot-card .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
   .iot-card .head h4 { font-size: 13px; color: var(--title); margin: 0; font-weight: 600; display: flex; align-items: center; gap: 6px; }
   .iot-card .head h4::before { content: ""; width: 3px; height: 13px; background: var(--accent); border-radius: 2px; }
   .iot-card .head .tag { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: rgba(0,212,255,0.12); color: var(--accent); border: 1px solid rgba(0,212,255,0.3); }
@@ -229,18 +229,18 @@
   .kpi-row .trend.warn { background: rgba(255,159,46,0.12); color: #ffb866; }
 
   .kpi-triple { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-  .kpi-triple .cell { padding: 6px 8px; background: rgba(0,30,60,0.4); border: 1px solid rgba(0,150,255,0.18); border-radius: 4px; }
-  .kpi-triple .cell .v { font-size: 22px; font-weight: 700; color: var(--title); }
+  .kpi-triple .cell { padding: 5px 7px; background: rgba(0,30,60,0.4); border: 1px solid rgba(0,150,255,0.18); border-radius: 4px; }
+  .kpi-triple .cell .v { font-size: 20px; font-weight: 700; color: var(--title); }
   .kpi-triple .cell .l { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
 
   /* 列表行（廊道/库区） */
-  .row-list { display: flex; flex-direction: column; gap: 4px; }
+  .row-list { display: flex; flex-direction: column; gap: 4px; min-height: 0; overflow: hidden; }
   .row {
     display: flex; align-items: center; gap: 8px;
-    padding: 5px 8px; border-radius: 3px;
+    padding: 3px 8px; border-radius: 3px;
     background: rgba(0,30,60,0.4);
     border-left: 2px solid var(--ok);
-    font-size: 11px; color: var(--text);
+    font-size: 10.5px; color: var(--text); line-height: 1.25;
   }
   .row.warn { border-left-color: var(--warn); background: rgba(255,159,46,0.08); }
   .row.danger { border-left-color: var(--danger); background: rgba(255,77,79,0.08); }
@@ -283,6 +283,22 @@
   }
 
   /* 视频缩略图占位（暗蓝渐变 + 模拟建筑） */
+    /* ===== 三维度详细内容：脚注 / 算法列表 / 图表+列表并排 ===== */
+    .foot-note { font-size: 10px; color: var(--text-dim); margin-top: 5px; line-height: 1.35; }
+    .split-row { display: flex; gap: 8px; align-items: center; flex: 1; min-height: 0; }
+    .algo-list { flex: 1; display: flex; flex-direction: column; gap: 3px; min-height: 0; overflow: hidden; }
+    .algo-row { display: flex; align-items: center; gap: 6px; font-size: 10px; line-height: 1.2; }
+    .algo-row .nm { width: 68px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .algo-row .bar { flex: 1; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.07); overflow: hidden; }
+    .algo-row .bar i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg,#00d4ff,#0066aa); }
+    .algo-row.hit .bar i { background: linear-gradient(90deg,#ff9f2e,#c2410c); }
+    .algo-row .cnt { width: 44px; text-align: right; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+    .algo-row .hit-cnt { width: 36px; text-align: right; font-weight: 600; }
+    .algo-row .hit-cnt.zero { color: rgba(255,255,255,0.22); }
+    .algo-row .hit-cnt.has { color: #ffb866; }
+    .algo-legend { display: flex; gap: 10px; font-size: 9px; color: var(--text-dim); margin-bottom: 3px; }
+    .algo-legend i { display: inline-block; width: 7px; height: 7px; border-radius: 2px; margin-right: 3px; vertical-align: middle; }
+
 </style>
 </head>
 <body data-page-node-id="rM1LSca4ID0qK7PuWH5Zel">
@@ -494,179 +510,175 @@
         </div>
       </div>
 
-      <div class="iot-grid" data-page-node-id="pLUIUiwrm6LpHWGe25G1mL">
+      <div class="iot-grid">
 
-        <!-- 维度 1：AI 边缘计算盒子 -->
-        <div class="iot-col" data-page-node-id="WL4ci9XedLDmafbs4PpYBu">
-          <div class="iot-card" style="flex:1.2;" data-page-node-id="lw6xbMz56PnGcst5g5DqAI">
-            <div class="head" data-page-node-id="9LxAjqmT6mqLh09TwwyYGo">
-              <h4 data-page-node-id="TiMW6bHXqWVloPluv51C2e">AI 边缘计算盒子 · 智能分析</h4>
-              <span class="tag" data-page-node-id="QFAHdCJPwPHRmxdmaynDw3">1,286 台在线</span>
+        <!-- ===== 维度一：AI 边缘计算盒子 ===== -->
+        <div class="iot-col">
+          <div class="iot-card" style="flex:1.15;">
+            <div class="head">
+              <h4>AI 边缘计算盒子 · 算力与负载</h4>
+              <span class="tag">在线 1,264 / 1,286 台</span>
             </div>
-            <div class="kpi-row" style="margin-bottom:6px;" data-page-node-id="WhWZhHef3BtFC1R7JMMB7X">
-              <span class="num" data-page-node-id="CC1VoVNBOpLmDMHjHNWlEC">386.2 <span class="unit" data-page-node-id="eAvgCRDPTjxzkvve8AACeD">kW</span></span>
-              <span class="trend up" data-page-node-id="O5Ac83Os278gD2w6AjWwiD">▲ 较昨日 +16.3%</span>
+            <div class="kpi-triple" style="margin-bottom:6px;">
+              <div class="cell"><div class="v" style="font-size:18px;">12,860<span style="font-size:10px;color:var(--text-dim)"> TOPS</span></div><div class="l">算力池总量</div></div>
+              <div class="cell"><div class="v" style="font-size:18px;color:#6ee5ff;">47<span style="font-size:10px">%</span></div><div class="l">NPU 平均利用率</div></div>
+              <div class="cell"><div class="v" style="font-size:18px;color:#ffb866;">56<span style="font-size:10px">°C</span></div><div class="l">设备平均温度</div></div>
             </div>
-            <div class="kpi-row" style="margin-bottom:4px; font-size:11px; color:var(--text-dim);" data-page-node-id="Dr00JVhNRVHrG6NBFmcMV5">
-              <span data-page-node-id="IYqSzFQBVOE0IvjIqt8A62">当前负荷（边缘推理）</span>
-              <span data-page-node-id="es9Y052AkgDXwac6NagR44">· 算力占用 47%</span>
-              <span data-page-node-id="SLGLBmn2GHWWx2b7YBcMHB">· 温度 56°C</span>
+            <div class="kpi-row" style="margin-bottom:4px;">
+              <span class="num" style="font-size:20px;">386.2 <span class="unit">kW</span></span>
+              <span class="trend up">▲ 较昨日 +16.3%</span>
+              <span style="font-size:10px;color:var(--text-dim)">当前推理负载</span>
             </div>
-            <div class="chart" id="chartAI" style="height:130px;" data-page-node-id="ukQF6UVNHguIJATHszLB60"></div>
-            <div style="font-size:10px; color:var(--text-dim); margin-top:2px;" data-page-node-id="uGkrS0LcBTPfvboo7ZkKmJ">24小时 AI 推理负载（kW） · 橙色为超阈值时段</div>
+            <div id="chartAI" style="flex:1; min-height:74px;"></div>
+            <div class="foot-note">接入视频 3,752 路（在线 3,748 / 离线 4）· 并发流分析 16 路 · 超 320kW 自动限流</div>
           </div>
 
-          <div class="iot-card" style="flex:1;" data-page-node-id="g4tVu43X73DmUvTOyhNolP">
-            <div class="head" data-page-node-id="gaZQrYc98K0H0mB1oRNNwH">
-              <h4 data-page-node-id="9J2ab4Asvi2DHqZHdmtfwr">AI 边缘盒子 · 告警事件</h4>
-              <span class="tag" data-page-node-id="bD3qxj1t4U2AgaHpTLjGtJ">近 24h 8 起</span>
+          <div class="iot-card" style="flex:1;">
+            <div class="head">
+              <h4>AI 算法运行 · 8 类识别</h4>
+              <span class="tag">今日 46,624 次</span>
             </div>
-            <div class="alert-list" data-page-node-id="f6ZvcxKUJD3dFNwXzJt3B4">
-              <div class="alert-row" data-page-node-id="nF83ntp7AmU0JQwpGNYmq1">
-                <span class="name" data-page-node-id="krxwpRbXh86tuEtlcjndNO">● 东风花炮厂 · 装药工序<b>弹药异常</b> 152%</span>
-                <span class="status fire" data-page-node-id="hm4QkG2hAyB5oQDRviQvzI">已预警</span>
-              </div>
-              <div class="alert-row resolved" data-page-node-id="elNLuK6mW7zEHmWmOZwrQI">
-                <span class="name" data-page-node-id="zNY8boWxl3uU3dLATzRl54">● 花炮二厂 · B区 彰电路电负荷<b>异常波动</b></span>
-                <span class="status pending" data-page-node-id="2hyNaZpNrmD2J56ANI60Do">核验中</span>
-              </div>
-              <div class="alert-row resolved" data-page-node-id="5Insr9bTbJrPYtRT10h1X7">
-                <span class="name" data-page-node-id="BsThaHn9yHCUDAE34neKju">● 袁州花炮 · 烘于库<b>温控偏离</b> 5min</span>
-                <span class="status pending" data-page-node-id="x64O3KZOuk6B1ufpsFHcAV">核验中</span>
-              </div>
-            </div>
+            <div class="algo-list" id="algoList"></div>
+            <div class="foot-note">模型版本 v2.4.1 · OTA 已升级 1,198 台 · 算法准确率 99.94%</div>
           </div>
         </div>
 
-        <!-- 维度 2：涉药机械设备 -->
-        <div class="iot-col" data-page-node-id="kj4osLd01zXzGYU7zup5To">
-          <div class="iot-card" style="flex:1.1;" data-page-node-id="zpcZyQC92EU5JTwTERBxmn">
-            <div class="head" data-page-node-id="V7SFamuacnE4YK6jOh3085">
-              <h4 data-page-node-id="4kWEC5iEQCESBIXCB6GdAL">涉药机械设备 · 温湿度监控</h4>
-              <span class="tag" data-page-node-id="PHabqcZdwBIIFZ9J2SdbwT">1,058 个传感器</span>
+        <!-- ===== 维度二：涉药机械设备 ===== -->
+        <div class="iot-col">
+          <div class="iot-card" style="flex:1.1;">
+            <div class="head">
+              <h4>涉药机械设备 · 温湿度监控</h4>
+              <span class="tag">1,058 个传感器</span>
             </div>
-            <div class="kpi-triple" style="margin-bottom:8px;" data-page-node-id="7fqFVGZ38jNtSGlfG4hNGY">
-              <div class="cell" data-page-node-id="2pyXkHDreGL0tnKvWAliyd"><div class="v" data-page-node-id="tvDCwG3u8pRdzzhPs5tnzU">864</div><div class="l" data-page-node-id="PgF2DjPP3ThfhSMD1fM3Cx">在线机械台数</div></div>
-              <div class="cell" data-page-node-id="QXJj1gDH4SOoReghTcUJq7"><div class="v" style="color:#ffb866" data-page-node-id="UfU8uabeIE8Q3iocuR6Mi0">12</div><div class="l" data-page-node-id="ZKHO1vp8CfRWlH97lhzzJY">运行告警</div></div>
-              <div class="cell" data-page-node-id="v3sGds4HnjJenagAPVFhJp"><div class="v" data-page-node-id="V41YmIKfXhkJ3tNo9gVItJ">142</div><div class="l" data-page-node-id="2MC9Myej9LB0vEzm620itb">覆盖在产企业</div></div>
+            <div class="kpi-triple" style="margin-bottom:6px;">
+              <div class="cell"><div class="v" style="font-size:18px;">864</div><div class="l">在线机械台数</div></div>
+              <div class="cell"><div class="v" style="font-size:18px;color:#ffb866;">12</div><div class="l">运行告警</div></div>
+              <div class="cell"><div class="v" style="font-size:18px;">142</div><div class="l">覆盖在产企业</div></div>
             </div>
-            <div class="row-list" style="flex:1;" data-page-node-id="Zbd7MYEPQ7pAM29bsf7u8g">
-              <div class="row" data-page-node-id="qiYrgvejGZEH4dKQgBSX2x">
-                <span class="dot" data-page-node-id="sjDuDvHoM09LpkLl8E7zpE"></span>
-                <span class="area" data-page-node-id="y1gOiJsNCRqa8PsqRU6tIm">● <b data-page-node-id="XaBJIBtQxc7OpINPlydOha">A区</b> · 东风花炮厂 1.3工库房</span>
-                <span class="v ok" data-page-node-id="4vHBI0SV7ttwRD17Ay5s14">24.6°C · 58%RH</span>
+            <div class="row-list">
+              <div class="row">
+                <span class="dot"></span>
+                <span class="area">● <b>A区</b> · 东风花炮厂 1.3工库房</span>
+                <span class="v ok">24.6°C · 58%RH</span>
               </div>
-              <div class="row" data-page-node-id="9nB2TiWYAR5BFPvp7DmAMM">
-                <span class="dot" data-page-node-id="2YflTg9HgToEArOHg7F7RV"></span>
-                <span class="area" data-page-node-id="TAzkBURYLHSDyuGBUyAlah">● <b data-page-node-id="KDrxbOP7bS18qoAEqoB2LH">B区</b> · 花炮二厂 1.3工库房</span>
-                <span class="v ok" data-page-node-id="0wMkE3ci0JxYtajL7WWX7e">23.8°C · 55%RH</span>
+              <div class="row">
+                <span class="dot"></span>
+                <span class="area">● <b>B区</b> · 花炮二厂 1.3工库房</span>
+                <span class="v ok">23.8°C · 55%RH</span>
               </div>
-              <div class="row warn" data-page-node-id="YV2GEPctgEJduA9g3GyoC2">
-                <span class="dot" data-page-node-id="sIReJCApGmCN5HSZzlUFOA"></span>
-                <span class="area" data-page-node-id="NC5hpQsnFLbpxNvVRC3dx8">● <b data-page-node-id="3rGhCf4Irn81DpAEhqSxsF">C区</b> · 花炮二厂 1.3工库房</span>
-                <span class="v warn" data-page-node-id="9RABjGEA6rG3jKER8DKsOZ">29.8°C · 63%RH · 温度偏高</span>
+              <div class="row warn">
+                <span class="dot"></span>
+                <span class="area">● <b>C区</b> · 花炮二厂 1.3工库房</span>
+                <span class="v warn">29.8°C · 63%RH 温度偏高</span>
               </div>
-              <div class="row" data-page-node-id="IjqaAUGnsKvhM4yRvRHAK7">
-                <span class="dot" data-page-node-id="YOInJFoSnXHMOplCc9g9hp"></span>
-                <span class="area" data-page-node-id="oydjoH832GL4ulUtkxtVvG">● <b data-page-node-id="sSkSRLKCk1F8tP83DsGy9t">D区</b> · 东风花炮厂 1.3工库房</span>
-                <span class="v ok" data-page-node-id="oRZzArBzEuJrPzGX44KjCn">25.2°C · 60%RH</span>
+              <div class="row">
+                <span class="dot"></span>
+                <span class="area">● <b>D区</b> · 东风花炮厂 1.3工库房</span>
+                <span class="v ok">25.2°C · 60%RH</span>
               </div>
             </div>
-            <div style="font-size:10px; color:var(--text-dim); margin-top:4px;" data-page-node-id="TB2E1AeBgrSD5Yr3tgPfeH">安全阈值：温度 &lt; 28°C · 湿度 &lt; 65%RH · 超限自动触发预警</div>
+            <div class="foot-note">安全阈值：温度 &lt; 28°C · 湿度 &lt; 65%RH · 超限自动停机并推送预警</div>
           </div>
 
-          <div class="iot-card" style="flex:0.9;" data-page-node-id="aoAHTNUu8NGuWYvctDjhTX">
-            <div class="head" data-page-node-id="NsSaDO4Z2t3edua7jSUWeb">
-              <h4 data-page-node-id="0LopPHArcOy1eyopJn9s55">涉药机械 · 运行时长 Top</h4>
-              <span class="tag" data-page-node-id="AeWNS8mpBr4pgHeTXHBwTe">本月累计</span>
+          <div class="iot-card" style="flex:1;">
+            <div class="head">
+              <h4>机械类型分布 · 运行时长</h4>
+              <span class="tag">本月 42,860 h</span>
             </div>
-            <div class="row-list" data-page-node-id="a3ZLXu2TPtAqX5R7MQWqZo">
-              <div class="row" data-page-node-id="EEhbEvdoUfF7Sx505qFSgM">
-                <span class="dot" data-page-node-id="ros3GwuvoMyc4xWuHPfkY7"></span>
-                <span class="area" data-page-node-id="MGB1JsDHXV5Z4B145zzHtY">● 装药机 1# · 东风花炮厂</span>
-                <span class="v warn" data-page-node-id="jeCdeNYltxuYpsnYpsM2iB">186.5 h · 超限</span>
-              </div>
-              <div class="row" data-page-node-id="LhGdVRs5gaDWESeNuIXsae">
-                <span class="dot" data-page-node-id="I42cEaADlaQGgoi8U7LNGh"></span>
-                <span class="area" data-page-node-id="yEJbCqFC78AltosfpHIyZB">● 彰引机 2# · 花炮二厂</span>
-                <span class="v" data-page-node-id="q0tAjHhShABC3Y3462e4Wp">142.0 h</span>
-              </div>
-              <div class="row" data-page-node-id="fjlEp5y3SRsbHwBFW7OdTc">
-                <span class="dot" data-page-node-id="59NmAa0L6Uhm8H0Bxg1Jxw"></span>
-                <span class="area" data-page-node-id="DFD7ANV8ZEbhykfqNTmXha">● 结鞭机 1# · 袁州花炮</span>
-                <span class="v" data-page-node-id="1d1nM23O5IqCwB1V3TfoIO">128.8 h</span>
-              </div>
-              <div class="row" data-page-node-id="SuGwY3Xx3Pqcx2mFxQEcfm">
-                <span class="dot" data-page-node-id="3artSakTOQyBmnw6WBseEe"></span>
-                <span class="area" data-page-node-id="TTDv00nibDBdkSHOnSKodL">● 装药机 3# · 万载花炮三厂</span>
-                <span class="v" data-page-node-id="6fUvZZyBVnLsrGobHzpYhP">96.3 h</span>
+            <div class="split-row">
+              <div id="chartMach" style="flex:0 0 116px;height:112px;"></div>
+              <div class="row-list" style="flex:1;">
+                <div class="row">
+                  <span class="dot"></span>
+                  <span class="area">装药机 1# · 东风花炮厂</span>
+                  <span class="v warn">186.5 h 超限</span>
+                </div>
+                <div class="row">
+                  <span class="dot"></span>
+                  <span class="area">结鞭机 2# · 花炮二厂</span>
+                  <span class="v">142.0 h</span>
+                </div>
+                <div class="row">
+                  <span class="dot"></span>
+                  <span class="area">引线机 1# · 袁州花炮</span>
+                  <span class="v">128.8 h</span>
+                </div>
+                <div class="row">
+                  <span class="dot"></span>
+                  <span class="area">装药机 3# · 花炮三厂</span>
+                  <span class="v">96.3 h</span>
+                </div>
               </div>
             </div>
+            <div class="foot-note">维保到期 8 台 · 超限运行 1 台 · 本月启停 12,486 次</div>
           </div>
         </div>
 
-        <!-- 维度 3：门禁人员管控 -->
-        <div class="iot-col" data-page-node-id="PSPr7cO1eaoz3e9mJtunVg">
-          <div class="iot-card" style="flex:1;" data-page-node-id="pBdRhfK9Q1CH1qTknZKeYE">
-            <div class="head" data-page-node-id="rmlAOI2FaKtgeFtPpmYjTL">
-              <h4 data-page-node-id="G2bIpWul5tr0fAc18n6zbR">门禁人员管控 · 廊道监控</h4>
-              <span class="tag" data-page-node-id="Qc7DvVfvICRmHsgXJWCFIZ">AI 行为识别</span>
+        <!-- ===== 维度三：门禁人员管控 ===== -->
+        <div class="iot-col">
+          <div class="iot-card" style="flex:1.1;">
+            <div class="head">
+              <h4>门禁人员管控 · 廊道监控</h4>
+              <span class="tag">AI 行为识别</span>
             </div>
-            <div class="kpi-triple" style="margin-bottom:8px;" data-page-node-id="IYr8tvSFI8TQZvoaj5PcOp">
-              <div class="cell" data-page-node-id="J0bky8w5YDpcw4fqJIAtNL"><div class="v" data-page-node-id="3XwAP0c0CPyA7Yi3kfESRO">428</div><div class="l" data-page-node-id="EAQKpClOjRolqWGCMAsN04">今日进（人次）</div></div>
-              <div class="cell" data-page-node-id="4PcQO5yja8Xw1pbdth6TZ8"><div class="v" data-page-node-id="iMVEcJAjYdyH2EI7zUEeyY">426</div><div class="l" data-page-node-id="EutXEqEhPf8QeCtwQ5Km3B">今日出（人次）</div></div>
-              <div class="cell" data-page-node-id="rE2hUfvkxTVH7ccoAG3pAl"><div class="v" style="color:#ff7875" data-page-node-id="xZTCbInMQ4kw7xgGFBoJCG">2</div><div class="l" data-page-node-id="KrGUVBndaFtayPePCNyvFn">当前滞留（超时告警）</div></div>
+            <div class="kpi-triple" style="margin-bottom:6px;">
+              <div class="cell"><div class="v" style="font-size:18px;">428</div><div class="l">今日进（人次）</div></div>
+              <div class="cell"><div class="v" style="font-size:18px;">426</div><div class="l">今日出（人次）</div></div>
+              <div class="cell"><div class="v" style="font-size:18px;color:#ff7875;">2</div><div class="l">超时滞留告警</div></div>
             </div>
-            <div class="row-list" data-page-node-id="WKNDUvzkWDI3A4yZlxRlrb">
-              <div class="row" data-page-node-id="i7DFFz1Lzbixhysal8LWlG">
-                <span class="dot" data-page-node-id="yoJB2RbMwIi1MzokFMywia"></span>
-                <span class="area" data-page-node-id="qTX5hx8i37YVHhZax9g51R">● 廊道 东段 · 东风花炮厂</span>
-                <span class="v ok" data-page-node-id="QBhOTKnYAVzIlgJwtD3EEw">通行正常 · 今日 128 人次</span>
+            <div class="row-list">
+              <div class="row">
+                <span class="dot"></span>
+                <span class="area">● 廊道东段 · 东风花炮厂</span>
+                <span class="v ok">正常 · 今日 128 人次</span>
               </div>
-              <div class="row warn" data-page-node-id="yiocslkJFL6GJipDCesowa">
-                <span class="dot" data-page-node-id="k8y7niTrV6XLmytw9BZoUE"></span>
-                <span class="area" data-page-node-id="iXr2aluYLTWGRkW56jbiiY">● 廊道 西段 · 花炮二厂</span>
-                <span class="v warn" data-page-node-id="eiAFo4H6sZb1fwkie0eg3B">滞留 2 人 · 超时 12 分钟</span>
+              <div class="row warn">
+                <span class="dot"></span>
+                <span class="area">● 廊道西段 · 花炮二厂</span>
+                <span class="v warn">滞留 2 人 · 超时 12 分钟</span>
               </div>
-              <div class="row" data-page-node-id="6QoognbCyfkvADK5sb3YZr">
-                <span class="dot" data-page-node-id="qLVa7BoTyKgaEri41512Ea"></span>
-                <span class="area" data-page-node-id="tRES0WGJKBVzr5kaw4GEna">● 廊道 中段 · 东风花炮厂</span>
-                <span class="v ok" data-page-node-id="BwLpqAbZMOueUqjxBCGesD">通行正常 · 今日 96 人次</span>
+              <div class="row">
+                <span class="dot"></span>
+                <span class="area">● 廊道中段 · 东风花炮厂</span>
+                <span class="v ok">正常 · 今日 96 人次</span>
               </div>
             </div>
+            <div id="chartFlow" style="flex:1; min-height:50px;"></div>
           </div>
 
-          <div class="iot-card" style="flex:1;" data-page-node-id="EtIQVZFP1SpgmvxX171Jdu">
-            <div class="head" data-page-node-id="94JFcMDfsqm8NBiRCfcmG5">
-              <h4 data-page-node-id="G2IWAEGz0tR55gT7LcaTwd">门禁 · 重点人员作业统计</h4>
-              <span class="tag" data-page-node-id="yl1gGERtPmcyvomKO1yrLl">涉药工序在岗</span>
+          <div class="iot-card" style="flex:1;">
+            <div class="head">
+              <h4>重点人员作业 · 资质核查</h4>
+              <span class="tag">涉药工序在岗</span>
             </div>
-            <div class="kpi-row" style="margin-bottom:6px;" data-page-node-id="3FrmMzyYf7vKDZNd120HRv">
-              <span class="num" style="font-size:22px;" data-page-node-id="7l8HAT4HEVGaYhLNRIvbAe">1,184 <span class="unit" data-page-node-id="ki5unLdTU7dLaKMoKF1I3L">人</span></span>
-              <span class="trend ok" data-page-node-id="I3GAZk1TXRAfiutliKRIYk">● 在岗</span>
+            <div class="kpi-row" style="margin-bottom:5px;">
+              <span class="num" style="font-size:20px;">1,184 <span class="unit">人</span></span>
+              <span class="trend ok">● 当前在岗</span>
+              <span style="font-size:10px;color:var(--text-dim)">核验通过率 99.2%</span>
             </div>
-            <div class="row-list" data-page-node-id="VNLdDEkrXIZVs51fRBQ64T">
-              <div class="row" data-page-node-id="LfqlTMcD7A6zg2xW7Lj5io">
-                <span class="dot" data-page-node-id="jZ9e1m11kqH5qFtnetGzOt"></span>
-                <span class="area" data-page-node-id="1o68YWJbZordz3Zt60YyIk">● 装药工序 · 在岗 <b data-page-node-id="5ISB1YPRM8keY3lt8O3Tb8">342</b></span>
-                <span class="v" data-page-node-id="11s2Hg9cszA70giZCvZZx4">资质有效率 99.1%</span>
+            <div class="row-list">
+              <div class="row">
+                <span class="dot"></span>
+                <span class="area">● 装药工序 · 在岗 <b>342</b></span>
+                <span class="v">资质有效率 99.1%</span>
               </div>
-              <div class="row" data-page-node-id="SX3qFaECn6JamoxtVRhNnU">
-                <span class="dot" data-page-node-id="6gtf0KIkrcf6ZGnJv46kGV"></span>
-                <span class="area" data-page-node-id="8j7nS1USZ5PqewAn4XAlCo">● 彰引工序 · 在岗 <b data-page-node-id="hAPyA9QMAX9G99FOv9UJBj">286</b></span>
-                <span class="v" data-page-node-id="1DMcjNAuBb7Z3tY96QNKIO">资质有效率 98.6%</span>
+              <div class="row">
+                <span class="dot"></span>
+                <span class="area">● 引线工序 · 在岗 <b>286</b></span>
+                <span class="v">资质有效率 98.6%</span>
               </div>
-              <div class="row warn" data-page-node-id="4ioVm2CgTC7TEJZIHnEbLC">
-                <span class="dot" data-page-node-id="RyvSv2vfrbytIhUt6kFR7I"></span>
-                <span class="area" data-page-node-id="ZJ8avRQEs3ECz0FVxE3lB7">● 结鞭工序 · 在岗 <b data-page-node-id="Z9kW5R8H0ohBL0uq11XZ0T">218</b></span>
-                <span class="v warn" data-page-node-id="gtxizgB8WDEy08xoshO4nz">2人资质 7日 内到期</span>
+              <div class="row warn">
+                <span class="dot"></span>
+                <span class="area">● 结鞭工序 · 在岗 <b>218</b></span>
+                <span class="v warn">2 人 7 日内到期</span>
               </div>
-              <div class="row" data-page-node-id="rFfOQAldvDUbrTFw498GmD">
-                <span class="dot" data-page-node-id="xavPQnULXBnoo5LJz8m8Uz"></span>
-                <span class="area" data-page-node-id="LdAKEZJcslO4UpMeHBd3kP">● 仓储工序 · 在岗 <b data-page-node-id="hfjEbwxAMvGA6QSsKQjbH1">338</b></span>
-                <span class="v" data-page-node-id="NhgHGTMMnDAPN2Ag523vFm">资质有效率 100%</span>
+              <div class="row">
+                <span class="dot"></span>
+                <span class="area">● 仓储工序 · 在岗 <b>338</b></span>
+                <span class="v">资质有效率 100%</span>
               </div>
             </div>
+            <div class="foot-note">资质到期预警 6 人 · 无证上岗拦截 0 起 · 越权闯入告警 3 起</div>
           </div>
         </div>
 
@@ -680,6 +692,17 @@
 </div>
 
 <script>
+
+  // ===== 等比缩放（按当前窗口与 1920x1080 设计稿比例） =====
+  function fitScreen() {
+    const el = document.querySelector('.screen');
+    if (!el) return;
+    const sc = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    el.style.transform = `translate(-50%,-50%) scale(${sc})`;
+  }
+  window.addEventListener('resize', fitScreen);
+  fitScreen();
+
   // 时钟
   function tick() {
     const d = new Date();
@@ -719,6 +742,85 @@
       }
     ]
   });
+
+  // ===== 8 类 AI 算法今日运行统计 =====
+  const algos = [
+    { nm: '烟雾火焰检测', cnt: 12860, hit: 8 },
+    { nm: '人员入侵检测', cnt: 8642,  hit: 12 },
+    { nm: '工房超员检测', cnt: 6284,  hit: 5 },
+    { nm: '静电未释放',   cnt: 5120,  hit: 3 },
+    { nm: '通道堵塞检测', cnt: 4326,  hit: 6 },
+    { nm: '超高堆垛检测', cnt: 3842,  hit: 4 },
+    { nm: '机械异常运行', cnt: 2964,  hit: 2 },
+    { nm: '产品不合格',   cnt: 1586,  hit: 1 },
+  ];
+  const amax = Math.max(...algos.map(a => a.cnt));
+  document.getElementById('algoList').innerHTML =
+    '<div class="algo-legend"><span><i style="background:#00d4ff"></i>正常识别</span><span><i style="background:#ff9f2e"></i>有命中告警</span><span style="margin-left:auto">调用次数 / 命中数</span></div>' +
+    algos.map(a => `
+      <div class="algo-row ${a.hit > 0 ? 'hit' : ''}">
+        <span class="nm">${a.nm}</span>
+        <span class="bar"><i style="width:${(a.cnt / amax * 100).toFixed(1)}%"></i></span>
+        <span class="cnt">${a.cnt.toLocaleString()}</span>
+        <span class="hit-cnt ${a.hit > 0 ? 'has' : 'zero'}">${a.hit > 0 ? '命中 ' + a.hit : '—'}</span>
+      </div>`).join('');
+
+  // ===== 涉药机械类型分布（环形）=====
+  const machChart = echarts.init(document.getElementById('chartMach'));
+  machChart.setOption({
+    tooltip: { trigger: 'item', backgroundColor: 'rgba(8,20,40,0.9)', borderColor: '#00d4ff', textStyle: { color: '#c8dcf0', fontSize: 11 } },
+    legend: { show: false },
+    series: [{
+      type: 'pie', radius: ['52%', '76%'], center: ['50%', '50%'],
+      avoidLabelOverlap: false,
+      itemStyle: { borderColor: 'rgba(8,20,40,0.9)', borderWidth: 2 },
+      label: { show: true, position: 'center', formatter: () => '864\n台', color: '#e0f0ff', fontSize: 13, fontWeight: 700, lineHeight: 16 },
+      emphasis: { label: { show: true, fontSize: 13, fontWeight: 700 } },
+      data: [
+        { value: 312, name: '装药机', itemStyle: { color: new echarts.graphic.LinearGradient(0,0,1,1,[{offset:0,color:'#00d4ff'},{offset:1,color:'#0066aa'}]) } },
+        { value: 268, name: '结鞭机', itemStyle: { color: new echarts.graphic.LinearGradient(0,0,1,1,[{offset:0,color:'#38c8f5'},{offset:1,color:'#0b6b8f'}]) } },
+        { value: 186, name: '引线机', itemStyle: { color: new echarts.graphic.LinearGradient(0,0,1,1,[{offset:0,color:'#ff9f2e'},{offset:1,color:'#c2410c'}]) } },
+        { value: 98,  name: '其他',   itemStyle: { color: new echarts.graphic.LinearGradient(0,0,1,1,[{offset:0,color:'#a855f7'},{offset:1,color:'#5b21b6'}]) } },
+      ]
+    }]
+  });
+
+  // ===== 门禁 24h 人员进出趋势 =====
+  const flowChart = echarts.init(document.getElementById('chartFlow'));
+  const fIn  = [6,4,2,2,3,8,26,48,62,58,46,38,42,52,56,48,44,36,28,18,12,10,8,7];
+  const fOut = [5,3,2,1,2,6,22,44,58,54,42,34,40,50,54,46,42,34,26,16,11,9,7,6];
+  flowChart.setOption({
+    grid: { left: 26, right: 6, top: 16, bottom: 16 },
+    tooltip: { trigger: 'axis', backgroundColor: 'rgba(8,20,40,0.9)', borderColor: '#00d4ff', textStyle: { color: '#c8dcf0', fontSize: 11 } },
+    legend: { data: ['进', '出'], right: 0, top: -2, textStyle: { color: '#8aa4bf', fontSize: 10 }, itemWidth: 10, itemHeight: 6 },
+    xAxis: {
+      type: 'category', boundaryGap: false,
+      data: Array.from({length:24}, (_,i)=> i),
+      axisLine: { lineStyle: { color: 'rgba(0,150,255,0.25)' } },
+      axisLabel: { color: '#8aa4bf', fontSize: 9, interval: 5, formatter: v => v + '时' },
+      axisTick: { show: false }
+    },
+    yAxis: {
+      type: 'value', name: '人次', nameTextStyle: { color: '#8aa4bf', fontSize: 9 },
+      axisLine: { show: false }, splitLine: { lineStyle: { color: 'rgba(0,150,255,0.1)' } },
+      axisLabel: { color: '#8aa4bf', fontSize: 9 }
+    },
+    series: [
+      {
+        name: '进', type: 'line', smooth: true, symbol: 'none', data: fIn,
+        lineStyle: { width: 2, color: '#00d4ff' },
+        areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,212,255,0.35)'},{offset:1,color:'rgba(0,212,255,0)'}]) }
+      },
+      {
+        name: '出', type: 'line', smooth: true, symbol: 'none', data: fOut,
+        lineStyle: { width: 2, color: '#a855f7' },
+        areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(168,85,247,0.3)'},{offset:1,color:'rgba(168,85,247,0)'}]) }
+      }
+    ]
+  });
+
+  window.addEventListener('resize', () => { machChart.resize(); flowChart.resize(); });
+
   window.addEventListener('resize', () => aiChart.resize());
 </script>
 </body>
