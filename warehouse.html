@@ -192,12 +192,33 @@
     .drill-back.disabled { opacity: .35; pointer-events: none; }
     .level-tag { font-size: 11px; color: #38c8f5; border: 1px solid rgba(56,200,245,0.4); border-radius: 3px; padding: 1px 6px; margin-left: 6px; }
 
-    .drill-content { flex: 1; display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; min-height: 0; }
-    .drill-box { display: flex; flex-direction: column; min-height: 0; }
+    .drill-content { flex: 1; display: grid; grid-template-columns: 1.42fr 1fr; gap: 14px; min-height: 0; }
+    .drill-box { display: flex; flex-direction: column; min-height: 0; position: relative; }
     .drill-box h5 { font-size: 13px; color: var(--text-dim); font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     .drill-box h5::before { content: ""; width: 3px; height: 11px; background: var(--accent); border-radius: 2px; }
-    #rankChart { flex: 1; min-height: 0; }
+    .map-box {
+      border: 1px solid rgba(0, 180, 255, 0.16);
+      border-radius: 6px;
+      background: radial-gradient(circle at 50% 45%, rgba(0, 90, 160, 0.16), rgba(0, 18, 40, 0.28) 72%);
+      overflow: hidden;
+    }
+    #mapChart { flex: 1; min-height: 0; width: 100%; }
+    .map-badge { position: absolute; left: 10px; top: 8px; z-index: 3; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+    .map-badge .mb-name { font-size: 13px; font-weight: 700; color: #fff; text-shadow: 0 0 8px rgba(0, 180, 255, 0.5); }
+    .map-badge .mb-lv { font-size: 11px; color: #38c8f5; border: 1px solid rgba(56, 200, 245, 0.45); background: rgba(0, 60, 110, 0.45); border-radius: 3px; padding: 1px 7px; }
+    .map-hint { position: absolute; right: 10px; top: 9px; z-index: 3; font-size: 11px; color: var(--text-dim); pointer-events: none; }
+    .map-legend { position: absolute; left: 10px; bottom: 8px; z-index: 3; display: flex; align-items: center; gap: 12px; font-size: 11px; color: var(--text-dim); pointer-events: none; }
+    .map-legend i { font-style: normal; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+    .map-empty { position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; color: var(--text-dim); font-size: 13px; }
+    .empty-state {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      height: 100%; min-height: 90px;
+      color: #51cf66; font-size: 12px;
+      border: 1px dashed rgba(81, 207, 102, 0.35); border-radius: 6px;
+      background: rgba(81, 207, 102, 0.05);
+    }
 
+    /* Region table */
     .rtable-wrap { flex: 1; overflow-y: auto; min-height: 0; }
     .rtable { width: 100%; border-collapse: collapse; font-size: 12px; }
     .rtable th {
@@ -217,22 +238,36 @@
     .drill-link { color: var(--accent); font-size: 11px; border: 1px solid rgba(0,212,255,0.35); padding: 2px 8px; border-radius: 10px; }
     .rtable tbody tr:hover .drill-link { background: rgba(0,150,255,0.2); }
 
-    .ent-detail { flex: 1; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+    /* Enterprise detail (leaf level) */
+    .ent-detail { flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; min-height: 0; }
     .ent-head {
       background: linear-gradient(135deg, rgba(0,100,180,0.2), rgba(0,60,110,0.1));
-      border: 1px solid rgba(0,150,255,0.3); border-radius: 8px; padding: 14px;
+      border: 1px solid rgba(0,150,255,0.3); border-radius: 8px; padding: 8px 12px;
     }
-    .ent-head h4 { font-size: 16px; color: #fff; margin-bottom: 6px; }
-    .ent-head p { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
-    .ent-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    .ent-kpi { background: rgba(0,0,0,0.22); border: 1px solid rgba(0,150,255,0.15); border-radius: 8px; padding: 12px 8px; text-align: center; }
-    .ent-kpi .lab { font-size: 11px; color: var(--text-dim); }
-    .ent-kpi .val { font-size: 20px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate", "Arial Black", sans-serif; margin-top: 4px; }
+    .ent-head h4 { font-size: 15px; color: #fff; margin-bottom: 2px; }
+    .ent-head p { font-size: 11px; color: var(--text-dim); line-height: 1.45; }
+    .ent-kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+    .ent-kpi { background: rgba(0,0,0,0.22); border: 1px solid rgba(0,150,255,0.15); border-radius: 8px; padding: 8px 4px; text-align: center; }
+    .ent-kpi .lab { font-size: 10px; color: var(--text-dim); }
+    .ent-kpi .val { font-size: 16px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate", "Arial Black", sans-serif; margin-top: 3px; }
     .ent-kpi .val.warn { color: var(--danger); }
-    .ent-kpi .val.ok { color: #51cf66; }
-    .ent-status { display: inline-block; margin-top: 8px; font-size: 11px; padding: 3px 10px; border-radius: 10px; }
+    .ent-status { display: inline-block; margin-top: 4px; font-size: 11px; padding: 2px 10px; border-radius: 10px; }
     .ent-status.ok { color: #51cf66; border: 1px solid rgba(81,207,102,0.5); background: rgba(81,207,102,0.1); }
     .ent-status.warn { color: var(--danger); border: 1px solid rgba(255,77,79,0.5); background: rgba(255,77,79,0.1); }
+    .ent-mat-title { font-size: 13px; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .ent-mat-title::before { content: ""; width: 3px; height: 11px; background: var(--accent); border-radius: 2px; }
+    .ent-mat { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .ent-mat thead th {
+      color: var(--text-dim); font-weight: 500; text-align: left; padding: 5px 10px;
+      background: rgba(0,150,255,0.08); border-bottom: 1px solid rgba(0,180,255,0.35);
+      white-space: nowrap;
+    }
+    .ent-mat thead th.num, .ent-mat td.num { text-align: right; }
+    .ent-mat tbody td { padding: 4.5px 10px; color: var(--text); border-bottom: 1px solid rgba(0,150,255,0.12); white-space: nowrap; }
+    .ent-mat tbody tr:last-child td { border-bottom: none; }
+    .ent-mat tbody tr:nth-child(odd) { background: rgba(0,0,0,0.14); }
+    .ent-mat td.num { font-family: "DIN Alternate", "Arial Black", sans-serif; color: #cfeaff; }
+
 
     .warning-list { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
     .warning-item {
@@ -378,23 +413,33 @@
       </div>
 
       <!-- Drill content -->
-      <div class="panel" style="flex: 1.35; min-height: 0;" data-page-node-id="OgF2c1juhpFIjCg2hGTFIq">
-        <div class="panel-title" data-page-node-id="q11SED5xdCHnMv4da6HsHG"><h3 id="drillTitle" data-page-node-id="oBS9hdEkooS7pLeXA5UNxj">各市仓储数据分布</h3><span class="more" data-page-node-id="IlbrOuCcrm0AzTTVmB06y8">点击行可逐级下钻 &gt;</span></div>
-        <div class="drill-content" id="drillContent" data-page-node-id="6709jWsV9igEPOGDJU0a6u">
-          <div class="drill-box" data-page-node-id="ztrAXlHwOkdTbABdFiWVEp">
-            <h5 id="rankTitle" data-page-node-id="1svRJEj4KKYeDPkyNTFYxR">成品库存排名（吨）</h5>
-            <div id="rankChart" data-page-node-id="pofGqBTn78y5cYSBrTbVTA"></div>
+      <div class="panel" style="flex: 1.7; min-height: 0;" data-page-node-id="OgF2c1juhpFIjCg2hGTFIq">
+        <div class="panel-title" data-page-node-id="q11SED5xdCHnMv4da6HsHG"><h3 id="drillTitle" data-page-node-id="oBS9hdEkooS7pLeXA5UNxj">各市仓储数据分布</h3><span class="more" data-page-node-id="IlbrOuCcrm0AzTTVmB06y8">点击地图或列表逐级下钻 &gt;</span></div>
+        <div class="drill-content" id="drillContent">
+          <div class="drill-box map-box">
+            <div class="map-badge">
+              <span class="mb-name" id="mapArea">江西省</span>
+              <span class="mb-lv" id="mapLevel">省级 · 地市分布</span>
+            </div>
+            <div class="map-hint" id="mapHint">点击地图区域逐级下钻 ›</div>
+            <div class="map-legend" id="mapLegend" style="display:none;">
+              <span><i style="background:#00d4ff;"></i>运行正常</span>
+              <span><i style="background:#ff4d4f;"></i>存在预警</span>
+              <span style="color:#6b8aa8;">圆点大小 = 库存量</span>
+            </div>
+            <div id="mapChart"></div>
           </div>
-          <div class="drill-box" data-page-node-id="YR1i3CqJCRBsgCIjvGlG36">
-            <h5 id="tableTitle" data-page-node-id="CgKSF0XK84wLyDK5rGTozh">下级单位明细</h5>
-            <div class="rtable-wrap" data-page-node-id="Wvm40CHPaVN16STywW2lYR">
-              <table class="rtable" data-page-node-id="vASufW8HejQgSFiwJhJ7c4">
-                <thead data-page-node-id="DJXCyyzQCFTHmxx70oTGyX">
-                  <tr data-page-node-id="U5LgBdv3Mquui2UgvfHVEr"><th data-page-node-id="1Y12lZuCUjbcs0HLhDpoiH">名称</th><th data-page-node-id="x8ryiAMLfC9rYRIC2E1qwD">库房(栋)</th><th data-page-node-id="I3wuCndEFyWw081B1UVoXO">库存(吨)</th><th data-page-node-id="S0TUCB9hDAz34GF9UUnnpr">作业人员</th><th data-page-node-id="h9IoI2dlknQOJzrfjCjNSO">进库</th><th data-page-node-id="FZdi1dJAWpZmzSEOsIRE98">出库</th><th data-page-node-id="noUkZztN047WFbEs9euAKW">视频</th><th data-page-node-id="za7Aj38NREqr5DzVO7qNpm">预警</th><th data-page-node-id="bHbFRx2cLfoFcTQDkywvEW">操作</th></tr>
+          <div class="drill-box">
+            <h5 id="tableTitle">下级单位明细</h5>
+            <div class="rtable-wrap" id="tableWrap">
+              <table class="rtable">
+                <thead>
+                  <tr><th>名称</th><th>库房(栋)</th><th>库存(吨)</th><th>作业人员</th><th>进库</th><th>出库</th><th>预警</th><th>操作</th></tr>
                 </thead>
-                <tbody id="regionTbody" data-page-node-id="VtGnVaFYO2blaLh9rF0fLC"></tbody>
+                <tbody id="regionTbody"></tbody>
               </table>
             </div>
+            <div class="ent-detail" id="entPanel" style="display:none;"></div>
           </div>
         </div>
       </div>
@@ -436,6 +481,7 @@
   </main>
   </div>
 
+  <script src="geo-data.js"></script>
   <script>
     // 自适应：按视口缩放整个设计稿(1920x1080)
     function fitScreen() {
@@ -479,40 +525,10 @@
     }
     const ABS_SCALE = [1, 0.09, 0.032, 0.013, 0.0045];
     const LEVEL_NAMES = ['省级', '市级', '县级', '乡镇级', '企业级'];
+    const fmt = v => (v === null || v === undefined || isNaN(v)) ? '--' : Number(v).toLocaleString('zh-CN', { maximumFractionDigits: 1 });
     function mult(name, level) { return level === 0 ? 1 : ABS_SCALE[level] * (0.65 + hash01(name) * 0.7); }
     function scaleArr(arr, m, dec) {
       return arr.map(v => +(v * m).toFixed(dec === undefined ? 1 : dec));
-    }
-
-    // ================= 区域树（省-市-县-乡镇-企业） =================
-    const CITY_COUNTIES = {
-      '南昌市': ['南昌县', '进贤县', '新建区'],
-      '景德镇市': ['乐平市', '浮梁县'],
-      '萍乡市': ['上栗县', '芦溪县', '莲花县'],
-      '九江市': ['瑞昌市', '修水县', '湖口县'],
-      '新余市': ['分宜县', '渝水区'],
-      '鹰潭市': ['贵溪市', '余江区'],
-      '赣州市': ['赣县区', '南康区', '信丰县'],
-      '吉安市': ['吉安县', '青原区', '泰和县'],
-      '宜春市': ['万载县', '袁州区', '上高县'],
-      '抚州市': ['临川区', '东乡区', '南城县'],
-      '上饶市': ['广丰区', '鄱阳县', '铅山县']
-    };
-    const TOWNS = ['桐木镇', '金山镇', '赤山镇', '株潭镇', '黄茅镇', '双桥镇', '罗城镇', '三兴镇', '潭埠镇', '马步乡', '高城镇', '白良镇'];
-    const ENT_PREFIX = ['鸿运', '鑫盛', '金焰', '景泰', '瑞祥', '宏图', '顺达', '永辉', '昌盛', '安泰'];
-
-    function getChildren(node) {
-      if (node.level === 0) return Object.keys(CITY_COUNTIES).map(n => ({ name: n, level: 1 }));
-      if (node.level === 1) return (CITY_COUNTIES[node.name] || []).map(n => ({ name: n, level: 2 }));
-      if (node.level === 2) {
-        const h = Math.floor(hash01(node.name) * TOWNS.length);
-        return [0, 1, 2].map(i => ({ name: TOWNS[(h + i * 4) % TOWNS.length], level: 3 }));
-      }
-      if (node.level === 3) {
-        const h = Math.floor(hash01(node.name) * ENT_PREFIX.length);
-        return [0, 1, 2].map(i => ({ name: node.name + ENT_PREFIX[(h + i * 3) % ENT_PREFIX.length] + '烟花仓储有限公司', level: 4 }));
-      }
-      return [];
     }
 
     // ================= 省级基础数据 =================
@@ -573,13 +589,7 @@
     const videoChart = echarts.init(document.getElementById('videoChart'));
     const disposeChart = echarts.init(document.getElementById('disposeChart'));
     const warnTypeChart = echarts.init(document.getElementById('warnTypeChart'));
-    let rankChart = echarts.init(document.getElementById('rankChart'));
     const trendChart = echarts.init(document.getElementById('trendChart'));
-    function ensureRankChart() {
-      const dom = document.getElementById('rankChart');
-      if (dom && echarts.getInstanceByDom(dom) !== rankChart) rankChart = echarts.init(dom);
-      return rankChart;
-    }
 
     function renderStock(m) {
       stockChart.setOption({
@@ -686,30 +696,496 @@
       }, true);
     }
 
-    // ================= 下钻逻辑 =================
-    let path = [{ name: '江西省', level: 0 }];
-    const curNode = () => path[path.length - 1];
+    // ================= 区域树（省-市-县-乡镇-企业） =================
+    const GEO = window.GEO_DATA || {};
+    const CITY_ADCODE = {};   // 市名 -> adcode
+    const CITY_COUNTIES = {}; // 市名 -> 区县名数组（直接取自 geo-data.js，保证名称完全一致）
+    (function initGeoTree() {
+      const prov = GEO['360000'];
+      if (!prov) return;
+      prov.features.forEach(f => {
+        const ad = String(f.properties.adcode);
+        CITY_ADCODE[f.properties.name] = ad;
+        CITY_COUNTIES[f.properties.name] = ((GEO[ad] || {}).features || []).map(x => x.properties.name);
+      });
+    })();
+    const CITY_NAMES = Object.keys(CITY_COUNTIES).length
+      ? Object.keys(CITY_COUNTIES)
+      : ['南昌市', '景德镇市', '萍乡市', '九江市', '新余市', '鹰潭市', '赣州市', '吉安市', '宜春市', '抚州市', '上饶市'];
 
-    function childStats(child) {
-      const m = mult(child.name, child.level);
-      const stockVal = Math.max(0, Math.round(BASE.stockTotal * m * (0.7 + hash01(child.name) * 0.6)));
+    const TOWNS = ['桐木镇', '金山镇', '赤山镇', '株潭镇', '黄茅镇', '双桥镇', '罗城镇', '三兴镇', '潭埠镇', '马步乡', '高城镇', '白良镇'];
+    const ENT_PREFIX = ['鸿运', '鑫盛', '金焰', '景泰', '瑞祥', '宏图', '顺达', '永辉', '昌盛', '安泰'];
+
+    // 下级名称：省/市/县取真实行政区；乡镇与企业无边界数据，按确定性规则生成
+    function childNamesOf(node) {
+      if (node.level === 0) return CITY_NAMES.slice();
+      if (node.level === 1) return (CITY_COUNTIES[node.name] || []).slice();
+      if (node.level === 2) {
+        const h = Math.floor(hash01(node.name + 'tw') * TOWNS.length);
+        return [0, 1, 2].map(i => TOWNS[(h + i * 4) % TOWNS.length]);
+      }
+      if (node.level === 3) {
+        const h = Math.floor(hash01(node.name + 'en') * ENT_PREFIX.length);
+        return [0, 1, 2].map(i => node.name + ENT_PREFIX[(h + i * 3) % ENT_PREFIX.length] + '烟花仓储有限公司');
+      }
+      return [];
+    }
+    // 企业长名 -> 地图/列表用短名
+    function entShort(n) {
+      const i = n.indexOf('烟花仓储有限公司');
+      if (i < 0) return n;
+      const head = n.slice(0, i);
+      return (head.length > 4 ? head.slice(-2) : head) + '仓储';
+    }
+
+    // ================= 几何工具：在行政区面内稳定布点 =================
+    function featureRings(feat) {
+      const g = feat && feat.geometry;
+      if (!g) return [];
+      if (g.type === 'Polygon') return [g.coordinates[0]];
+      if (g.type === 'MultiPolygon') return g.coordinates.map(p => p[0]).filter(Boolean);
+      return [];
+    }
+    function inRing(pt, ring) {
+      let inside = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+        if (((yi > pt[1]) !== (yj > pt[1])) && (pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi)) inside = !inside;
+      }
+      return inside;
+    }
+    // 面内均匀取 n 个点（最远点采样，结果稳定可复现）
+    function featPoints(feat, n) {
+      const rings = featureRings(feat);
+      if (!rings.length) return [];
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      rings.forEach(r => r.forEach(p => {
+        if (p[0] < minX) minX = p[0];
+        if (p[0] > maxX) maxX = p[0];
+        if (p[1] < minY) minY = p[1];
+        if (p[1] > maxY) maxY = p[1];
+      }));
+      const cands = [];
+      const N = 24;
+      for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+          const x = minX + (maxX - minX) * (i + 0.5) / N;
+          const y = minY + (maxY - minY) * (j + 0.5) / N;
+          if (rings.some(r => inRing([x, y], r))) cands.push([x, y]);
+        }
+      }
+      if (!cands.length) return [[(minX + maxX) / 2, (minY + maxY) / 2]];
+      const picked = [cands[Math.floor(hash01(((feat.properties || {}).name) + 'pt') * cands.length)]];
+      while (picked.length < n) {
+        let best = null, bestD = -1;
+        for (let k = 0; k < cands.length; k++) {
+          let d = Infinity;
+          for (let q = 0; q < picked.length; q++) {
+            const dx = cands[k][0] - picked[q][0], dy = cands[k][1] - picked[q][1];
+            d = Math.min(d, dx * dx + dy * dy);
+          }
+          if (d > bestD) { bestD = d; best = cands[k]; }
+        }
+        if (!best) break;
+        picked.push(best);
+      }
+      return picked;
+    }
+    // 以 base 为中心、在面内生成 n 个邻近点（企业布点）
+    function pointsNear(feat, base, keys) {
+      const rings = featureRings(feat);
+      const inside = p => !rings.length || rings.some(r => inRing(p, r));
+      return keys.map((k, i) => {
+        const a0 = hash01(k + 'a') * Math.PI * 2;
+        const r0 = 0.022 + hash01(k + 'r') * 0.028;
+        // 依次尝试：换角度 + 逐级收缩半径，确保点落在本行政区面内
+        for (let s = 0; s < 24; s++) {
+          const ang = a0 + s * (Math.PI / 4);
+          const rad = r0 * Math.pow(0.72, Math.floor(s / 8));
+          const p = [base[0] + Math.cos(ang) * rad, base[1] + Math.sin(ang) * rad];
+          if (inside(p)) return p;
+        }
+        // 兜底：极近距环绕
+        for (let s = 0; s < 16; s++) {
+          const ang = a0 + s * (Math.PI / 8);
+          const rad = 0.0015 * (1 + (i % 3));
+          const p = [base[0] + Math.cos(ang) * rad, base[1] + Math.sin(ang) * rad];
+          if (inside(p)) return p;
+        }
+        return [base[0], base[1]];
+      });
+    }
+
+    // ================= 地图注册（省 / 市 / 县三级真实边界） =================
+    const registered = {};
+    const COUNTY_FEAT = {};
+    function ensureProvinceMap() {
+      if (!GEO['360000']) return false;
+      if (!registered['jx_province']) { echarts.registerMap('jx_province', GEO['360000']); registered['jx_province'] = true; }
+      return true;
+    }
+    function ensureCityMap(cityName) {
+      const ad = CITY_ADCODE[cityName];
+      if (!ad || !GEO[ad]) return null;
+      const mn = 'city_' + ad;
+      if (!registered[mn]) { echarts.registerMap(mn, GEO[ad]); registered[mn] = true; }
+      return mn;
+    }
+    function ensureCountyMap(cityName, countyName) {
+      const mn = 'cty_' + countyName;
+      if (registered[mn]) return mn;
+      const ad = CITY_ADCODE[cityName];
+      const gj = ad && GEO[ad];
+      if (!gj) return null;
+      const feat = (gj.features || []).find(f => f.properties.name === countyName);
+      if (!feat) return null;
+      echarts.registerMap(mn, { type: 'FeatureCollection', features: [feat] });
+      registered[mn] = true;
+      COUNTY_FEAT[mn] = feat;
+      return mn;
+    }
+
+    // ================= 数据模型：子节点由父节点总量拆分，保证上下级自洽 =================
+    const ROOT = { name: '江西省', level: 0, rooms: 1040, stock: 8620, workers: 18600, inVeh: 248, outVeh: 216, video: 3752, warns: 156 };
+    const METRICS = [
+      { key: 'rooms',   label: '仓库库房',   unit: '栋', dec: 0, tbl: true },
+      { key: 'stock',   label: '成品库存',   unit: '吨', dec: 0, tbl: true },
+      { key: 'workers', label: '作业人员',   unit: '人', dec: 0, tbl: true, cell: s => (s.workers / 10000).toFixed(2) + '万' },
+      { key: 'inVeh',   label: '进库车辆',   unit: '辆', dec: 0, tbl: true },
+      { key: 'outVeh',  label: '出库车辆',   unit: '辆', dec: 0, tbl: true },
+      { key: 'video',   label: '视频监测点', unit: '路', dec: 0, tbl: false }
+    ];
+    const TABLE_KEYS = METRICS.filter(m => m.tbl).map(m => m.key);
+    const MAIN_KEY = 'stock';
+    const MAIN_LABEL = '库存';
+    const MAIN_UNIT = '吨';
+
+    function splitTo(total, keys, dec) {
+      if (!keys.length) return [];
+      const D = Math.pow(10, dec);
+      const T = Math.round(total * D);
+      const w = keys.map(k => 0.45 + hash01('w' + k));
+      const s = w.reduce((a, b) => a + b, 0);
+      let used = 0;
+      return w.map((x, i) => {
+        if (i === keys.length - 1) return Math.max(0, T - used) / D;
+        let v = Math.round(T * x / s);
+        if (used + v > T) v = T - used;
+        used += v;
+        return v / D;
+      });
+    }
+    // 子节点指标 = 父节点总量按确定性权重拆分，五级上下合计严格自洽
+    function childNodes(parent) {
+      const names = childNamesOf(parent);
+      if (!names.length) return [];
+      const cols = {};
+      METRICS.forEach(mt => { cols[mt.key] = splitTo(parent[mt.key] || 0, names, mt.dec); });
+      const w = splitTo(parent.warns || 0, names, 0);
+      return names
+        .map((n, i) => {
+          const o = { name: n, level: parent.level + 1, warns: Math.round(w[i]) };
+          METRICS.forEach(mt => { o[mt.key] = cols[mt.key][i]; });
+          return o;
+        })
+        .sort((x, y) => y[MAIN_KEY] - x[MAIN_KEY]);
+    }
+    // 把节点指标打包成地图散点项
+    function packItems(nodes, shortOf) {
+      return nodes.map(c => {
+        const o = { name: c.name, short: shortOf ? shortOf(c.name) : c.name, warns: c.warns };
+        METRICS.forEach(mt => { o[mt.key] = c[mt.key]; });
+        return o;
+      });
+    }
+
+    // ================= 地图实例 =================
+    const mapChart = echarts.init(document.getElementById('mapChart'));
+
+    const LABEL_RICH = {
+      nm: { fontSize: 11, fontWeight: 700, color: '#fff', lineHeight: 15, align: 'center' },
+      v: { fontSize: 10, color: '#9fc3e8', lineHeight: 13, align: 'center' },
+      w: { fontSize: 10, color: '#ffb866', lineHeight: 13, align: 'center' }
+    };
+    const LABEL_BOX = {
+      backgroundColor: 'rgba(6, 26, 55, 0.76)',
+      borderColor: 'rgba(0, 180, 255, 0.42)',
+      borderWidth: 1, borderRadius: 4, padding: [3, 6, 2]
+    };
+    function tipHtml(d, extra) {
+      if (!d || d[MAIN_KEY] === undefined) return '';
+      let h = '<b>' + (d.tipName || d.name || '') + '</b>';
+      METRICS.forEach(mt => {
+        if (mt.tip === false) return;
+        h += '<br/>' + mt.label + '：' + fmt(d[mt.key]) + ' ' + mt.unit;
+      });
+      h += '<br/>预警：' + (d.warns > 0 ? '<span style="color:#ff7875">' + d.warns + ' 起</span>' : '<span style="color:#51cf66">无</span>');
+      return h + (extra || '');
+    }
+    function mainLine(d) {
+      return '{nm|' + (d.lbl || d.name || '') + '}\\n{v|' + MAIN_LABEL + ' ' + fmt(d[MAIN_KEY]) + ' ' + MAIN_UNIT + '}' +
+        (d.warns ? '\\n{w|预警 ' + d.warns + ' 起}' : '');
+    }
+
+    function setMapBadge(name, lv) {
+      document.getElementById('mapArea').textContent = name;
+      document.getElementById('mapLevel').textContent = lv;
+    }
+    function setMapHint(t) { document.getElementById('mapHint').textContent = t; }
+    function showPointLegend(on) { document.getElementById('mapLegend').style.display = on ? 'flex' : 'none'; }
+    function clearEmptyMap() { const el = document.getElementById('mapEmpty'); if (el) el.remove(); }
+    function emptyMap(msg) {
+      clearEmptyMap();
+      mapChart.clear();
+      setMapHint('');
+      showPointLegend(false);
+      const el = document.createElement('div');
+      el.id = 'mapEmpty'; el.className = 'map-empty'; el.textContent = msg;
+      document.querySelector('.map-box').appendChild(el);
+    }
+
+    // ---- 行政区着色地图（省级 / 市级） ----
+    function regionMapOption(mapName, children, isProv) {
+      const maxV = Math.max.apply(null, children.map(c => c[MAIN_KEY]).concat([1]));
+      const topN = isProv ? children.length : Math.min(8, children.length);
       return {
-        name: child.name, level: child.level,
-        rooms: Math.max(0, Math.round(BASE.rooms * m)),
-        stock: stockVal,
-        workers: Math.max(0, Math.round(BASE.workers * m)),
-        inVeh: Math.max(0, Math.round(BASE.vehicleIn[7] * m)),
-        outVeh: Math.max(0, Math.round(BASE.vehicleOut[7] * m)),
-        video: Math.max(0, Math.round(BASE.videoTotal * m)),
-        warns: Math.max(0, Math.round(Object.values(BASE.warns).reduce((a, b) => a + b, 0) * m * 0.5 + (hash01(child.name + 'w') > 0.7 ? 1 : 0)))
+        tooltip: Object.assign({
+          trigger: 'item',
+          formatter: p => tipHtml(p.data || {}, '<br/><span style="color:#6bc9ff">点击下钻 ›</span>')
+        }, tipBase),
+        visualMap: {
+          show: true, type: 'continuous', min: 0, max: maxV, seriesIndex: 0,
+          left: 8, bottom: 8, orient: 'horizontal', itemWidth: 92, itemHeight: 8,
+          text: ['高', '低'], textStyle: { color: '#8aa4bf', fontSize: 10 },
+          inRange: { color: ['#0a2a52', '#0e4a8f', '#1272c8', '#2ea0e8'] }
+        },
+        series: [{
+          type: 'map', map: mapName, roam: false, zoom: 1, aspectScale: 0.92,
+          left: 14, right: 34, top: 16, bottom: 32,
+          itemStyle: {
+            areaColor: 'rgba(8, 32, 64, 0.5)',
+            borderColor: 'rgba(0, 212, 255, 0.55)', borderWidth: 1.2,
+            shadowColor: 'rgba(0, 120, 220, 0.4)', shadowBlur: 16
+          },
+          emphasis: {
+            itemStyle: { areaColor: '#3ec2ff', shadowBlur: 22, shadowColor: 'rgba(62,194,255,0.6)' },
+            label: { show: true }
+          },
+          select: { disabled: true },
+          label: Object.assign({
+            show: false,
+            formatter: p => mainLine({ name: p.name, [MAIN_KEY]: (p.data || {})[MAIN_KEY], warns: (p.data || {}).warns }),
+            rich: LABEL_RICH
+          }, LABEL_BOX),
+          data: children.map((c, i) => {
+            const o = { name: c.name, value: c[MAIN_KEY], warns: c.warns, label: { show: i < topN } };
+            METRICS.forEach(mt => { o[mt.key] = c[mt.key]; });
+            return o;
+          })
+        }]
       };
     }
+
+    // ---- 面内散点地图底图（县级 / 乡镇级共用） ----
+    function baseGeo(mapName, regionName) {
+      return {
+        map: mapName, roam: false, aspectScale: 0.92,
+        left: 26, right: 100, top: 22, bottom: 36,
+        itemStyle: {
+          areaColor: 'rgba(10, 58, 110, 0.42)',
+          borderColor: 'rgba(0, 212, 255, 0.6)', borderWidth: 1.6,
+          shadowColor: 'rgba(0, 120, 220, 0.45)', shadowBlur: 20
+        },
+        emphasis: { disabled: true },
+        label: { show: false },
+        tooltip: { show: false },
+        regions: [{ name: regionName, itemStyle: { areaColor: 'rgba(10, 58, 110, 0.42)' } }]
+      };
+    }
+    function pointSeries(items) {
+      const maxV = Math.max.apply(null, items.map(i => i[MAIN_KEY]).concat([1]));
+      return {
+        type: 'effectScatter', coordinateSystem: 'geo', geoIndex: 0,
+        rippleEffect: { brushType: 'stroke', scale: 2.8, period: 4 },
+        symbolSize: v => 14 + 22 * Math.sqrt(((v && v[2]) || 0) / maxV),
+        itemStyle: { shadowBlur: 12, shadowColor: 'rgba(0, 212, 255, 0.6)' },
+        label: Object.assign({
+          show: true, position: 'right', distance: 8,
+          formatter: p => mainLine(p.data || {}),
+          rich: LABEL_RICH
+        }, LABEL_BOX),
+        data: items.map((it, i) => {
+          const o = { name: it.name, lbl: it.short || it.name, tipName: it.tip || it.name };
+          METRICS.forEach(mt => { o[mt.key] = it[mt.key]; });
+          o.warns = it.warns;
+          o.label = { position: i % 2 ? 'left' : 'right' };
+          o.value = [it.lng, it.lat, it[MAIN_KEY]];
+          o.itemStyle = {
+            color: it.warns ? '#ff4d4f' : '#00d4ff',
+            shadowColor: it.warns ? 'rgba(255, 77, 79, 0.6)' : 'rgba(0, 212, 255, 0.6)'
+          };
+          return o;
+        })
+      };
+    }
+
+    // ---- 县级视图：在县界内布乡镇点 ----
+    function renderTownMap(node) {
+      const mn = ensureCountyMap(path[1] ? path[1].name : '', node.name);
+      const feat = mn && COUNTY_FEAT[mn];
+      if (!mn || !feat) { emptyMap('暂无「' + node.name + '」边界数据'); return; }
+      const names = childNamesOf(node);
+      const pts = featPoints(feat, names.length);
+      const posMap = {};
+      names.forEach((n, i) => posMap[n] = pts[i] || pts[0] || [0, 0]);
+      const items = packItems(childNodes(node)).map(it => Object.assign(it, {
+        lng: posMap[it.name][0], lat: posMap[it.name][1]
+      }));
+      mapChart.setOption({
+        tooltip: Object.assign({
+          trigger: 'item',
+          formatter: p => tipHtml(p.data || {}, '<br/><span style="color:#6bc9ff">点击下钻 ›</span>')
+        }, tipBase),
+        geo: baseGeo(mn, node.name),
+        series: [pointSeries(items)]
+      }, true);
+      setMapBadge(node.name, '县级 · 乡镇分布');
+      setMapHint('点击乡镇圆点下钻 ›');
+      showPointLegend(true);
+    }
+
+    // ---- 乡镇级视图：县界为底，高亮乡镇并布企业点 ----
+    function renderEntMap(node) {
+      const countyNode = path[2];
+      const mn = ensureCountyMap(path[1] ? path[1].name : '', countyNode ? countyNode.name : '');
+      const feat = mn && COUNTY_FEAT[mn];
+      if (!mn || !feat) { emptyMap('暂无「' + (countyNode ? countyNode.name : '') + '」边界数据'); return; }
+      const townNames = childNamesOf(countyNode);
+      const tpts = featPoints(feat, townNames.length);
+      const tIdx = townNames.indexOf(node.name);
+      const townPt = tpts[tIdx >= 0 ? tIdx : 0] || [0, 0];
+      const entNames = childNamesOf(node);
+      const epts = pointsNear(feat, townPt, entNames);
+      const posMap = {};
+      entNames.forEach((n, i) => posMap[n] = epts[i]);
+      const items = packItems(childNodes(node), entShort).map(it => Object.assign(it, {
+        tip: it.name, lng: posMap[it.name][0], lat: posMap[it.name][1]
+      }));
+      const townMark = {
+        type: 'scatter', coordinateSystem: 'geo', geoIndex: 0,
+        symbol: 'circle', symbolSize: 14,
+        itemStyle: {
+          color: 'rgba(255, 159, 46, 0.85)', borderColor: '#ffd591', borderWidth: 1.5,
+          shadowBlur: 14, shadowColor: 'rgba(255, 159, 46, 0.7)'
+        },
+        label: {
+          show: true, position: 'top', distance: 6, formatter: node.name,
+          color: '#ffc078', fontSize: 12, fontWeight: 700,
+          textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowBlur: 4
+        },
+        data: [{ name: '__town__', value: townPt }]
+      };
+      mapChart.setOption({
+        tooltip: Object.assign({
+          trigger: 'item',
+          formatter: p => tipHtml(p.data || {}, '<br/><span style="color:#6bc9ff">点击下钻 ›</span>')
+        }, tipBase),
+        geo: baseGeo(mn, countyNode.name),
+        series: [townMark, pointSeries(items)]
+      }, true);
+      setMapBadge(countyNode.name + ' · ' + node.name, '乡镇级 · 企业分布');
+      setMapHint('点击企业圆点下钻 ›');
+      showPointLegend(true);
+    }
+
+    // ---- 企业级（叶子）：县界为底，定位单个企业 ----
+    function renderEntLeaf(node) {
+      const countyNode = path[2], townNode = path[3];
+      const mn = ensureCountyMap(path[1] ? path[1].name : '', countyNode ? countyNode.name : '');
+      const feat = mn && COUNTY_FEAT[mn];
+      if (!mn || !feat || !townNode) { emptyMap('暂无企业位置数据'); return; }
+      const townNames = childNamesOf(countyNode);
+      const tpts = featPoints(feat, townNames.length);
+      const tIdx = townNames.indexOf(townNode.name);
+      const townPt = tpts[tIdx >= 0 ? tIdx : 0] || [0, 0];
+      const entNames = childNamesOf(townNode);
+      const epts = pointsNear(feat, townPt, entNames);
+      const eIdx = entNames.indexOf(node.name);
+      const pt = epts[eIdx >= 0 ? eIdx : 0] || townPt;
+      const over = (node.warns || 0) > 0;
+      const townMark = {
+        type: 'scatter', coordinateSystem: 'geo', geoIndex: 0,
+        symbol: 'circle', symbolSize: 11,
+        itemStyle: { color: 'rgba(255, 159, 46, 0.7)', borderColor: 'rgba(255, 213, 145, 0.8)', borderWidth: 1 },
+        label: {
+          show: true, position: 'top', distance: 5, formatter: townNode.name,
+          color: '#c99a5e', fontSize: 11,
+          textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowBlur: 4
+        },
+        data: [{ name: '__town__', value: townPt }]
+      };
+      const entData = { name: node.name, lbl: entShort(node.name), tipName: node.name, warns: node.warns };
+      METRICS.forEach(mt => { entData[mt.key] = node[mt.key]; });
+      const entMark = {
+        type: 'effectScatter', coordinateSystem: 'geo', geoIndex: 0,
+        rippleEffect: { brushType: 'stroke', scale: 3.2, period: 3.5 },
+        symbolSize: 24,
+        itemStyle: {
+          color: over ? '#ff4d4f' : '#00d4ff',
+          shadowBlur: 18, shadowColor: over ? 'rgba(255, 77, 79, 0.75)' : 'rgba(0, 212, 255, 0.75)'
+        },
+        label: Object.assign({
+          show: true, position: 'right', distance: 10,
+          formatter: () => '{nm|' + entShort(node.name) + '}\\n{v|' + MAIN_LABEL + ' ' + fmt(node[MAIN_KEY]) + ' ' + MAIN_UNIT + '}' +
+            (over ? '\\n{w|预警未处置}' : '\\n{v|运行正常}'),
+          rich: LABEL_RICH
+        }, LABEL_BOX),
+        data: [Object.assign(entData, { value: pt })]
+      };
+      mapChart.setOption({
+        tooltip: Object.assign({ trigger: 'item', formatter: p => tipHtml(p.data || {}, '') }, tipBase),
+        geo: baseGeo(mn, countyNode.name),
+        series: [townMark, entMark]
+      }, true);
+      setMapBadge(entShort(node.name), '企业级 · 位置定位');
+      setMapHint('已到最末级 · 可返回上级');
+      showPointLegend(true);
+    }
+
+    function renderMapView() {
+      clearEmptyMap();
+      const node = curNode();
+      if (node.level === 0) {
+        if (!ensureProvinceMap()) { emptyMap('地理数据未加载：请确认 geo-data.js'); return; }
+        mapChart.setOption(regionMapOption('jx_province', childNodes(node), true), true);
+        setMapBadge('江西省', '省级 · 地市分布');
+        setMapHint('点击地市下钻 ›');
+        showPointLegend(false);
+      } else if (node.level === 1) {
+        const mn = ensureCityMap(node.name);
+        if (!mn) { emptyMap('暂无「' + node.name + '」边界数据'); return; }
+        mapChart.setOption(regionMapOption(mn, childNodes(node), false), true);
+        setMapBadge(node.name, '市级 · 区县分布');
+        setMapHint('点击区县下钻 ›');
+        showPointLegend(false);
+      } else if (node.level === 2) {
+        renderTownMap(node);
+      } else if (node.level === 3) {
+        renderEntMap(node);
+      } else {
+        renderEntLeaf(node);
+      }
+    }
+
+    // ================= 下钻逻辑 =================
+    let path = [ROOT];
+    const curNode = () => path[path.length - 1];
 
     function renderCrumb() {
       const box = document.getElementById('crumbBox');
       box.innerHTML = path.map((n, i) => {
         const isCur = i === path.length - 1;
-        const seg = `<span class="crumb-item ${isCur ? 'cur' : ''}" data-idx="${i}">${n.name}${isCur ? `<span class="level-tag">${LEVEL_NAMES[n.level]}</span>` : ''}</span>`;
+        const seg = `<span class="crumb-item ${isCur ? 'cur' : ''}" data-idx="${i}">${i >= 3 ? entShort(n.name) : n.name}${isCur ? `<span class="level-tag">${LEVEL_NAMES[n.level]}</span>` : ''}</span>`;
         return i === 0 ? seg : `<span class="crumb-sep">›</span>` + seg;
       }).join('');
       box.querySelectorAll('.crumb-item').forEach(el => {
@@ -721,138 +1197,126 @@
       document.getElementById('btnBack').classList.toggle('disabled', path.length <= 1);
     }
 
-    function renderDrillContent() {
-      const node = curNode();
-      const children = getChildren(node);
+    // 列表与地图联动
+    function syncHighlight(name, on) {
+      [0, 1].forEach(si => {
+        try { mapChart.dispatchAction({ type: on ? 'highlight' : 'downplay', seriesIndex: si, name: name }); } catch (e) { }
+      });
+    }
 
-      if (children.length === 0) {
-        renderEnterprise(node);
-        return;
-      }
-
-      const stats = children.map(childStats).sort((a, b) => b.stock - a.stock);
-      const subName = LEVEL_NAMES[children[0].level].replace('级', '');
-
-      document.getElementById('drillTitle').textContent = `${node.name} · 各${subName}仓储数据分布`;
-      document.getElementById('rankTitle').textContent = `成品库存排名（吨）`;
-      document.getElementById('tableTitle').textContent = `${subName}级单位明细（点击行下钻）`;
-
-      ensureRankChart().setOption({
-        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: ps => `${ps[0].name}<br/>成品库存：${ps[0].value} 吨` }, tipBase),
-        grid: { left: 8, right: 40, top: 6, bottom: 6, containLabel: true },
-        xAxis: { type: 'value', splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        yAxis: { type: 'category', inverse: true, data: stats.map(s => s.name), axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#cfe9ff', fontSize: 11 } },
-        series: [{
-          type: 'bar', barWidth: 10,
-          data: stats.map((s, i) => ({
-            value: s.stock,
-            itemStyle: { color: i < 3 ? new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#0066aa'},{offset:1,color:'#00d4ff'}]) : 'rgba(0,120,200,0.45)', borderRadius: [0, 3, 3, 0] }
-          })),
-          label: { show: true, position: 'right', color: '#8aa4bf', fontSize: 10 }
-        }]
-      }, true);
-
-      document.getElementById('regionTbody').innerHTML = stats.map((s, i) => `
-        <tr data-idx="${i}">
-          <td>${s.name}</td>
-          <td class="num">${s.rooms}</td>
-          <td class="num">${s.stock}</td>
-          <td class="num">${(s.workers / 10000).toFixed(2)}万</td>
-          <td class="num">${s.inVeh}</td>
-          <td class="num">${s.outVeh}</td>
-          <td class="num">${s.video}</td>
+    function renderTable(children) {
+      const sub = LEVEL_NAMES[children[0].level].replace('级', '');
+      document.getElementById('tableTitle').textContent = sub + '级单位明细（点击下钻）';
+      const tb = document.getElementById('regionTbody');
+      const isEnt = children[0].level === 4;
+      tb.innerHTML = children.map((s) => `
+        <tr data-name="${s.name}">
+          <td>${isEnt ? entShort(s.name) : s.name}</td>
+          ${TABLE_KEYS.map(k => {
+            const mt = METRICS.find(m => m.key === k);
+            return `<td class="num">${mt.cell ? mt.cell(s) : fmt(s[k])}</td>`;
+          }).join('')}
           <td class="${s.warns > 0 ? 'warn-num' : 'ok-num'}">${s.warns > 0 ? s.warns + ' 起' : '无'}</td>
           <td><span class="drill-link">下钻 ›</span></td>
         </tr>
       `).join('');
-      document.querySelectorAll('#regionTbody tr').forEach(tr => {
+      tb.querySelectorAll('tr').forEach(tr => {
+        const nm = tr.dataset.name;
         tr.addEventListener('click', () => {
-          const s = stats[+tr.dataset.idx];
-          path.push({ name: s.name, level: s.level });
-          refreshAll();
+          const t = children.find(c => c.name === nm);
+          if (t) { path.push(t); refreshAll(); }
         });
+        tr.addEventListener('mouseenter', () => syncHighlight(nm, true));
+        tr.addEventListener('mouseleave', () => syncHighlight(nm, false));
       });
     }
 
-    function renderEnterprise(node) {
-      const m = mult(node.name, node.level);
-      const rooms = Math.max(1, Math.round(BASE.rooms * m));
-      const stock = Math.max(1, Math.round(BASE.stockTotal * m));
-      const workers = Math.max(1, Math.round(BASE.workers * m));
-      const inVeh = Math.max(0, Math.round(BASE.vehicleIn[7] * m));
-      const outVeh = Math.max(0, Math.round(BASE.vehicleOut[7] * m));
-      const video = Math.max(1, Math.round(BASE.videoTotal * m));
-      const warns = Math.max(0, Math.round(Object.values(BASE.warns).reduce((a, b) => a + b, 0) * m));
-      const util = Math.round(68 + hash01(node.name + 'u') * 40); // 库容利用率 %
-      const overCap = util > 100;
-      const turnover = Math.max(5, Math.round(22 - hash01(node.name + 't') * 10)); // 库存周转天数
+    // 企业仓储画像
+    function renderEntDetail(node) {
+      const over = (node.warns || 0) > 0;
+      const util = over ? (103 + Math.round(hash01(node.name + 'o') * 24)) : (62 + Math.round(hash01(node.name + 'u') * 36));
+      const turnover = Math.max(5, Math.round(22 - hash01(node.name + 't') * 10));
       const onlineRate = Math.round(96 + hash01(node.name + 'v') * 4);
-      document.getElementById('drillTitle').textContent = `${node.name} · 企业仓储画像`;
-      document.getElementById('rankTitle').textContent = '企业信息';
-      document.getElementById('tableTitle').textContent = '仓储关键指标';
-      rankChart.clear();
-      document.getElementById('regionTbody').innerHTML = '';
-      document.getElementById('drillContent').innerHTML = `
-        <div class="ent-detail">
-          <div class="ent-head">
-            <h4>${node.name}</h4>
-            <p>所属区域：${path.map(p => p.name).join(' / ')}</p>
-            <p>许可范围：烟花爆竹成品仓储 · 安全生产许可证有效 · 1.3级工库房在线监控</p>
-            <span class="ent-status ${overCap ? 'warn' : 'ok'}">● ${overCap ? '库存超库容预警中' : '仓储运行正常'}</span>
-          </div>
-          <div class="ent-kpis">
-            <div class="ent-kpi"><div class="lab">仓库库房</div><div class="val">${rooms} 栋</div></div>
-            <div class="ent-kpi"><div class="lab">成品库存</div><div class="val ${overCap ? 'warn' : ''}">${stock} 吨</div></div>
-            <div class="ent-kpi"><div class="lab">库容利用率</div><div class="val ${overCap ? 'warn' : ''}">${util}%</div></div>
-            <div class="ent-kpi"><div class="lab">库存周转</div><div class="val">${turnover} 天</div></div>
-            <div class="ent-kpi"><div class="lab">库区作业人员</div><div class="val">${workers} 人</div></div>
-            <div class="ent-kpi"><div class="lab">今日进库车辆</div><div class="val">${inVeh} 辆</div></div>
-            <div class="ent-kpi"><div class="lab">今日出库车辆</div><div class="val">${outVeh} 辆</div></div>
-            <div class="ent-kpi"><div class="lab">视频监测点</div><div class="val">${video} 路</div></div>
-            <div class="ent-kpi"><div class="lab">视频在线率</div><div class="val ${onlineRate < 98 ? 'warn' : 'ok'}">${onlineRate}%</div></div>
-            <div class="ent-kpi"><div class="lab">本月预警</div><div class="val ${warns > 0 ? 'warn' : 'ok'}">${warns} 起</div></div>
-            <div class="ent-kpi"><div class="lab">持证上岗率</div><div class="val ok">98.6%</div></div>
-            <div class="ent-kpi"><div class="lab">人员资质到期</div><div class="val warn">${Math.max(0, Math.round(32 * m))} 人</div></div>
-          </div>
+      document.getElementById('tableTitle').textContent = '企业仓储画像';
+      document.getElementById('entPanel').innerHTML = `
+        <div class="ent-head">
+          <h4>${node.name}</h4>
+          <p>所属区域：${path.slice(0, 4).map(p => p.name).join(' / ')}</p>
+          <p>许可范围：烟花爆竹成品仓储 · 安全生产许可证有效 · 1.3级工库房在线监控</p>
+          <span class="ent-status ${over ? 'warn' : 'ok'}">${over ? '● 库存超库容预警中' : '● 仓储运行正常'}</span>
         </div>
+        <div class="ent-kpis">
+          <div class="ent-kpi"><div class="lab">仓库库房</div><div class="val">${fmt(node.rooms)} 栋</div></div>
+          <div class="ent-kpi"><div class="lab">成品库存</div><div class="val ${over ? 'warn' : ''}">${fmt(node.stock)} 吨</div></div>
+          <div class="ent-kpi"><div class="lab">库容利用率</div><div class="val ${over ? 'warn' : ''}">${util}%</div></div>
+          <div class="ent-kpi"><div class="lab">库存周转</div><div class="val">${turnover} 天</div></div>
+          <div class="ent-kpi"><div class="lab">进/出库车辆</div><div class="val">${node.inVeh}/${node.outVeh}</div></div>
+          <div class="ent-kpi"><div class="lab">本月预警</div><div class="val ${over ? 'warn' : ''}">${node.warns} 起</div></div>
+        </div>
+        <div class="ent-mat-title">库存品类明细（本月）</div>
+        <table class="ent-mat">
+          <thead>
+            <tr><th>品类</th><th class="num">库存(吨)</th><th class="num">入库(吨)</th><th class="num">出库(吨)</th><th class="num">周转(天)</th></tr>
+          </thead>
+          <tbody>${entStockItems(node).map(r => `
+            <tr>
+              <td>${r.name}</td>
+              <td class="num">${fmt(r.stock)}</td>
+              <td class="num">${fmt(r.inQ)}</td>
+              <td class="num">${fmt(r.outQ)}</td>
+              <td class="num">${r.turn}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
       `;
-      document.getElementById('drillContent').style.gridTemplateColumns = '1fr';
     }
 
-    // 仓库实时预警列表（随层级缩放，展示全部要求的预警类型）
-    function renderWarnList(node) {
-      const m = mult(node.name, node.level);
-      // 各类型预警：标题、基础起数、等级、是否橙色、处置建议
-      const items = [
-        { title: '仓库超高/超量预警', base: BASE.warns['仓库超高/超量'], lv: 'high', warn: false },
-        { title: '温湿度异常预警', base: BASE.warns['温湿度异常'], lv: 'high', warn: false },
-        { title: '库区超员预警', base: BASE.warns['库区超员'], lv: 'mid', warn: true },
-        { title: '堵塞消防通道预警', base: BASE.warns['堵塞消防通道'], lv: 'mid', warn: true },
-        { title: '非法入侵预警', base: BASE.warns['非法入侵'], lv: 'high', warn: false },
-        { title: '摄像头偏移/遮挡报警', base: BASE.warns['摄像头偏移/遮挡'], lv: 'mid', warn: true },
-        { title: '无证装货预警', base: BASE.warns['无证装货'], lv: 'high', warn: false },
-        { title: '运输车辆无挡板预警', base: BASE.warns['运输车辆无挡板'], lv: 'mid', warn: true }
+    // 库存品类明细：按典型成品结构配比，结合企业库存规模确定性浮动
+    function entStockItems(node) {
+      const defs = [
+        { name: '烟花类', w: 0.52 },
+        { name: '爆竹类', w: 0.34 },
+        { name: '黑火药', w: 0.08 },
+        { name: '引火线', w: 0.06 }
       ];
+      const k = 0.6 + (node.stock / 8.7) * 0.5 + hash01(node.name + 'sk') * 0.25;
+      return defs.map((d, i) => {
+        const stock = Math.max(1, Math.round(1800 * d.w * k));
+        const inQ = Math.max(0, Math.round(stock * (0.28 + hash01(node.name + 'i' + i) * 0.22)));
+        const outQ = Math.max(0, Math.round(stock * (0.24 + hash01(node.name + 'o' + i) * 0.2)));
+        const turn = Math.max(3, Math.round(stock / Math.max(1, outQ) * (0.8 + hash01(node.name + 'r' + i) * 0.5)));
+        return { name: d.name, stock, inQ, outQ, turn };
+      });
+    }
+
+    // 仓储预警列表：按省级类型权重把当前层级预警总数拆分，保证与 KPI 自洽
+    function renderWarnList(node) {
+      const box = document.getElementById('warnList');
+      if (node.level >= 4) {
+        box.innerHTML = '<div style="color:#8aa4bf;font-size:12px;padding:12px;text-align:center;line-height:1.8;">企业级视图<br/>请在上方查看该企业仓储画像与预警情况</div>';
+        return;
+      }
+      const keys = Object.keys(BASE.warns);
+      const total = node.warns || 0;
+      if (!total) { box.innerHTML = '<div class="empty-state">✓ 当前层级暂无仓储预警</div>'; return; }
+      const vals = splitTo(total, keys, 0);
       let html = '';
-      items.forEach((it, i) => {
-        const v = Math.max(0, Math.round(it.base * m));
+      keys.forEach((k, i) => {
+        const v = Math.round(vals[i]);
         if (v <= 0) return;
-        const suggest = WARN_SUGGEST[it.title] || '现场核查处置';
-        const state = hash01(node.name + it.title) > 0.5 ? '处置中' : '待处置';
+        const high = ['仓库超高/超量', '非法入侵', '无证装货', '温湿度异常'].indexOf(k) >= 0;
         html += `
-          <div class="warning-item ${it.warn ? 'warn' : ''}">
+          <div class="warning-item ${high ? '' : 'warn'}">
             <div class="warning-info">
-              <div class="warning-title">${it.title}</div>
-              <div class="warning-meta">${node.name} · 本月累计 ${v} 起 · ${state} · 建议：${suggest}</div>
+              <div class="warning-title">${k}预警</div>
+              <div class="warning-meta">${WARN_SUGGEST[k] || '现场核查处置'} · ${hash01(node.name + k) > 0.5 ? '处置中' : '待处置'}</div>
             </div>
-            <span class="warning-level ${it.lv}">${it.lv === 'high' ? '高危' : '中危'}</span>
+            <span class="warning-level ${high ? 'high' : 'mid'}">${v} 起</span>
           </div>`;
       });
-      if (node.level === 4) {
-        html = '<div style="color:#8aa4bf;font-size:12px;padding:12px;text-align:center;">企业级视图：预警明细请见上方企业仓储画像</div>';
-      }
-      document.getElementById('warnList').innerHTML = html;
+      box.innerHTML = html;
     }
+
 
     // KPI 数字刷新（带动画）
     function setKpi(id, target, dec) {
@@ -865,7 +1329,8 @@
         const p = Math.min((now - start) / 600, 1);
         const eased = 1 - Math.pow(1 - p, 3);
         const cur = from + (target - from) * eased;
-        el.innerHTML = (dec > 0 ? cur.toFixed(dec) : Math.round(cur).toLocaleString()) + unitHtml;
+        const txt = dec > 0 ? cur.toFixed(dec) : Math.round(cur).toLocaleString();
+        el.innerHTML = txt + unitHtml;
         if (p < 1) requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
@@ -873,63 +1338,60 @@
 
     function refreshAll() {
       const node = curNode();
-      const m = mult(node.name, node.level);
+      const children = childNodes(node);
+      const isLeaf = node.level >= 4;
       renderCrumb();
-      // 还原 drillContent 结构（企业视图改过布局）
-      const dc = document.getElementById('drillContent');
-      if (!document.getElementById('rankChart')) {
-        dc.innerHTML = `
-          <div class="drill-box">
-            <h5 id="rankTitle">成品库存排名（吨）</h5>
-            <div id="rankChart"></div>
-          </div>
-          <div class="drill-box">
-            <h5 id="tableTitle">下级单位明细</h5>
-            <div class="rtable-wrap">
-              <table class="rtable">
-                <thead>
-                  <tr><th>名称</th><th>库房(栋)</th><th>库存(吨)</th><th>作业人员</th><th>进库</th><th>出库</th><th>视频</th><th>预警</th><th>操作</th></tr>
-                </thead>
-                <tbody id="regionTbody"></tbody>
-              </table>
-            </div>
-          </div>`;
-        dc.style.gridTemplateColumns = '1.1fr 1fr';
-      }
-      renderDrillContent();
+
+      document.getElementById('tableWrap').style.display = isLeaf ? 'none' : '';
+      const entPanel = document.getElementById('entPanel');
+      entPanel.style.display = isLeaf ? 'flex' : 'none';
+
+      document.getElementById('drillTitle').textContent = isLeaf
+        ? (entShort(node.name) + ' · 企业仓储画像')
+        : (node.name + ' · 各' + LEVEL_NAMES[children[0].level].replace('级', '') + '仓储数据分布（地图）');
+
+      renderMapView();
+      if (isLeaf) renderEntDetail(node); else renderTable(children);
+
+      const m = node[MAIN_KEY] / ROOT[MAIN_KEY];
+      const mw = node.warns / ROOT.warns;
       renderStock(m);
       renderVehicle(m);
       renderVideo(m);
-      renderDispose(m);
-      renderWarnType(m);
+      renderDispose(mw);
+      renderWarnType(mw);
       renderTrend(m);
       renderWarnList(node);
 
-      setKpi('kpiRoom', Math.round(BASE.rooms * m), 0);
-      setKpi('kpiStock', Math.round(BASE.stockTotal * m), 0);
-      setKpi('kpiWorker', +(BASE.workers * m / 10000).toFixed(2), 2);
-      setKpi('kpiIn', Math.round(BASE.vehicleIn[7] * m), 0);
-      setKpi('kpiOut', Math.round(BASE.vehicleOut[7] * m), 0);
-      setKpi('kpiVideo', Math.round(BASE.videoTotal * m), 0);
-      setKpi('kpiWarn', Math.max(1, Math.round(Object.values(BASE.warns).reduce((a, b) => a + b, 0) * m)), 0);
+      setKpi('kpiRoom', node.rooms, 0);
+      setKpi('kpiStock', node.stock, 0);
+      setKpi('kpiWorker', +(node.workers / 10000).toFixed(2), 2);
+      setKpi('kpiIn', node.inVeh, 0);
+      setKpi('kpiOut', node.outVeh, 0);
+      setKpi('kpiVideo', node.video, 0);
+      setKpi('kpiWarn', node.warns, 0);
       setKpi('kpiQual', Math.max(1, Math.round(32 * m)), 0);
 
       document.getElementById('qualSoon').innerHTML = Math.max(0, Math.round(23 * m)) + '<span style="font-size:12px">人</span>';
       document.getElementById('qualOver').innerHTML = Math.max(0, Math.round(9 * m)) + '<span style="font-size:12px">人</span>';
       document.getElementById('onDuty').innerHTML = Math.max(0, Math.round(1280 * m)) + '<span style="font-size:12px">人</span>';
-      document.getElementById('overCrowd').innerHTML = Math.max(0, Math.round(BASE.warns['库区超员'] * m)) + '<span style="font-size:12px">次</span>';
+      document.getElementById('overCrowd').innerHTML = Math.max(0, Math.round(BASE.warns['库区超员'] * mw)) + '<span style="font-size:12px">次</span>';
+
+      mapChart.resize();
     }
+
+    mapChart.on('click', p => {
+      const node = curNode();
+      if (node.level >= 4) return;
+      const target = childNodes(node).find(c => c.name === p.name);
+      if (!target) return;
+      path.push(target);
+      refreshAll();
+    });
 
     document.getElementById('btnBack').addEventListener('click', () => {
       if (path.length > 1) { path.pop(); refreshAll(); }
     });
-
-    window.addEventListener('resize', () => {
-      [stockChart, vehicleChart, videoChart, disposeChart, warnTypeChart, trendChart].forEach(c => c.resize());
-      const rc = document.getElementById('rankChart');
-      if (rc) { const inst = echarts.getInstanceByDom(rc); if (inst) inst.resize(); }
-    });
-
     refreshAll();
   </script>
 </body>
