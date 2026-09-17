@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="8pdQwwwoac1QGk8AlorK97">
-<head data-page-node-id="2wYj0HQegpnDvhL7adHSfn">
-  <meta charset="UTF-8" data-page-node-id="ZkI4OHZXStDUEIKBT0p3wy" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="DZnXQiuefKI7u72TTRRdCR" />
-  <title>江西省烟花爆竹产业全链条监管服务平台 - 生产态势</title>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>江西省烟花爆竹产业全链条监管服务平台 - 零售态势</title>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -320,113 +320,144 @@
 
 
     ::selection { background: rgba(0, 150, 255, 0.35); }
+      /* 周期切换 / 页签按钮 */
+    .seg-group { display: inline-flex; gap: 4px; margin-right: 8px; }
+    .seg-group .seg {
+      font-size: 11px; color: #8aa4bf; padding: 2px 9px; border-radius: 9px;
+      border: 1px solid rgba(0, 180, 255, 0.28); cursor: pointer; font-style: normal;
+      transition: all .2s; user-select: none;
+    }
+    .seg-group .seg.active { color: #04121f; background: #00d4ff; border-color: #00d4ff; font-weight: 700; }
+    /* 零售网点 / 批发企业卡片 */
+    .tv-list { flex: 1; min-height: 0; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+    .tv-list::-webkit-scrollbar { height: 5px; }
+    .tv-list::-webkit-scrollbar-thumb { background: rgba(0, 180, 255, 0.35); border-radius: 3px; }
+    .tv-card {
+      flex: 0 0 274px; display: flex; flex-direction: column; gap: 6px;
+      background: rgba(0, 0, 0, 0.22); border: 1px solid rgba(0, 150, 255, 0.22);
+      border-radius: 8px; padding: 9px 11px;
+    }
+    .tv-hd { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .tv-plate { font-size: 12.5px; font-weight: 700; color: #fff; }
+    .tv-tag { font-size: 10px; padding: 2px 7px; border-radius: 9px; white-space: nowrap; }
+    .tv-tag.run { color: #51cf66; border: 1px solid rgba(81, 207, 102, 0.5); background: rgba(81, 207, 102, 0.1); }
+    .tv-tag.load { color: #ff9f2e; border: 1px solid rgba(255, 159, 46, 0.5); background: rgba(255, 159, 46, 0.1); }
+    .tv-tag.bad { color: #ff4d4f; border: 1px solid rgba(255, 77, 79, 0.5); background: rgba(255, 77, 79, 0.1); }
+    .tv-rows { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; color: #c8e2f5; line-height: 1.45; }
+    .tv-rows b { color: #7fa6c9; font-weight: 500; margin-right: 5px; }
+    .tv-ft { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #8aa4bf; margin-top: auto; }
   </style>
 </head>
-<body data-page-node-id="bA8oCJH7LlUZamQQkYBcFo">
-  <div class="screen" data-page-node-id="UcUHv9qAWgZqBSOeCPGwtV">
-  <header class="header" data-page-node-id="yzRaTddklgA0EU1z84TMK5">
-    <div class="brand" data-page-node-id="OPwbMiMJGM9d9Iy8FWUZcn">
-      <div class="brand-icon" data-page-node-id="8DfbqTQiXYW7hWiahpa8K8">赣</div>
-      <div data-page-node-id="IMSykqOmjZhAr5yFzisXkh">
-        <h1 data-page-node-id="pwCo03lfX1qA31uHyrBP6T">江西省烟花爆竹产业全链条监管服务平台</h1>
+<body>
+  <div class="screen">
+  <header class="header">
+    <div class="brand">
+      <div class="brand-icon">赣</div>
+      <div>
+        <h1>江西省烟花爆竹产业全链条监管服务平台</h1>
       </div>
     </div>
-    <nav class="nav" data-page-node-id="yLDMAHEKeF39GbOuYPWmWk">
-      <a href="index.html" data-page-node-id="ZeBTRUJS5geTAeyw8JBU6B">态势总览</a>
-      <a href="purchase.html" data-page-node-id="ikyIM1oiVa1WexRlivy17s">采购态势</a>
-      <a class="active" href="production.html" data-page-node-id="854EhtqyH3uUlw4VxRkqmh">生产态势</a>
-      <a href="warehouse.html" data-page-node-id="CxAP35hVK3AbuuQ7yqV5IY">仓储态势</a>
-      <a href="transport.html" data-page-node-id="EjDFDJkftSxQY2FenFBYVM">运输态势</a>
-      <a href="export.html" data-page-node-id="wtwSb3Ck6zlEBx83oQLodw">出口态势</a>
-      <a href="retail.html" data-page-node-id="flFqYp9Yc8cJKRRFZg0AKl">零售态势</a>
-      <a href="firework.html" data-page-node-id="eg4KBRxwKEqE3tHFu5gt9C">燃放态势</a>
+    <nav class="nav">
+      <a href="index.html">态势总览</a>
+      <a href="purchase.html">采购态势</a>
+      <a href="production.html">生产态势</a>
+      <a href="warehouse.html">仓储态势</a>
+      <a href="transport.html">运输态势</a>
+      <a href="export.html">出口态势</a>
+      <a class="active" href="retail.html">零售态势</a>
+      <a href="firework.html">燃放态势</a>
       <a href="enforcement.html">打非治违态势</a>
-      <a href="monitor.html" data-page-node-id="NOKayfwg2wfAhFN2Fu9dYm">智能监控中心</a>
-      <a href="admin.html" data-page-node-id="U5CIqnBFN1cqqzZQkr9ojw">业务管理</a>
+      <a href="monitor.html">智能监控中心</a>
+      <a href="admin.html">业务管理</a>
     </nav>
-    <div class="header-right" data-page-node-id="OEJkA94YohuhWEsugp0Zkb">
-      <div class="weather" data-page-node-id="hXfUEnTkq4Ce3S7cT3hBQs">🌤 南昌 多云 28°C</div>
-      <div class="time" id="clock" data-page-node-id="I14nLDlzOtiaS6YuoimGmm">2026-08-28 14:22:51</div>
+    <div class="header-right">
+      <div class="weather">🌤 南昌 多云 28°C</div>
+      <div class="time" id="clock">2026-08-28 14:22:51</div>
     </div>
   </header>
 
-  <main class="main" data-page-node-id="7vXpe5ueSgFRl4Nf1UIafs">
-    <!-- Left Column -->
-    <section class="col" data-page-node-id="RZVvrPVFzqTCtuLuwDGnYI">
-      <div class="panel" style="flex: 1;" data-page-node-id="0DvY3xRVdWdIXhukD29MXs">
-        <div class="panel-title" data-page-node-id="F6VYW9ZzSe2PfjLzTYizGh"><h3 data-page-node-id="eDAtIHmKOfgPNitVvJiwCZ">全省生产企业在产停产情况</h3><span class="more" data-page-node-id="ApjLPaQfUavsCJF9IxEKqy">更多 &gt;</span></div>
-        <div id="statusChart" class="chart" data-page-node-id="F23OVzxdVRTE7GQMlYgQ90"></div>
+  <main class="main">
+        <!-- Left Column -->
+    <section class="col">
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title">
+          <h3>零售网点与购销趋势</h3>
+          <span class="seg-group" id="periodSeg">
+            <i class="seg active" data-p="m8">近8月</i><i class="seg" data-p="w8">近8周</i><i class="seg" data-p="d7">近7日</i>
+          </span>
+        </div>
+        <div id="trendChart" class="chart"></div>
       </div>
 
-      <div class="panel" style="flex: 1;" data-page-node-id="rOJwfXVvx58IKMYOj6rWhA">
-        <div class="panel-title" data-page-node-id="7d9ajqDEGHvswnzfMlNnwq"><h3 data-page-node-id="ovA2jzgpIe1cjIiCQo7VIn">全省生产用电情况</h3><span class="more" data-page-node-id="wPkCSDhJdueIi85FDgCiSH">更多 &gt;</span></div>
-        <div id="powerChart" class="chart" data-page-node-id="4faDNBlAvB4NbOGEABAW0B"></div>
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>批发企业库位容量使用</h3><span class="more">更多 &gt;</span></div>
+        <div id="storeChart" class="chart"></div>
       </div>
 
-      <div class="panel" style="flex: 1;" data-page-node-id="KiXx5sE41nm44kdoogp5Ei">
-        <div class="panel-title" data-page-node-id="ybBeNobywfdGYyCouYgm72"><h3 data-page-node-id="1X2dJCsr6lLCDYINDgdQBZ">全省企业资质情况</h3><span class="more" data-page-node-id="oPVhDviLmVHmPywAOOjAkg">更多 &gt;</span></div>
-        <div id="qualChart" class="chart" data-page-node-id="5yY9zFpPTI6LU8EZVQSHwD"></div>
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>零售证照与台账合规</h3><span class="more">更多 &gt;</span></div>
+        <div id="qualChart" class="chart"></div>
       </div>
     </section>
 
     <!-- Center Column -->
-    <section class="col col-center" data-page-node-id="tOMzuC0Z2gKuBKZbCyFJGG">
+    <section class="col col-center">
       <!-- KPI cards -->
-      <div class="center-top" data-page-node-id="7BeNTr5rgQ8Vjw4zGeOlBu">
-        <div class="summary-card" data-page-node-id="4aGuiSQnTYhB5AWqxbzInw">
-          <div class="summary-label" data-page-node-id="XF1Ja9YBLNokUFmOsF6nRG">在产企业</div>
-          <div class="summary-value" id="kpiProd" data-page-node-id="ekHs5xvFItljJhczvDtzu7">860<span class="summary-unit" data-page-node-id="GoGoIDlSugufsNH4gPyDA4">家</span></div>
-          <div class="summary-sub" data-page-node-id="0vmFn0jZkp5FFYqUe19jM0">停产 92 · 检修 24</div>
+            <div class="center-top">
+        <div class="summary-card">
+          <div class="summary-label">零售网点</div>
+          <div class="summary-value" id="kpiNet">3,280<span class="summary-unit">家</span></div>
+          <div class="summary-sub">持证经营 3,196 家</div>
         </div>
-        <div class="summary-card" data-page-node-id="HoTlnn0e3jjABRGengGifd">
-          <div class="summary-label" data-page-node-id="3a7pQKN481eCfYQaFpelOv">本月生产用电</div>
-          <div class="summary-value" id="kpiPower" data-page-node-id="nK0RDFVgGFrIkPAAVfOcso">1286<span class="summary-unit" data-page-node-id="NyKOFUhEUC8vxUEoMq0wmN">万kWh</span></div>
-          <div class="summary-sub" data-page-node-id="pON0hC20a5duUzqQbJ7EGa">环比 +3.2%</div>
+        <div class="summary-card">
+          <div class="summary-label">批发企业</div>
+          <div class="summary-value" id="kpiWhole">268<span class="summary-unit">家</span></div>
+          <div class="summary-sub">仓储库位合规 100%</div>
         </div>
-        <div class="summary-card" data-page-node-id="ZeoaAlHdmKpBW8rbbCzjsq">
-          <div class="summary-label" data-page-node-id="JVE8BjkBEsPCknuBZvF3d3">从业人员</div>
-          <div class="summary-value" id="kpiWorkers" data-page-node-id="Agb3CO9iqP0Edg96cCKQqp">4.82<span class="summary-unit" data-page-node-id="V6Q4xzEYiwo578YVFe7q14">万人</span></div>
-          <div class="summary-sub" data-page-node-id="Pg4BMFdApOAnQSlgtt63b6">持证上岗率 98.6%</div>
+        <div class="summary-card">
+          <div class="summary-label">持证从业人员</div>
+          <div class="summary-value" id="kpiStaff">6,120<span class="summary-unit">人</span></div>
+          <div class="summary-sub">证件到期 84 人</div>
         </div>
-        <div class="summary-card" data-page-node-id="IICpHznejHz6QRcSRJaHEH">
-          <div class="summary-label" data-page-node-id="t6kBLra88obv4WqzPASa1W">生产区作业人员</div>
-          <div class="summary-value" id="kpiOnSite" data-page-node-id="1vkuMUFSUvG8GUfgrZGJNL">3.12<span class="summary-unit" data-page-node-id="BHucjfwIQ0UFdgQr386Gvi">万人</span></div>
-          <div class="summary-sub" data-page-node-id="kfuGcCA9IEZf6QZfbvEFI3">实时在岗巡检</div>
+        <div class="summary-card">
+          <div class="summary-label">本月购销台账</div>
+          <div class="summary-value" id="kpiLedger">42,000<span class="summary-unit">笔</span></div>
+          <div class="summary-sub">同比 +6.8%</div>
         </div>
-        <div class="summary-card" data-page-node-id="T9Oq7Q1FDT15IgVTGB59Hc">
-          <div class="summary-label" data-page-node-id="BeOvW8ZBwchRlljUUqN5QA">生产工库房</div>
-          <div class="summary-value" id="kpiRoom" data-page-node-id="YWEsVbbSQwq4zDypU8gPe8">6420<span class="summary-unit" data-page-node-id="9UHd5aFd5aIFp48tPqe6Pm">栋</span></div>
-          <div class="summary-sub" data-page-node-id="I0pbl0UysRkc76ap6iSbHi">工房 5380 · 库房 1040</div>
+        <div class="summary-card">
+          <div class="summary-label">消费者数据</div>
+          <div class="summary-value" id="kpiConsumer">12.6<span class="summary-unit">万条</span></div>
+          <div class="summary-sub">实名登记率 97.2%</div>
         </div>
-        <div class="summary-card" data-page-node-id="lOv2ECeWUwJvmb6bbxydlz">
-          <div class="summary-label" data-page-node-id="152A68yHvOuddcMV9dhItj">视频监测点</div>
-          <div class="summary-value" id="kpiVideo" data-page-node-id="nHvoR9APK6F0Zz7tb1Uyip">3752<span class="summary-unit" data-page-node-id="BC0sFnajunK2Bjk30rwmT3">路</span></div>
-          <div class="summary-sub" data-page-node-id="yEviZjrCDeIAmLNFFfdnNQ">在线率 99.1%</div>
+        <div class="summary-card">
+          <div class="summary-label">批发库位利用率</div>
+          <div class="summary-value" id="kpiUtil">86.4<span class="summary-unit">%</span></div>
+          <div class="summary-sub">已用 7,466 · 空置 1,174</div>
         </div>
-        <div class="summary-card" data-page-node-id="FM3XTYgmt4wUhxqFUXzcD6">
-          <div class="summary-label" data-page-node-id="jdyNR1NC3SEewV9YcYnfy2">本月预警总数</div>
-          <div class="summary-value" id="kpiWarn" style="color:#ff4d4f;" data-page-node-id="11aWazDGUDQt0oAsxWs7Bm">83<span class="summary-unit" data-page-node-id="BitqdUAY50SGAGh71CD5gX">起</span></div>
-          <div class="summary-sub" data-page-node-id="oF73rXRexD0CIBqEOlqwRV">处置率 91.6%</div>
+        <div class="summary-card">
+          <div class="summary-label">本月零售预警</div>
+          <div class="summary-value" id="kpiWarn" style="color:#ff4d4f;">42<span class="summary-unit">起</span></div>
+          <div class="summary-sub">处置率 88.1%</div>
         </div>
-        <div class="summary-card" data-page-node-id="Iq3mJqJ9UUcMobPR3p7egb">
-          <div class="summary-label" data-page-node-id="WPC4UI9756X6LDW9aaGsIa">资质到期预警</div>
-          <div class="summary-value" id="kpiQual" style="color:#ff9f2e;" data-page-node-id="lJc6m2DfH1dpI1Y6DJpLDi">8<span class="summary-unit" data-page-node-id="gBfAvFnLBJchOkDSb3sCCO">家</span></div>
-          <div class="summary-sub" data-page-node-id="E8GPFvbr4XnVCYZCLReGpf">企业 2 · 人员 6</div>
+        <div class="summary-card">
+          <div class="summary-label">资质到期预警</div>
+          <div class="summary-value" id="kpiQual" style="color:#ff9f2e;">108<span class="summary-unit">项</span></div>
+          <div class="summary-sub">网点 24 · 人员 84</div>
         </div>
       </div>
 
-      <!-- Drill-down panel -->
-      <div class="panel drill-panel" style="flex: 0 0 auto;" data-page-node-id="6CepWfsILcTrnM6hciEo6c">
-        <div class="drill-bar" data-page-node-id="UPZkUbvwqaQiebFixefgBV">
-          <span class="drill-label" data-page-node-id="FONW4XZ0G3KxPF1zrulgQG"><i data-page-node-id="e5P77kbcCDeofoGdrfQpqe">钻</i>数据下钻</span>
-          <span id="crumbBox" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;" data-page-node-id="KCpFN4xTL74gMy3w5spdrB"></span>
-          <span class="drill-back disabled" id="btnBack" data-page-node-id="YbAmxHxVoa3xEAIfMCk3bH">‹ 返回上级</span>
+            <!-- Drill-down panel -->
+      <div class="panel drill-panel" style="flex: 0 0 auto;">
+        <div class="drill-bar">
+          <span class="drill-label"><i>钻</i>数据下钻</span>
+          <span id="crumbBox" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;"></span>
+          <span class="drill-back disabled" id="btnBack">‹ 返回上级</span>
         </div>
       </div>
 
       <!-- Drill content -->
-      <div class="panel" style="flex: 1.7; min-height: 0;" data-page-node-id="74QC7AYepmVpGbPji8KMNk">
-        <div class="panel-title" data-page-node-id="8zxYSJ1TzfTyelDGVFcrJL"><h3 id="drillTitle" data-page-node-id="p4ZdLjNlpckxNP9Y6onqGJ">各市生产数据分布</h3><span class="more" data-page-node-id="bHX33M9HPSgXH0JDvhKgiN">点击地图或列表逐级下钻 &gt;</span></div>
+      <div class="panel" style="flex: 1.7; min-height: 0;">
+        <div class="panel-title"><h3 id="drillTitle">各市零售网点分布</h3><span class="more">点击地图或列表逐级下钻 &gt;</span></div>
         <div class="drill-content" id="drillContent">
           <div class="drill-box map-box">
             <div class="map-badge">
@@ -435,9 +466,9 @@
             </div>
             <div class="map-hint" id="mapHint">点击地图区域逐级下钻 ›</div>
             <div class="map-legend" id="mapLegend" style="display:none;">
-              <span><i style="background:#00d4ff;"></i>运行正常</span>
+              <span><i style="background:#00d4ff;"></i>合规经营</span>
               <span><i style="background:#ff4d4f;"></i>存在预警</span>
-              <span style="color:#6b8aa8;">圆点大小 = 在产量</span>
+              <span style="color:#6b8aa8;">圆点大小 = 零售网点</span>
             </div>
             <div id="mapChart"></div>
           </div>
@@ -446,7 +477,7 @@
             <div class="rtable-wrap" id="tableWrap">
               <table class="rtable">
                 <thead>
-                  <tr><th>名称</th><th>在产</th><th>停产</th><th>用工</th><th>工库房</th><th>视频</th><th>预警</th><th>操作</th></tr>
+                  <tr><th>名称</th><th>零售网点</th><th>批发企业</th><th>持证人员</th><th>购销台账</th><th>消费者</th><th>预警</th><th>操作</th></tr>
                 </thead>
                 <tbody id="regionTbody"></tbody>
               </table>
@@ -456,34 +487,39 @@
         </div>
       </div>
 
-      <!-- 生产用电与用工趋势 -->
-      <div class="panel" style="flex: 1; min-height: 0;" data-page-node-id="RqmUPMPQpadCgyBk4IXITA">
-        <div class="panel-title" data-page-node-id="FP6kd7hDN4TE6OkjM6ZaKe"><h3 data-page-node-id="7P7qLXBz2NkrymcJxlUcIk">生产用电 · 用工 · 工库房趋势</h3><span class="more" data-page-node-id="nvFxwL9CkgpOyIWQyURY3l">更多 &gt;</span></div>
-        <div id="trendChart" class="chart" data-page-node-id="1CNuOu5B0oVrlWHGoHeyhs"></div>
+            <!-- 零售网点 / 批发企业监管明细 -->
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title">
+          <h3 id="rcTitle">零售网点监管（购销台账 · 人员资质 · 消费者数据）</h3>
+          <span class="seg-group" id="rcSeg">
+            <i class="seg active" data-t="net">零售网点</i><i class="seg" data-t="whole">批发企业</i>
+          </span>
+        </div>
+        <div class="tv-list" id="rcList"></div>
       </div>
     </section>
 
-    <!-- Right Column -->
-    <section class="col" data-page-node-id="YAAvKlwQLqNfPcRDHyO8vB">
-      <div class="panel" style="flex: 1;" data-page-node-id="mYT6V6sYtslDzwmbcJuyym">
-        <div class="panel-title" data-page-node-id="T6ocaDxFhPz7lgPszRuLDn"><h3 data-page-node-id="2EyIExyO4QOScVbygJZl63">预警总体情况</h3><span class="more" data-page-node-id="0o90jDBa3T1cg9Tq6zjBBV">更多 &gt;</span></div>
-        <div id="warnChart" class="chart" data-page-node-id="QcOwvInZGfgE8nnTUYkcu7"></div>
+        <!-- Right Column -->
+    <section class="col">
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>零售预警总体情况</h3><span class="more">更多 &gt;</span></div>
+        <div id="warnChart" class="chart"></div>
       </div>
 
-      <div class="panel" style="flex: 1;" data-page-node-id="BNE5BqouQnG5EvfO7Uygxi">
-        <div class="panel-title" data-page-node-id="85aRLO9fqIFOwqX0LorMM2"><h3 data-page-node-id="gddNaYWEBVBFbRkcD4Zl4l">分级预警类型分布</h3><span class="more" data-page-node-id="9NHMCKMYnx4ZDKOY42cjGz">更多 &gt;</span></div>
-        <div id="warnTypeChart" class="chart" data-page-node-id="TgZuDcYK9NJM9elB1PUOSc"></div>
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>零售预警分级分类</h3><span class="more">更多 &gt;</span></div>
+        <div id="warnTypeChart" class="chart"></div>
       </div>
 
-      <div class="panel" style="flex: 1;" data-page-node-id="HAcwJYHqB1pHDY4RIzRi6c">
-        <div class="panel-title" data-page-node-id="ULQHKS0t1eyxZtdt9gWOw9"><h3 data-page-node-id="ZjCtodZ3AUzkUAQCAP9xQq">资质到期与监测</h3><span class="more" data-page-node-id="1gNsTNYV1ywk0VmY1ZUFtm">更多 &gt;</span></div>
-        <div class="mini-stats" style="margin-bottom:10px;" data-page-node-id="WRsCku5X8QpJBY1dZVWnNj">
-          <div class="mini-stat" data-page-node-id="q1WUI1XnzMArVPLgkj4ntO"><div class="lab" data-page-node-id="zpZeqwgXEHdKfItJEuqR13">企业资质即将到期</div><div class="val warn" id="qualSoon" data-page-node-id="iaRk98ueF6u7asjQrVE7FB">6<span style="font-size:12px" data-page-node-id="N6vieohK3TwINJFsDoUrAR">家</span></div></div>
-          <div class="mini-stat" data-page-node-id="ANxRGMuxEtizZgJOfHFHjX"><div class="lab" data-page-node-id="HHgg6qoqh9ExC2aadgfAsG">企业资质已过期</div><div class="val warn" id="qualOver" data-page-node-id="9IJva4a7hdJRw9I8jFi0LA">2<span style="font-size:12px" data-page-node-id="BQ6YF2zkeRi1g0JI3UBnnr">家</span></div></div>
-          <div class="mini-stat" data-page-node-id="VKMq25DrmhECRselvPTsha"><div class="lab" data-page-node-id="fc99GQ2FHPwX0rVebZRhDn">人员资质即将到期</div><div class="val warn" id="pQualSoon" data-page-node-id="jEpx9OjVmKj2QvQLNH8Fta">23<span style="font-size:12px" data-page-node-id="WBgoFLCEg2cRKKfEXi2wto">人</span></div></div>
-          <div class="mini-stat" data-page-node-id="a1HZ5xiMQQP9uFhgI53LYP"><div class="lab" data-page-node-id="593r1uVuMom0HCJ6IkPP6m">人员资质已过期</div><div class="val warn" id="pQualOver" data-page-node-id="3V1JVhFko1FBDRM2Hv5wjn">9<span style="font-size:12px" data-page-node-id="qAdWLjsrYruGFk2vrV24hC">人</span></div></div>
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>批发企业监管与资质到期</h3><span class="more">更多 &gt;</span></div>
+        <div class="mini-stats" style="margin-bottom:10px;">
+          <div class="mini-stat"><div class="lab">核定库位（个）</div><div class="val" id="whSlot">8,640</div></div>
+          <div class="mini-stat"><div class="lab">在用容量（吨）</div><div class="val" id="whCap">9,240</div></div>
+          <div class="mini-stat"><div class="lab">本月购销（笔）</div><div class="val" id="whDeal">42,000</div></div>
+          <div class="mini-stat"><div class="lab">配送趟次</div><div class="val" id="whDeliver">6,860</div></div>
         </div>
-        <div class="warning-list" id="warnList" data-page-node-id="gMAqej8WuEHLq5phJvDWf1"></div>
+        <div class="warning-list" id="warnList"></div>
       </div>
     </section>
   </main>
@@ -541,90 +577,170 @@
     // ================= 省级基础数据 =================
     const MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月'];
     const BASE = {
-      // 在产/停产/检修（家）
-      prod: 860, stop: 92, repair: 24,
-      // 生产用电（万kWh）月度
-      power: [1180, 1205, 1230, 1210, 1240, 1265, 1270, 1286],
-      rooms: 6420,
-      // 企业资质：有效/即将到期/已过期
-      qualOk: 832, qualSoon: 6, qualOver: 2,
-      // 从业人员资质
-      pQualSoon: 23, pQualOver: 9,
-      // 分级预警（省级起数）
+      // 零售网点数（家）与购销台账（笔）月度
+      nets: [3080, 3120, 3158, 3190, 3210, 3240, 3262, 3280],
+      deals: [34200, 35800, 37600, 36400, 38800, 39600, 40800, 42000],
+      // 批发企业库位
+      slotTotal: 8640, slotUsed: 7466,
+      capTotal: 12800, capUsed: 9240,
+      // 零售网点证照 / 人员资质
+      entOk: 3196, entSoon: 62, entOver: 22,
+      pQualOk: 6036, pQualSoon: 62, pQualOver: 22,
+      // 分级零售预警（省级起数）
       warns: {
-        '停产作业': 18, '涉药机械运行时长': 12, '工库房超员': 9, '静电未释放': 7,
-        '非法入侵': 5, '堵塞通道': 8, '超高堆垛': 6, '烟火识别': 14, '产品不合格': 4
+        '无证经营': 8, '购销台账缺报': 7, '消防设施不达标': 6, '超量存储': 6,
+        '人员无证上岗': 5, '消费者未实名登记': 5, '配送车辆违规': 5
       }
     };
     const WARN_COLORS = {
-      '停产作业': '#ff4d4f', '涉药机械运行时长': '#ff9f2e', '工库房超员': '#ffd23f',
-      '静电未释放': '#38c8f5', '非法入侵': '#a855f7', '堵塞通道': '#22c55e',
-      '超高堆垛': '#ff79e1', '烟火识别': '#ff6b6b', '产品不合格': '#51cf66'
+      '无证经营': '#ff4d4f', '购销台账缺报': '#ff9f2e', '消防设施不达标': '#ffd23f', '超量存储': '#38c8f5',
+      '人员无证上岗': '#a855f7', '消费者未实名登记': '#22c55e', '配送车辆违规': '#ff79e1'
     };
 
     // ================= 图表初始化 =================
-    const statusChart = echarts.init(document.getElementById('statusChart'));
-    const powerChart = echarts.init(document.getElementById('powerChart'));
+    const trendChart = echarts.init(document.getElementById('trendChart'));
+    const storeChart = echarts.init(document.getElementById('storeChart'));
     const qualChart = echarts.init(document.getElementById('qualChart'));
     const warnChart = echarts.init(document.getElementById('warnChart'));
     const warnTypeChart = echarts.init(document.getElementById('warnTypeChart'));
-    const trendChart = echarts.init(document.getElementById('trendChart'));
 
-    function renderStatus(m) {
-      statusChart.setOption({
-        tooltip: Object.assign({ trigger: 'item', formatter: '{b}：{c} 家（{d}%）' }, tipBase),
+    // 零售网点与购销趋势（支持周期切换）
+    let curPeriod = 'm8';
+    function tripSet(p) {
+      if (p === 'd7') {
+        const days = ['8-20', '8-21', '8-22', '8-23', '8-24', '8-25', '8-26'];
+        return {
+          x: days,
+          bar: days.map((_, i) => 3120 + Math.round(hash01('rd' + i) * 180)),
+          line: days.map((_, i) => 1420 + Math.round(hash01('rt' + i) * 320)),
+          yoy: 6.8, mom: 2.6, unit: '近 7 日'
+        };
+      }
+      if (p === 'w8') {
+        const ws = ['第1周', '第2周', '第3周', '第4周', '第5周', '第6周', '第7周', '第8周'];
+        return {
+          x: ws,
+          bar: ws.map((_, i) => 3160 + Math.round(hash01('rw' + i) * 120)),
+          line: ws.map((_, i) => 9400 + Math.round(hash01('rl' + i) * 1600)),
+          yoy: 5.4, mom: 1.8, unit: '近 8 周'
+        };
+      }
+      return { x: MONTHS, bar: BASE.nets, line: BASE.deals, yoy: 6.8, mom: 2.6, unit: '2026 年 1-8 月' };
+    }
+    function renderTrend() {
+      const m = Math.max(0.05, curNode()[MAIN_KEY] / ROOT[MAIN_KEY]);
+      const d = tripSet(curPeriod);
+      const bar = d.bar.map(v => Math.max(1, Math.round(v * m)));
+      const line = d.line.map(v => Math.max(1, Math.round(v * m)));
+      const totalN = bar.reduce((a, b) => a + b, 0);
+      const totalD = line.reduce((a, b) => a + b, 0);
+      trendChart.setOption({
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, tipBase),
+        legend: { top: 0, right: 2, textStyle: { color: textColor, fontSize: 11 }, itemWidth: 12, itemHeight: 8 },
+        title: {
+          text: '网点 ' + fmt(totalN) + ' 家 · 台账 ' + fmt(totalD) + ' 笔（' + d.unit + '）',
+          subtext: '同比 +' + d.yoy + '%   环比 ' + (d.mom > 0 ? '+' : '') + d.mom + '%',
+          left: 2, top: 0,
+          textStyle: { color: '#8aa4bf', fontSize: 11, fontWeight: 400 },
+          subtextStyle: { color: '#7fe3a0', fontSize: 11, fontWeight: 700 }
+        },
+        grid: { left: 50, right: 52, top: 48, bottom: 22 },
+        xAxis: {
+          type: 'category', data: d.x,
+          axisLabel: { color: textColor, fontSize: 10 }, axisTick: { show: false },
+          axisLine: { lineStyle: { color: axisColor } }
+        },
+        yAxis: [
+          {
+            type: 'value', name: '家', nameTextStyle: { color: '#8aa4bf', fontSize: 10 },
+            axisLabel: { color: textColor, fontSize: 10 },
+            splitLine: { lineStyle: { color: 'rgba(255,255,255,0.07)' } }
+          },
+          {
+            type: 'value', name: '台账(笔)', nameTextStyle: { color: '#8aa4bf', fontSize: 10 },
+            axisLabel: { color: textColor, fontSize: 10 }, splitLine: { show: false }
+          }
+        ],
+        series: [
+          {
+            name: '零售网点(家)', type: 'bar', barWidth: '46%',
+            itemStyle: {
+              borderRadius: [3, 3, 0, 0],
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#2ea0e8' }, { offset: 1, color: 'rgba(0,120,200,0.22)' }
+              ])
+            },
+            data: bar
+          },
+          {
+            name: '购销台账(笔)', type: 'line', yAxisIndex: 1, smooth: true, symbolSize: 5,
+            lineStyle: { color: '#ffd23f', width: 2 }, itemStyle: { color: '#ffd23f' }, data: line
+          }
+        ]
+      }, true);
+    }
+    document.getElementById('periodSeg').addEventListener('click', e => {
+      const el = e.target.closest('.seg');
+      if (!el) return;
+      curPeriod = el.dataset.p;
+      document.querySelectorAll('#periodSeg .seg').forEach(x => x.classList.toggle('active', x === el));
+      renderTrend();
+    });
+
+    // 批发企业库位容量使用
+    function renderStore(m) {
+      const used = Math.max(1, Math.round(BASE.slotUsed * m));
+      const free = Math.max(0, Math.round((BASE.slotTotal - BASE.slotUsed) * m));
+      const total = used + free;
+      storeChart.setOption({
+        tooltip: Object.assign({ trigger: 'item', formatter: '{b}：{c} 个（{d}%）' }, tipBase),
         legend: { bottom: 0, textStyle: { color: textColor, fontSize: 11 }, itemWidth: 12, itemHeight: 8 },
         series: [{
-          type: 'pie', radius: ['45%', '70%'], center: ['50%', '44%'],
-          label: { color: '#cfe9ff', fontSize: 11, formatter: '{b}\n{c}家' },
+          type: 'pie', radius: ['48%', '68%'], center: ['50%', '44%'],
+          label: {
+            show: true, position: 'center',
+            formatter: '库位利用率\n' + (used / total * 100).toFixed(1) + '%',
+            color: '#fff', fontSize: 15, fontWeight: 700, lineHeight: 22
+          },
           itemStyle: { borderColor: '#050b14', borderWidth: 2 },
           data: [
-            { name: '在产', value: Math.round(BASE.prod * m), itemStyle: { color: '#22c55e' } },
-            { name: '停产', value: Math.round(BASE.stop * m), itemStyle: { color: '#ff4d4f' } },
-            { name: '检修', value: Math.round(BASE.repair * m), itemStyle: { color: '#ff9f2e' } }
+            { name: '已用库位', value: used, itemStyle: { color: '#00d4ff' } },
+            { name: '空置库位', value: free, itemStyle: { color: 'rgba(140,180,220,0.45)' } }
           ]
         }]
       }, true);
     }
 
-    function renderPower(m) {
-      powerChart.setOption({
-        tooltip: Object.assign({ trigger: 'axis' }, tipBase),
-        grid: { left: 48, right: 14, top: 24, bottom: 22 },
-        xAxis: { type: 'category', data: MONTHS, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        yAxis: { type: 'value', name: '万kWh', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        series: [{
-          type: 'line', smooth: true, symbol: 'none',
-          lineStyle: { color: '#00d4ff', width: 2 },
-          areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,212,255,0.25)'},{offset:1,color:'rgba(0,212,255,0.01)'}]) },
-          data: scaleArr(BASE.power, m)
-        }]
-      }, true);
-    }
-
+    // 零售证照与台账合规
     function renderQual(m) {
-      const cats = ['资质有效', '即将到期', '已过期'];
-      const vals = [Math.max(1, Math.round(BASE.qualOk * m)), Math.max(0, Math.round(BASE.qualSoon * m)), Math.max(0, Math.round(BASE.qualOver * m))];
+      const cats = ['证照有效', '即将到期', '已过期'];
+      const vals = [Math.max(1, Math.round(BASE.entOk * m)), Math.max(0, Math.round(BASE.entSoon * m)), Math.max(0, Math.round(BASE.entOver * m))];
+      const colors = ['#22c55e', '#ffd23f', '#ff4d4f'];
       qualChart.setOption({
-        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, tipBase),
-        grid: { left: 44, right: 16, top: 24, bottom: 22 },
-        xAxis: { type: 'category', data: cats, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 11 } },
-        yAxis: { type: 'value', name: '家', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: '{b}：{c} 家' }, tipBase),
+        grid: { left: 76, right: 56, top: 16, bottom: 8 },
+        xAxis: {
+          type: 'value', axisLabel: { color: textColor, fontSize: 10 },
+          splitLine: { lineStyle: { color: 'rgba(255,255,255,0.07)' } }
+        },
+        yAxis: {
+          type: 'category', data: cats,
+          axisLabel: { color: textColor, fontSize: 11 }, axisTick: { show: false },
+          axisLine: { lineStyle: { color: axisColor } }
+        },
         series: [{
-          type: 'bar', barWidth: 26,
-          data: vals.map((v, i) => ({
-            value: v,
-            itemStyle: { color: [ '#22c55e', '#ff9f2e', '#ff4d4f' ][i], borderRadius: [3,3,0,0] }
-          })),
-          label: { show: true, position: 'top', color: '#fff', fontSize: 11 }
+          type: 'bar', barWidth: 13,
+          data: vals.map((v, i) => ({ value: v, itemStyle: { color: colors[i], borderRadius: [0, 6, 6, 0] } })),
+          label: { show: true, position: 'right', color: '#c8e2f5', fontSize: 10 }
         }]
       }, true);
     }
 
+    // 零售预警总体（已处置 / 处置中 / 待处置）
     function renderWarn(m) {
-      const done = Math.round(60 * m);
-      const doing = Math.round(16 * m);
-      const todo = Math.max(0, Math.round(7 * m));
+      const done = Math.round(28 * m);
+      const doing = Math.round(9 * m);
+      const todo = Math.max(0, Math.round(5 * m));
       const total = done + doing + todo;
       const data = total > 0 ? [
         { name: '已处置', value: done, itemStyle: { color: '#22c55e' } },
@@ -632,51 +748,45 @@
         { name: '待处置', value: todo, itemStyle: { color: '#ff4d4f' } }
       ] : [{ name: '暂无预警', value: 1, itemStyle: { color: 'rgba(81,207,102,0.28)' } }];
       warnChart.setOption({
-        tooltip: Object.assign({ trigger: 'item', formatter: total > 0 ? '{b}：{c} 起（{d}%）' : '当前层级暂无生产预警' }, tipBase),
+        tooltip: Object.assign({ trigger: 'item', formatter: total > 0 ? '{b}：{c} 起（{d}%）' : '当前层级暂无零售预警' }, tipBase),
         legend: { bottom: 0, textStyle: { color: textColor, fontSize: 11 }, itemWidth: 12, itemHeight: 8 },
         series: [{
           type: 'pie', radius: ['48%', '68%'], center: ['50%', '44%'],
-          label: { show: true, position: 'center', formatter: total > 0 ? `处置率\n${Math.round(done/total*100)}%` : '暂无\n预警', color: total > 0 ? '#fff' : '#51cf66', fontSize: 15, fontWeight: 700, lineHeight: 22 },
+          label: {
+            show: true, position: 'center',
+            formatter: total > 0 ? '处置率\n' + Math.round(done / total * 100) + '%' : '暂无\n预警',
+            color: total > 0 ? '#fff' : '#51cf66', fontSize: 15, fontWeight: 700, lineHeight: 22
+          },
           itemStyle: { borderColor: '#050b14', borderWidth: 2 },
           data
         }]
       }, true);
     }
 
+    // 零售预警分级分类（横向条）
     function renderWarnType(m) {
       const entries = Object.entries(BASE.warns);
       const data = entries.map(([k, v]) => ({
-        name: k,
-        value: Math.max(0, Math.round(v * m)),
-        itemStyle: { color: WARN_COLORS[k] }
-      })).sort((a, b) => b.value - a.value);
+        name: k, value: Math.max(0, Math.round(v * m)),
+        itemStyle: { color: WARN_COLORS[k] || '#00d4ff' }
+      })).sort((a, b) => a.value - b.value);
       warnTypeChart.setOption({
-        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: ps => `${ps[0].name}<br/>预警：${ps[0].value} 起` }, tipBase),
-        grid: { left: 8, right: 30, top: 6, bottom: 6, containLabel: true },
-        xAxis: { type: 'value', splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        yAxis: { type: 'category', inverse: true, data: data.map(d => d.name), axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#cfe9ff', fontSize: 10 } },
-        series: [{ type: 'bar', barWidth: 10, data, label: { show: true, position: 'right', color: '#8aa4bf', fontSize: 10 } }]
-      }, true);
-    }
-
-    function renderTrend(m) {
-      const workers = MONTHS.map((_, i) => Math.round(46000 + i * 300 + hash01('w' + i) * 1500));
-      const rooms = MONTHS.map((_, i) => Math.round(6200 + i * 30 + hash01('r' + i) * 200));
-      const power = scaleArr(BASE.power, m);
-      trendChart.setOption({
-        tooltip: Object.assign({ trigger: 'axis' }, tipBase),
-        legend: { data: ['生产用电(万kWh)', '用工人数', '工库房(栋)'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
-        grid: { left: 48, right: 48, top: 30, bottom: 22 },
-        xAxis: { type: 'category', data: MONTHS, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        yAxis: [
-          { type: 'value', name: '万kWh', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-          { type: 'value', name: '人/栋', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, axisLabel: { color: '#8aa4bf', fontSize: 10 } }
-        ],
-        series: [
-          { name: '生产用电(万kWh)', type: 'line', smooth: true, symbol: 'none', lineStyle: { color: '#00d4ff', width: 2 }, data: power, yAxisIndex: 0 },
-          { name: '用工人数', type: 'bar', barWidth: 10, yAxisIndex: 1, itemStyle: { color: 'rgba(255,159,46,0.8)' }, data: scaleArr(workers, m/10000) },
-          { name: '工库房(栋)', type: 'bar', barWidth: 10, yAxisIndex: 1, itemStyle: { color: 'rgba(168,85,247,0.8)' }, data: scaleArr(rooms, m) }
-        ]
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: '{b}：{c} 起' }, tipBase),
+        grid: { left: 100, right: 40, top: 8, bottom: 6 },
+        xAxis: {
+          type: 'value', axisLabel: { color: textColor, fontSize: 10 },
+          splitLine: { lineStyle: { color: 'rgba(255,255,255,0.06)' } }
+        },
+        yAxis: {
+          type: 'category', data: data.map(d => d.name),
+          axisLabel: { color: textColor, fontSize: 10.5 }, axisTick: { show: false },
+          axisLine: { lineStyle: { color: axisColor } }
+        },
+        series: [{
+          type: 'bar', barWidth: 10, data,
+          itemStyle: { borderRadius: [0, 5, 5, 0] },
+          label: { show: true, position: 'right', color: '#c8e2f5', fontSize: 10 }
+        }]
       }, true);
     }
 
@@ -700,7 +810,7 @@
     const TOWNS = ['桐木镇', '金山镇', '赤山镇', '株潭镇', '黄茅镇', '双桥镇', '罗城镇', '三兴镇', '潭埠镇', '马步乡', '高城镇', '白良镇'];
     const ENT_PREFIX = ['鸿运', '鑫盛', '金焰', '景泰', '瑞祥', '宏图', '顺达', '永辉', '昌盛', '安泰'];
 
-    // 下级名称：省/市/县取真实行政区；乡镇与企业无边界数据，按确定性规则生成
+    // 下级名称：省/市/县取真实行政区；乡镇为末级（不再向下）
     function childNamesOf(node) {
       if (node.level === 0) return CITY_NAMES.slice();
       if (node.level === 1) return (CITY_COUNTIES[node.name] || []).slice();
@@ -708,19 +818,10 @@
         const h = Math.floor(hash01(node.name + 'tw') * TOWNS.length);
         return [0, 1, 2].map(i => TOWNS[(h + i * 4) % TOWNS.length]);
       }
-      if (node.level === 3) {
-        const h = Math.floor(hash01(node.name + 'en') * ENT_PREFIX.length);
-        return [0, 1, 2].map(i => node.name + ENT_PREFIX[(h + i * 3) % ENT_PREFIX.length] + '烟花爆竹有限公司');
-      }
       return [];
     }
-    // 企业长名 -> 地图/列表用短名
-    function entShort(n) {
-      const i = n.indexOf('烟花爆竹有限公司');
-      if (i < 0) return n;
-      const head = n.slice(0, i);
-      return (head.length > 4 ? head.slice(-2) : head) + '烟花';
-    }
+    // 长名 -> 短名（零售网点/批发企业无长后缀，原样返回）
+    function entShort(n) { return n; }
 
     // ================= 几何工具：在行政区面内稳定布点 =================
     function featureRings(feat) {
@@ -830,17 +931,17 @@
     }
 
     // ================= 数据模型：子节点由父节点总量拆分，保证上下级自洽 =================
-    const ROOT = { name: '江西省', level: 0, prod: 860, stop: 92, workers: 48200, rooms: 6420, video: 3752, warns: 83 };
+    const ROOT = { name: '江西省', level: 0, net: 3280, whole: 268, staff: 6120, ledger: 42000, consumer: 126000, warns: 42 };
     const METRICS = [
-      { key: 'prod',    label: '在产企业',   unit: '家', dec: 0, tbl: true },
-      { key: 'stop',    label: '停产企业',   unit: '家', dec: 0, tbl: true },
-      { key: 'workers', label: '作业人员',   unit: '人', dec: 0, tbl: true, cell: s => (s.workers / 10000).toFixed(2) + '万' },
-      { key: 'rooms',   label: '工库房',     unit: '栋', dec: 0, tbl: true },
-      { key: 'video',   label: '视频监测点', unit: '路', dec: 0, tbl: true }
+      { key: 'net',      label: '零售网点', unit: '家', dec: 0, tbl: true },
+      { key: 'whole',    label: '批发企业', unit: '家', dec: 0, tbl: true },
+      { key: 'staff',    label: '持证人员', unit: '人', dec: 0, tbl: true },
+      { key: 'ledger',   label: '购销台账', unit: '笔', dec: 0, tbl: true, cell: s => (s.ledger / 1000).toFixed(1) + '千笔' },
+      { key: 'consumer', label: '消费者',   unit: '条', dec: 0, tbl: true, cell: s => (s.consumer / 10000).toFixed(2) + '万条' }
     ];
     const TABLE_KEYS = METRICS.filter(m => m.tbl).map(m => m.key);
-    const MAIN_KEY = 'prod';
-    const MAIN_LABEL = '在产';
+    const MAIN_KEY = 'net';
+    const MAIN_LABEL = '零售网点';
     const MAIN_UNIT = '家';
 
     function splitTo(total, keys, dec) {
@@ -1081,58 +1182,48 @@
       showPointLegend(true);
     }
 
-    // ---- 企业级（叶子）：县界为底，定位单个企业 ----
+    // ---- 末级视图（乡镇）：县界为底，高亮当前乡镇 ----
     function renderEntLeaf(node) {
-      const countyNode = path[2], townNode = path[3];
+      const countyNode = path[2];
       const mn = ensureCountyMap(path[1] ? path[1].name : '', countyNode ? countyNode.name : '');
       const feat = mn && COUNTY_FEAT[mn];
-      if (!mn || !feat || !townNode) { emptyMap('暂无企业位置数据'); return; }
+      if (!mn || !feat) { emptyMap('暂无「' + (countyNode ? countyNode.name : '') + '」边界数据'); return; }
       const townNames = childNamesOf(countyNode);
       const tpts = featPoints(feat, townNames.length);
-      const tIdx = townNames.indexOf(townNode.name);
-      const townPt = tpts[tIdx >= 0 ? tIdx : 0] || [0, 0];
-      const entNames = childNamesOf(townNode);
-      const epts = pointsNear(feat, townPt, entNames);
-      const eIdx = entNames.indexOf(node.name);
-      const pt = epts[eIdx >= 0 ? eIdx : 0] || townPt;
-      const over = (node.warns || 0) > 0;
-      const townMark = {
+      const tIdx = townNames.indexOf(node.name);
+      const cur = tpts[tIdx >= 0 ? tIdx : 0] || [0, 0];
+      const curMark = {
         type: 'scatter', coordinateSystem: 'geo', geoIndex: 0,
-        symbol: 'circle', symbolSize: 11,
-        itemStyle: { color: 'rgba(255, 159, 46, 0.7)', borderColor: 'rgba(255, 213, 145, 0.8)', borderWidth: 1 },
-        label: {
-          show: true, position: 'top', distance: 5, formatter: townNode.name,
-          color: '#c99a5e', fontSize: 11,
-          textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowBlur: 4
-        },
-        data: [{ name: '__town__', value: townPt }]
-      };
-      const entData = { name: node.name, lbl: entShort(node.name), tipName: node.name, warns: node.warns };
-      METRICS.forEach(mt => { entData[mt.key] = node[mt.key]; });
-      const entMark = {
-        type: 'effectScatter', coordinateSystem: 'geo', geoIndex: 0,
-        rippleEffect: { brushType: 'stroke', scale: 3.2, period: 3.5 },
-        symbolSize: 24,
+        symbol: 'circle', symbolSize: 20,
         itemStyle: {
-          color: over ? '#ff4d4f' : '#00d4ff',
-          shadowBlur: 18, shadowColor: over ? 'rgba(255, 77, 79, 0.75)' : 'rgba(0, 212, 255, 0.75)'
+          color: 'rgba(0, 212, 255, 0.85)', borderColor: '#9fe8ff', borderWidth: 2,
+          shadowBlur: 18, shadowColor: 'rgba(0, 212, 255, 0.85)'
         },
-        label: Object.assign({
-          show: true, position: 'right', distance: 10,
-          formatter: () => '{nm|' + entShort(node.name) + '}\\n{v|' + MAIN_LABEL + ' ' + fmt(node[MAIN_KEY]) + ' ' + MAIN_UNIT + '}' +
-            (over ? '\\n{w|预警未处置}' : '\\n{v|运行正常}'),
-          rich: LABEL_RICH
-        }, LABEL_BOX),
-        data: [Object.assign(entData, { value: pt })]
+        label: {
+          show: true, position: 'top', distance: 9, formatter: node.name,
+          color: '#9fe8ff', fontSize: 12, fontWeight: 700,
+          textShadowColor: 'rgba(0,0,0,0.75)', textShadowBlur: 4
+        },
+        data: [{ name: node.name, value: cur }]
+      };
+      const others = {
+        type: 'scatter', coordinateSystem: 'geo', geoIndex: 0,
+        symbol: 'circle', symbolSize: 9,
+        itemStyle: { color: 'rgba(140, 180, 220, 0.4)', borderColor: 'rgba(180,210,240,0.6)', borderWidth: 1 },
+        label: { show: true, position: 'bottom', distance: 5, formatter: p => p.name, color: '#8aa4bf', fontSize: 10 },
+        data: townNames.filter(n => n !== node.name).map(n => ({ name: n, value: tpts[townNames.indexOf(n)] || tpts[0] }))
       };
       mapChart.setOption({
-        tooltip: Object.assign({ trigger: 'item', formatter: p => tipHtml(p.data || {}, '') }, tipBase),
+        tooltip: Object.assign({
+          trigger: 'item',
+          formatter: p => '<b>' + p.name + '</b><br/><span style="color:#6bc9ff">末级视图：明细见右侧</span>'
+        }, tipBase),
         geo: baseGeo(mn, countyNode.name),
-        series: [townMark, entMark]
+        series: [curMark, others]
       }, true);
-      setMapBadge(entShort(node.name), '企业级 · 位置定位');
-      setMapHint('已到最末级 · 可返回上级');
-      showPointLegend(true);
+      setMapBadge(countyNode.name + ' · ' + node.name, '乡镇级 · 零售网点分布');
+      setMapHint('末级视图：该乡镇零售网点 / 批发企业明细见下方 ›');
+      showPointLegend(false);
     }
 
     function renderMapView() {
@@ -1153,8 +1244,6 @@
         showPointLegend(false);
       } else if (node.level === 2) {
         renderTownMap(node);
-      } else if (node.level === 3) {
-        renderEntMap(node);
       } else {
         renderEntLeaf(node);
       }
@@ -1214,79 +1303,156 @@
       });
     }
 
-    // 企业生产画像
+    // 乡镇零售网点画像（末级）
+    const NET_NAMES = ['金鑫烟花爆竹经营部', '宏发烟花零售店', '旺旺烟花门市部', '振兴烟花爆竹专营店', '永和烟花商行', '平安烟花爆竹零售点'];
+    const OWNERS = ['李建国', '王秀兰', '刘德胜', '陈美玲', '张海涛', '周桂芳'];
+    function netRows(node) {
+      const out = [];
+      for (let i = 0; i < 6; i++) {
+        const lvl = hash01('nl' + node.name + i) > 0.82 ? '高' : (hash01('nm' + node.name + i) > 0.55 ? '中' : '低');
+        out.push({
+          name: NET_NAMES[i % NET_NAMES.length],
+          owner: OWNERS[i % OWNERS.length],
+          license: hash01('nc' + node.name + i) > 0.88 ? '即将到期' : '有效',
+          deals: 60 + Math.round(hash01('nd' + node.name + i) * 180),
+          consumers: 120 + Math.round(hash01('nu' + node.name + i) * 420),
+          level: lvl
+        });
+      }
+      return out;
+    }
     function renderEntDetail(node) {
       const over = (node.warns || 0) > 0;
-      const util = over ? (104 + Math.round(hash01(node.name + 'o') * 26)) : (62 + Math.round(hash01(node.name + 'c') * 36));
-      const status = hash01(node.name + 'st') > 0.78 ? '停产' : (hash01(node.name + 'rp') > 0.85 ? '检修' : '在产');
-      document.getElementById('tableTitle').textContent = '企业生产画像';
+      const rows = netRows(node);
+      document.getElementById('tableTitle').textContent = '乡镇零售网点画像';
       document.getElementById('entPanel').innerHTML = `
         <div class="ent-head">
           <h4>${node.name}</h4>
           <p>所属区域：${path.slice(0, 4).map(p => p.name).join(' / ')}</p>
-          <p>生产状态：${status} · 安全生产许可证有效 · 涉药工序在线监控</p>
-          <span class="ent-status ${over ? 'warn' : 'ok'}">${over ? '● 生产超产能预警中' : '● 生产运行正常'}</span>
+          <p>监管口径：零售网点购销台账实时上传 · 人员持证在岗 · 消费者实名登记</p>
+          <span class="ent-status ${over ? 'warn' : 'ok'}">${over ? '● 存在零售经营预警' : '● 零售经营合规'}</span>
         </div>
         <div class="ent-kpis">
-          <div class="ent-kpi"><div class="lab">生产状态</div><div class="val">${status}</div></div>
-          <div class="ent-kpi"><div class="lab">生产区作业人员</div><div class="val">${fmt(node.workers)} 人</div></div>
-          <div class="ent-kpi"><div class="lab">产能利用率</div><div class="val ${over ? 'warn' : ''}">${util}%</div></div>
-          <div class="ent-kpi"><div class="lab">工库房</div><div class="val">${fmt(node.rooms)} 栋</div></div>
-          <div class="ent-kpi"><div class="lab">视频监测点</div><div class="val">${fmt(node.video)} 路</div></div>
+          <div class="ent-kpi"><div class="lab">零售网点</div><div class="val">${fmt(node.net)} 家</div></div>
+          <div class="ent-kpi"><div class="lab">批发企业</div><div class="val">${fmt(node.whole)} 家</div></div>
+          <div class="ent-kpi"><div class="lab">持证人员</div><div class="val">${fmt(node.staff)} 人</div></div>
+          <div class="ent-kpi"><div class="lab">购销台账</div><div class="val">${fmt(node.ledger)} 笔</div></div>
+          <div class="ent-kpi"><div class="lab">消费者数据</div><div class="val">${(node.consumer / 10000).toFixed(2)} 万条</div></div>
           <div class="ent-kpi"><div class="lab">本月预警</div><div class="val ${over ? 'warn' : ''}">${node.warns} 起</div></div>
         </div>
-        <div class="ent-mat-title">生产品类产量明细（本月）</div>
+        <div class="ent-mat-title">零售网点台账（本月）</div>
         <table class="ent-mat">
           <thead>
-            <tr><th>品类</th><th class="num">本月产量(吨)</th><th class="num">上月(吨)</th><th class="num">环比</th><th class="num">库存(吨)</th></tr>
+            <tr><th>网点名称</th><th>负责人</th><th>证照</th><th class="num">购销(笔)</th><th class="num">消费者</th><th>风险</th></tr>
           </thead>
-          <tbody>${entProducts(node).map(r => `
+          <tbody>${rows.map(r => `
             <tr>
               <td>${r.name}</td>
-              <td class="num">${fmt(r.out)}</td>
-              <td class="num">${fmt(r.prev)}</td>
-              <td class="num">${r.mom > 0 ? '+' : ''}${r.mom}%</td>
-              <td class="num">${fmt(r.stock)}</td>
+              <td>${r.owner}</td>
+              <td>${r.license}</td>
+              <td class="num">${fmt(r.deals)}</td>
+              <td class="num">${fmt(r.consumers)}</td>
+              <td>${r.level}</td>
             </tr>`).join('')}
           </tbody>
         </table>
       `;
     }
 
-    // 生产品类明细：按典型产品结构配比，结合企业规模确定性浮动
-    function entProducts(node) {
-      const defs = [
-        { name: '烟花类', w: 0.46 },
-        { name: '爆竹类', w: 0.34 },
-        { name: '黑火药', w: 0.12 },
-        { name: '引火线', w: 0.08 }
-      ];
-      const k = 0.6 + (node.rooms / 6.5) * 0.5 + hash01(node.name + 'pd') * 0.25;
-      return defs.map((d, i) => {
-        const out = Math.max(1, Math.round(320 * d.w * k));
-        const prev = Math.max(1, Math.round(out / (1 + (hash01(node.name + 'm' + i) - 0.35) * 0.3)));
-        const mom = Math.round((out / prev - 1) * 1000) / 10;
-        const stock = Math.max(0, Math.round(out * (0.5 + hash01(node.name + 'k' + i) * 0.9)));
-        return { name: d.name, out, prev, mom, stock };
-      });
+    // 零售网点 / 批发企业监管卡片
+    let rcTab = 'net';
+    function netCards(node) {
+      const n = Math.min(8, Math.max(2, Math.round((node.net || 1) / 420)));
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const st = hash01('cs' + node.name + i) > 0.87 ? 'bad' : (hash01('cq' + node.name + i) > 0.76 ? 'load' : 'run');
+        out.push({
+          title: NET_NAMES[i % NET_NAMES.length],
+          st,
+          stTxt: st === 'bad' ? '预警核查' : (st === 'load' ? '证照临期' : '合规经营'),
+          owner: OWNERS[i % OWNERS.length],
+          license: '赣烟零字第' + (20260 + Math.floor(hash01('cl' + node.name + i) * 900)) + '号',
+          deals: 60 + Math.round(hash01('cd' + node.name + i) * 180),
+          consumers: 120 + Math.round(hash01('cu' + node.name + i) * 420),
+          addr: (path[2] ? path[2].name : '万载县') + (path[3] ? path[3].name : '桐木镇') + '府前路' + (12 + Math.round(hash01('ca' + node.name + i) * 86)) + '号'
+        });
+      }
+      return out;
     }
+    function wholeCards(node) {
+      const n = Math.min(8, Math.max(2, Math.round((node.whole || 1) / 36)));
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const st = hash01('ws' + node.name + i) > 0.88 ? 'bad' : (hash01('wl' + node.name + i) > 0.72 ? 'load' : 'run');
+        out.push({
+          title: ['鸿运烟花爆竹批发有限公司', '鑫盛烟花批发中心', '金焰烟花爆竹经营有限公司', '景泰烟花批发行'][i % 4],
+          st,
+          stTxt: st === 'bad' ? '超量存储' : (st === 'load' ? '库位偏紧' : '运营正常'),
+          slot: 60 + Math.round(hash01('ws2' + node.name + i) * 120),
+          cap: 180 + Math.round(hash01('wc' + node.name + i) * 260),
+          deal: 120 + Math.round(hash01('wd' + node.name + i) * 360),
+          deliver: 30 + Math.round(hash01('wv' + node.name + i) * 90),
+          util: 72 + Math.round(hash01('wu' + node.name + i) * 26)
+        });
+      }
+      return out;
+    }
+    function renderCards(node) {
+      const box = document.getElementById('rcList');
+      document.getElementById('rcTitle').textContent = rcTab === 'net'
+        ? '零售网点监管（购销台账 · 人员资质 · 消费者数据）'
+        : '批发企业监管（库位 · 容量 · 购销 · 配送）';
+      if (rcTab === 'net') {
+        box.innerHTML = netCards(node).map(v => `
+          <div class="tv-card">
+            <div class="tv-hd"><span class="tv-plate">${v.title}</span><span class="tv-tag ${v.st}">${v.stTxt}</span></div>
+            <div class="tv-rows">
+              <div><b>负责人</b>${v.owner} · 持证在岗</div>
+              <div><b>证照</b>${v.license}</div>
+              <div><b>购销台账</b>本月 ${fmt(v.deals)} 笔 · 全部上传</div>
+              <div><b>消费者</b>实名登记 ${fmt(v.consumers)} 条</div>
+              <div><b>地址</b>${v.addr}</div>
+            </div>
+            <div class="tv-ft"><span>检查记录 2026-08-${12 + Math.round(hash01('ci' + node.name) * 12)}</span><span>零售台账已归档</span></div>
+          </div>`).join('');
+      } else {
+        box.innerHTML = wholeCards(node).map(v => `
+          <div class="tv-card">
+            <div class="tv-hd"><span class="tv-plate">${v.title}</span><span class="tv-tag ${v.st}">${v.stTxt}</span></div>
+            <div class="tv-rows">
+              <div><b>库位</b>核定 ${v.slot} 个 · 利用率 ${v.util}%</div>
+              <div><b>容量</b>核定 ${v.cap} 吨 · 在用合规</div>
+              <div><b>购销</b>本月 ${fmt(v.deal)} 笔（购进+销售）</div>
+              <div><b>配送</b>本月 ${v.deliver} 趟 · 车辆全部备案</div>
+            </div>
+            <div class="tv-ft"><span>仓储合规检查已通过</span><span>台账实时上传</span></div>
+          </div>`).join('');
+      }
+    }
+    document.getElementById('rcSeg').addEventListener('click', e => {
+      const el = e.target.closest('.seg');
+      if (!el) return;
+      rcTab = el.dataset.t;
+      document.querySelectorAll('#rcSeg .seg').forEach(x => x.classList.toggle('active', x === el));
+      renderCards(curNode());
+    });
 
-    // 生产预警列表：按省级类型权重把当前层级预警总数拆分，保证与 KPI 自洽
+    // 零售预警列表：按省级类型权重把当前层级预警总数拆分
     function renderWarnList(node) {
       const box = document.getElementById('warnList');
-      if (node.level >= 4) {
-        box.innerHTML = '<div style="color:#8aa4bf;font-size:12px;padding:12px;text-align:center;line-height:1.8;">企业级视图<br/>请在上方查看该企业生产画像与预警情况</div>';
+      if (node.level >= 3) {
+        box.innerHTML = '<div style="color:#8aa4bf;font-size:12px;padding:12px;text-align:center;line-height:1.8;">乡镇末级视图<br/>请在上方查看该乡镇零售网点画像与预警情况</div>';
         return;
       }
       const keys = Object.keys(BASE.warns);
       const total = node.warns || 0;
-      if (!total) { box.innerHTML = '<div class="empty-state">✓ 当前层级暂无生产预警</div>'; return; }
+      if (!total) { box.innerHTML = '<div class="empty-state">✓ 当前层级暂无零售预警</div>'; return; }
       const vals = splitTo(total, keys, 0);
       let html = '';
       keys.forEach((k, i) => {
         const v = Math.round(vals[i]);
         if (v <= 0) return;
-        const high = ['停产作业', '涉药机械运行时长', '非法入侵', '烟火识别'].indexOf(k) >= 0;
+        const high = ['无证经营', '超量存储', '人员无证上岗'].indexOf(k) >= 0;
         html += `
           <div class="warning-item ${high ? '' : 'warn'}">
             <div class="warning-info">
@@ -1298,7 +1464,6 @@
       });
       box.innerHTML = html;
     }
-
 
     // KPI 数字刷新（带动画）
     function setKpi(id, target, dec) {
@@ -1321,42 +1486,43 @@
     function refreshAll() {
       const node = curNode();
       const children = childNodes(node);
-      const isLeaf = node.level >= 4;
+      const isLeaf = node.level >= 3;
       renderCrumb();
 
       document.getElementById('tableWrap').style.display = isLeaf ? 'none' : '';
       const entPanel = document.getElementById('entPanel');
       entPanel.style.display = isLeaf ? 'flex' : 'none';
+      document.getElementById('entPanel').style.flexDirection = 'column';
 
       document.getElementById('drillTitle').textContent = isLeaf
-        ? (entShort(node.name) + ' · 企业生产画像')
-        : (node.name + ' · 各' + LEVEL_NAMES[children[0].level].replace('级', '') + '生产数据分布（地图）');
+        ? (node.name + ' · 乡镇零售网点画像')
+        : (node.name + ' · 各' + LEVEL_NAMES[children[0].level].replace('级', '') + '零售网点分布（地图）');
 
       renderMapView();
       if (isLeaf) renderEntDetail(node); else renderTable(children);
 
       const m = node[MAIN_KEY] / ROOT[MAIN_KEY];
       const mw = node.warns / ROOT.warns;
-      renderStatus(m);
-      renderPower(m);
+      renderTrend();
+      renderStore(m);
       renderQual(m);
       renderWarn(mw);
       renderWarnType(mw);
-      renderTrend(m);
       renderWarnList(node);
+      renderCards(node);
 
-      setKpi('kpiProd', node.prod, 0);
-      setKpi('kpiPower', Math.round(BASE.power[7] * m), 0);
-      setKpi('kpiWorkers', +(node.workers / 10000).toFixed(2), 2);
-      setKpi('kpiOnSite', +(31200 * m / 10000).toFixed(2), 2);
-      setKpi('kpiRoom', node.rooms, 0);
-      setKpi('kpiVideo', node.video, 0);
+      setKpi('kpiNet', node.net, 0);
+      setKpi('kpiWhole', node.whole, 0);
+      setKpi('kpiStaff', node.staff, 0);
+      setKpi('kpiLedger', node.ledger, 0);
+      setKpi('kpiConsumer', +(node.consumer / 10000).toFixed(2), 2);
+      setKpi('kpiUtil', +(86.4 * (0.94 + hash01(node.name + 'u') * 0.12)).toFixed(1), 1);
       setKpi('kpiWarn', node.warns, 0);
-      setKpi('kpiQual', Math.max(1, Math.round(8 * m)), 0);
-      document.getElementById('qualSoon').innerHTML = Math.max(0, Math.round(BASE.qualSoon * m)) + '<span style="font-size:12px">家</span>';
-      document.getElementById('qualOver').innerHTML = Math.max(0, Math.round(BASE.qualOver * m)) + '<span style="font-size:12px">家</span>';
-      document.getElementById('pQualSoon').innerHTML = Math.max(0, Math.round(BASE.pQualSoon * m)) + '<span style="font-size:12px">人</span>';
-      document.getElementById('pQualOver').innerHTML = Math.max(0, Math.round(BASE.pQualOver * m)) + '<span style="font-size:12px">人</span>';
+      setKpi('kpiQual', Math.max(1, Math.round(108 * m)), 0);
+      document.getElementById('whSlot').textContent = fmt(Math.round(BASE.slotTotal * m));
+      document.getElementById('whCap').textContent = fmt(Math.round(BASE.capUsed * m));
+      document.getElementById('whDeal').textContent = fmt(node.ledger);
+      document.getElementById('whDeliver').textContent = fmt(Math.round(6860 * m));
 
       mapChart.resize();
     }

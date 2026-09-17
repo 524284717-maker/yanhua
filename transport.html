@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="8pdQwwwoac1QGk8AlorK97">
-<head data-page-node-id="2wYj0HQegpnDvhL7adHSfn">
-  <meta charset="UTF-8" data-page-node-id="ZkI4OHZXStDUEIKBT0p3wy" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="DZnXQiuefKI7u72TTRRdCR" />
-  <title>江西省烟花爆竹产业全链条监管服务平台 - 生产态势</title>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>江西省烟花爆竹产业全链条监管服务平台 - 运输态势</title>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -320,113 +320,146 @@
 
 
     ::selection { background: rgba(0, 150, 255, 0.35); }
+      /* 周期切换按钮 */
+    .seg-group { display: inline-flex; gap: 4px; margin-right: 8px; }
+    .seg-group .seg {
+      font-size: 11px; color: #8aa4bf; padding: 2px 9px; border-radius: 9px;
+      border: 1px solid rgba(0, 180, 255, 0.28); cursor: pointer; font-style: normal;
+      transition: all .2s; user-select: none;
+    }
+    .seg-group .seg.active { color: #04121f; background: #00d4ff; border-color: #00d4ff; font-weight: 700; }
+    /* 在途车辆实时监控 */
+    .tv-list { flex: 1; min-height: 0; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+    .tv-list::-webkit-scrollbar { height: 5px; }
+    .tv-list::-webkit-scrollbar-thumb { background: rgba(0, 180, 255, 0.35); border-radius: 3px; }
+    .tv-card {
+      flex: 0 0 272px; display: flex; flex-direction: column; gap: 6px;
+      background: rgba(0, 0, 0, 0.22); border: 1px solid rgba(0, 150, 255, 0.22);
+      border-radius: 8px; padding: 9px 11px;
+    }
+    .tv-hd { display: flex; align-items: center; justify-content: space-between; }
+    .tv-plate { font-size: 13px; font-weight: 700; color: #fff; letter-spacing: .5px; }
+    .tv-tag { font-size: 10px; padding: 2px 7px; border-radius: 9px; }
+    .tv-tag.run { color: #51cf66; border: 1px solid rgba(81, 207, 102, 0.5); background: rgba(81, 207, 102, 0.1); }
+    .tv-tag.load { color: #ff9f2e; border: 1px solid rgba(255, 159, 46, 0.5); background: rgba(255, 159, 46, 0.1); }
+    .tv-tag.bad { color: #ff4d4f; border: 1px solid rgba(255, 77, 79, 0.5); background: rgba(255, 77, 79, 0.1); }
+    .tv-rows { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; color: #c8e2f5; line-height: 1.45; }
+    .tv-rows b { color: #7fa6c9; font-weight: 500; margin-right: 5px; }
+    .tv-ft { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #8aa4bf; margin-top: auto; }
+    .tv-route { color: #00d4ff; cursor: pointer; }
+    .tv-route:hover { text-decoration: underline; }
   </style>
 </head>
-<body data-page-node-id="bA8oCJH7LlUZamQQkYBcFo">
-  <div class="screen" data-page-node-id="UcUHv9qAWgZqBSOeCPGwtV">
-  <header class="header" data-page-node-id="yzRaTddklgA0EU1z84TMK5">
-    <div class="brand" data-page-node-id="OPwbMiMJGM9d9Iy8FWUZcn">
-      <div class="brand-icon" data-page-node-id="8DfbqTQiXYW7hWiahpa8K8">赣</div>
-      <div data-page-node-id="IMSykqOmjZhAr5yFzisXkh">
-        <h1 data-page-node-id="pwCo03lfX1qA31uHyrBP6T">江西省烟花爆竹产业全链条监管服务平台</h1>
+<body>
+  <div class="screen">
+  <header class="header">
+    <div class="brand">
+      <div class="brand-icon">赣</div>
+      <div>
+        <h1>江西省烟花爆竹产业全链条监管服务平台</h1>
       </div>
     </div>
-    <nav class="nav" data-page-node-id="yLDMAHEKeF39GbOuYPWmWk">
-      <a href="index.html" data-page-node-id="ZeBTRUJS5geTAeyw8JBU6B">态势总览</a>
-      <a href="purchase.html" data-page-node-id="ikyIM1oiVa1WexRlivy17s">采购态势</a>
-      <a class="active" href="production.html" data-page-node-id="854EhtqyH3uUlw4VxRkqmh">生产态势</a>
-      <a href="warehouse.html" data-page-node-id="CxAP35hVK3AbuuQ7yqV5IY">仓储态势</a>
-      <a href="transport.html" data-page-node-id="EjDFDJkftSxQY2FenFBYVM">运输态势</a>
-      <a href="export.html" data-page-node-id="wtwSb3Ck6zlEBx83oQLodw">出口态势</a>
-      <a href="retail.html" data-page-node-id="flFqYp9Yc8cJKRRFZg0AKl">零售态势</a>
-      <a href="firework.html" data-page-node-id="eg4KBRxwKEqE3tHFu5gt9C">燃放态势</a>
+    <nav class="nav">
+      <a href="index.html">态势总览</a>
+      <a href="purchase.html">采购态势</a>
+      <a href="production.html">生产态势</a>
+      <a href="warehouse.html">仓储态势</a>
+      <a class="active" href="transport.html">运输态势</a>
+      <a href="export.html">出口态势</a>
+      <a href="retail.html">零售态势</a>
+      <a href="firework.html">燃放态势</a>
       <a href="enforcement.html">打非治违态势</a>
-      <a href="monitor.html" data-page-node-id="NOKayfwg2wfAhFN2Fu9dYm">智能监控中心</a>
-      <a href="admin.html" data-page-node-id="U5CIqnBFN1cqqzZQkr9ojw">业务管理</a>
+      <a href="monitor.html">智能监控中心</a>
+      <a href="admin.html">业务管理</a>
     </nav>
-    <div class="header-right" data-page-node-id="OEJkA94YohuhWEsugp0Zkb">
-      <div class="weather" data-page-node-id="hXfUEnTkq4Ce3S7cT3hBQs">🌤 南昌 多云 28°C</div>
-      <div class="time" id="clock" data-page-node-id="I14nLDlzOtiaS6YuoimGmm">2026-08-28 14:22:51</div>
+    <div class="header-right">
+      <div class="weather">🌤 南昌 多云 28°C</div>
+      <div class="time" id="clock">2026-08-28 14:22:51</div>
     </div>
   </header>
 
-  <main class="main" data-page-node-id="7vXpe5ueSgFRl4Nf1UIafs">
-    <!-- Left Column -->
-    <section class="col" data-page-node-id="RZVvrPVFzqTCtuLuwDGnYI">
-      <div class="panel" style="flex: 1;" data-page-node-id="0DvY3xRVdWdIXhukD29MXs">
-        <div class="panel-title" data-page-node-id="F6VYW9ZzSe2PfjLzTYizGh"><h3 data-page-node-id="eDAtIHmKOfgPNitVvJiwCZ">全省生产企业在产停产情况</h3><span class="more" data-page-node-id="ApjLPaQfUavsCJF9IxEKqy">更多 &gt;</span></div>
-        <div id="statusChart" class="chart" data-page-node-id="F23OVzxdVRTE7GQMlYgQ90"></div>
+  <main class="main">
+        <!-- Left Column -->
+    <section class="col">
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>全省运输车辆运营状态</h3><span class="more">更多 &gt;</span></div>
+        <div id="statusChart" class="chart"></div>
       </div>
 
-      <div class="panel" style="flex: 1;" data-page-node-id="rOJwfXVvx58IKMYOj6rWhA">
-        <div class="panel-title" data-page-node-id="7d9ajqDEGHvswnzfMlNnwq"><h3 data-page-node-id="ovA2jzgpIe1cjIiCQo7VIn">全省生产用电情况</h3><span class="more" data-page-node-id="wPkCSDhJdueIi85FDgCiSH">更多 &gt;</span></div>
-        <div id="powerChart" class="chart" data-page-node-id="4faDNBlAvB4NbOGEABAW0B"></div>
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title">
+          <h3>运输趟次与运输量趋势</h3>
+          <span class="seg-group" id="periodSeg">
+            <i class="seg active" data-p="m8">近8月</i><i class="seg" data-p="w8">近8周</i><i class="seg" data-p="d7">近7日</i>
+          </span>
+        </div>
+        <div id="tripChart" class="chart"></div>
       </div>
 
-      <div class="panel" style="flex: 1;" data-page-node-id="KiXx5sE41nm44kdoogp5Ei">
-        <div class="panel-title" data-page-node-id="ybBeNobywfdGYyCouYgm72"><h3 data-page-node-id="1X2dJCsr6lLCDYINDgdQBZ">全省企业资质情况</h3><span class="more" data-page-node-id="oPVhDviLmVHmPywAOOjAkg">更多 &gt;</span></div>
-        <div id="qualChart" class="chart" data-page-node-id="5yY9zFpPTI6LU8EZVQSHwD"></div>
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>车辆运输资质情况</h3><span class="more">更多 &gt;</span></div>
+        <div id="qualChart" class="chart"></div>
       </div>
     </section>
 
     <!-- Center Column -->
-    <section class="col col-center" data-page-node-id="tOMzuC0Z2gKuBKZbCyFJGG">
+    <section class="col col-center">
       <!-- KPI cards -->
-      <div class="center-top" data-page-node-id="7BeNTr5rgQ8Vjw4zGeOlBu">
-        <div class="summary-card" data-page-node-id="4aGuiSQnTYhB5AWqxbzInw">
-          <div class="summary-label" data-page-node-id="XF1Ja9YBLNokUFmOsF6nRG">在产企业</div>
-          <div class="summary-value" id="kpiProd" data-page-node-id="ekHs5xvFItljJhczvDtzu7">860<span class="summary-unit" data-page-node-id="GoGoIDlSugufsNH4gPyDA4">家</span></div>
-          <div class="summary-sub" data-page-node-id="0vmFn0jZkp5FFYqUe19jM0">停产 92 · 检修 24</div>
+            <div class="center-top">
+        <div class="summary-card">
+          <div class="summary-label">运输车辆</div>
+          <div class="summary-value" id="kpiVeh">2,860<span class="summary-unit">辆</span></div>
+          <div class="summary-sub">危货运输资质 100%</div>
         </div>
-        <div class="summary-card" data-page-node-id="HoTlnn0e3jjABRGengGifd">
-          <div class="summary-label" data-page-node-id="3a7pQKN481eCfYQaFpelOv">本月生产用电</div>
-          <div class="summary-value" id="kpiPower" data-page-node-id="nK0RDFVgGFrIkPAAVfOcso">1286<span class="summary-unit" data-page-node-id="NyKOFUhEUC8vxUEoMq0wmN">万kWh</span></div>
-          <div class="summary-sub" data-page-node-id="pON0hC20a5duUzqQbJ7EGa">环比 +3.2%</div>
+        <div class="summary-card">
+          <div class="summary-label">当前在途车辆</div>
+          <div class="summary-value" id="kpiTransit">428<span class="summary-unit">辆</span></div>
+          <div class="summary-sub">关联电子运单 386 单</div>
         </div>
-        <div class="summary-card" data-page-node-id="ZeoaAlHdmKpBW8rbbCzjsq">
-          <div class="summary-label" data-page-node-id="JVE8BjkBEsPCknuBZvF3d3">从业人员</div>
-          <div class="summary-value" id="kpiWorkers" data-page-node-id="Agb3CO9iqP0Edg96cCKQqp">4.82<span class="summary-unit" data-page-node-id="V6Q4xzEYiwo578YVFe7q14">万人</span></div>
-          <div class="summary-sub" data-page-node-id="Pg4BMFdApOAnQSlgtt63b6">持证上岗率 98.6%</div>
+        <div class="summary-card">
+          <div class="summary-label">持证从业人员</div>
+          <div class="summary-value" id="kpiDriver">3,120<span class="summary-unit">人</span></div>
+          <div class="summary-sub">证件到期 52 人</div>
         </div>
-        <div class="summary-card" data-page-node-id="IICpHznejHz6QRcSRJaHEH">
-          <div class="summary-label" data-page-node-id="t6kBLra88obv4WqzPASa1W">生产区作业人员</div>
-          <div class="summary-value" id="kpiOnSite" data-page-node-id="1vkuMUFSUvG8GUfgrZGJNL">3.12<span class="summary-unit" data-page-node-id="BHucjfwIQ0UFdgQr386Gvi">万人</span></div>
-          <div class="summary-sub" data-page-node-id="kfuGcCA9IEZf6QZfbvEFI3">实时在岗巡检</div>
+        <div class="summary-card">
+          <div class="summary-label">本月电子运单</div>
+          <div class="summary-value" id="kpiBill">18,640<span class="summary-unit">单</span></div>
+          <div class="summary-sub">同比 +12.4%</div>
         </div>
-        <div class="summary-card" data-page-node-id="T9Oq7Q1FDT15IgVTGB59Hc">
-          <div class="summary-label" data-page-node-id="BeOvW8ZBwchRlljUUqN5QA">生产工库房</div>
-          <div class="summary-value" id="kpiRoom" data-page-node-id="YWEsVbbSQwq4zDypU8gPe8">6420<span class="summary-unit" data-page-node-id="9UHd5aFd5aIFp48tPqe6Pm">栋</span></div>
-          <div class="summary-sub" data-page-node-id="I0pbl0UysRkc76ap6iSbHi">工房 5380 · 库房 1040</div>
+        <div class="summary-card">
+          <div class="summary-label">本月运输量</div>
+          <div class="summary-value" id="kpiTons">5.24<span class="summary-unit">万吨</span></div>
+          <div class="summary-sub">环比 +3.2%</div>
         </div>
-        <div class="summary-card" data-page-node-id="lOv2ECeWUwJvmb6bbxydlz">
-          <div class="summary-label" data-page-node-id="152A68yHvOuddcMV9dhItj">视频监测点</div>
-          <div class="summary-value" id="kpiVideo" data-page-node-id="nHvoR9APK6F0Zz7tb1Uyip">3752<span class="summary-unit" data-page-node-id="BC0sFnajunK2Bjk30rwmT3">路</span></div>
-          <div class="summary-sub" data-page-node-id="yEviZjrCDeIAmLNFFfdnNQ">在线率 99.1%</div>
+        <div class="summary-card">
+          <div class="summary-label">联网联控车辆</div>
+          <div class="summary-value" id="kpiGps">2,742<span class="summary-unit">辆</span></div>
+          <div class="summary-sub">在线率 99.2%</div>
         </div>
-        <div class="summary-card" data-page-node-id="FM3XTYgmt4wUhxqFUXzcD6">
-          <div class="summary-label" data-page-node-id="jdyNR1NC3SEewV9YcYnfy2">本月预警总数</div>
-          <div class="summary-value" id="kpiWarn" style="color:#ff4d4f;" data-page-node-id="11aWazDGUDQt0oAsxWs7Bm">83<span class="summary-unit" data-page-node-id="BitqdUAY50SGAGh71CD5gX">起</span></div>
-          <div class="summary-sub" data-page-node-id="oF73rXRexD0CIBqEOlqwRV">处置率 91.6%</div>
+        <div class="summary-card">
+          <div class="summary-label">本月运输预警</div>
+          <div class="summary-value" id="kpiWarn" style="color:#ff4d4f;">96<span class="summary-unit">起</span></div>
+          <div class="summary-sub">处置率 89.6%</div>
         </div>
-        <div class="summary-card" data-page-node-id="Iq3mJqJ9UUcMobPR3p7egb">
-          <div class="summary-label" data-page-node-id="WPC4UI9756X6LDW9aaGsIa">资质到期预警</div>
-          <div class="summary-value" id="kpiQual" style="color:#ff9f2e;" data-page-node-id="lJc6m2DfH1dpI1Y6DJpLDi">8<span class="summary-unit" data-page-node-id="gBfAvFnLBJchOkDSb3sCCO">家</span></div>
-          <div class="summary-sub" data-page-node-id="E8GPFvbr4XnVCYZCLReGpf">企业 2 · 人员 6</div>
+        <div class="summary-card">
+          <div class="summary-label">资质到期预警</div>
+          <div class="summary-value" id="kpiQual" style="color:#ff9f2e;">50<span class="summary-unit">项</span></div>
+          <div class="summary-sub">企业 50 · 人员 52</div>
         </div>
       </div>
 
-      <!-- Drill-down panel -->
-      <div class="panel drill-panel" style="flex: 0 0 auto;" data-page-node-id="6CepWfsILcTrnM6hciEo6c">
-        <div class="drill-bar" data-page-node-id="UPZkUbvwqaQiebFixefgBV">
-          <span class="drill-label" data-page-node-id="FONW4XZ0G3KxPF1zrulgQG"><i data-page-node-id="e5P77kbcCDeofoGdrfQpqe">钻</i>数据下钻</span>
-          <span id="crumbBox" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;" data-page-node-id="KCpFN4xTL74gMy3w5spdrB"></span>
-          <span class="drill-back disabled" id="btnBack" data-page-node-id="YbAmxHxVoa3xEAIfMCk3bH">‹ 返回上级</span>
+            <!-- Drill-down panel -->
+      <div class="panel drill-panel" style="flex: 0 0 auto;">
+        <div class="drill-bar">
+          <span class="drill-label"><i>钻</i>数据下钻</span>
+          <span id="crumbBox" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;"></span>
+          <span class="drill-back disabled" id="btnBack">‹ 返回上级</span>
         </div>
       </div>
 
       <!-- Drill content -->
-      <div class="panel" style="flex: 1.7; min-height: 0;" data-page-node-id="74QC7AYepmVpGbPji8KMNk">
-        <div class="panel-title" data-page-node-id="8zxYSJ1TzfTyelDGVFcrJL"><h3 id="drillTitle" data-page-node-id="p4ZdLjNlpckxNP9Y6onqGJ">各市生产数据分布</h3><span class="more" data-page-node-id="bHX33M9HPSgXH0JDvhKgiN">点击地图或列表逐级下钻 &gt;</span></div>
+      <div class="panel" style="flex: 1.7; min-height: 0;">
+        <div class="panel-title"><h3 id="drillTitle">各市运输数据分布</h3><span class="more">点击地图或列表逐级下钻 &gt;</span></div>
         <div class="drill-content" id="drillContent">
           <div class="drill-box map-box">
             <div class="map-badge">
@@ -435,9 +468,10 @@
             </div>
             <div class="map-hint" id="mapHint">点击地图区域逐级下钻 ›</div>
             <div class="map-legend" id="mapLegend" style="display:none;">
-              <span><i style="background:#00d4ff;"></i>运行正常</span>
+              <span><i style="background:#00d4ff;"></i>运营正常</span>
               <span><i style="background:#ff4d4f;"></i>存在预警</span>
-              <span style="color:#6b8aa8;">圆点大小 = 在产量</span>
+              <span><i style="background:#ffd23f;"></i>在途车辆 GPS</span>
+              <span style="color:#6b8aa8;">圆点大小 = 运输车辆</span>
             </div>
             <div id="mapChart"></div>
           </div>
@@ -446,7 +480,7 @@
             <div class="rtable-wrap" id="tableWrap">
               <table class="rtable">
                 <thead>
-                  <tr><th>名称</th><th>在产</th><th>停产</th><th>用工</th><th>工库房</th><th>视频</th><th>预警</th><th>操作</th></tr>
+                  <tr><th>名称</th><th>车辆</th><th>在途</th><th>持证人员</th><th>运单</th><th>运输量</th><th>预警</th><th>操作</th></tr>
                 </thead>
                 <tbody id="regionTbody"></tbody>
               </table>
@@ -456,34 +490,34 @@
         </div>
       </div>
 
-      <!-- 生产用电与用工趋势 -->
-      <div class="panel" style="flex: 1; min-height: 0;" data-page-node-id="RqmUPMPQpadCgyBk4IXITA">
-        <div class="panel-title" data-page-node-id="FP6kd7hDN4TE6OkjM6ZaKe"><h3 data-page-node-id="7P7qLXBz2NkrymcJxlUcIk">生产用电 · 用工 · 工库房趋势</h3><span class="more" data-page-node-id="nvFxwL9CkgpOyIWQyURY3l">更多 &gt;</span></div>
-        <div id="trendChart" class="chart" data-page-node-id="1CNuOu5B0oVrlWHGoHeyhs"></div>
+            <!-- 在途车辆实时监控 -->
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>在途车辆实时监控（车辆 · 人员 · 托运货物 · 电子运单）</h3><span class="more" id="transitCount">全省在途 428 辆 · 实时刷新 &gt;</span></div>
+        <div class="tv-list" id="transitList"></div>
       </div>
     </section>
 
-    <!-- Right Column -->
-    <section class="col" data-page-node-id="YAAvKlwQLqNfPcRDHyO8vB">
-      <div class="panel" style="flex: 1;" data-page-node-id="mYT6V6sYtslDzwmbcJuyym">
-        <div class="panel-title" data-page-node-id="T6ocaDxFhPz7lgPszRuLDn"><h3 data-page-node-id="2EyIExyO4QOScVbygJZl63">预警总体情况</h3><span class="more" data-page-node-id="0o90jDBa3T1cg9Tq6zjBBV">更多 &gt;</span></div>
-        <div id="warnChart" class="chart" data-page-node-id="QcOwvInZGfgE8nnTUYkcu7"></div>
+        <!-- Right Column -->
+    <section class="col">
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>运输预警总体情况</h3><span class="more">更多 &gt;</span></div>
+        <div id="warnChart" class="chart"></div>
       </div>
 
-      <div class="panel" style="flex: 1;" data-page-node-id="BNE5BqouQnG5EvfO7Uygxi">
-        <div class="panel-title" data-page-node-id="85aRLO9fqIFOwqX0LorMM2"><h3 data-page-node-id="gddNaYWEBVBFbRkcD4Zl4l">分级预警类型分布</h3><span class="more" data-page-node-id="9NHMCKMYnx4ZDKOY42cjGz">更多 &gt;</span></div>
-        <div id="warnTypeChart" class="chart" data-page-node-id="TgZuDcYK9NJM9elB1PUOSc"></div>
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>运输预警分级分类</h3><span class="more">更多 &gt;</span></div>
+        <div id="warnTypeChart" class="chart"></div>
       </div>
 
-      <div class="panel" style="flex: 1;" data-page-node-id="HAcwJYHqB1pHDY4RIzRi6c">
-        <div class="panel-title" data-page-node-id="ULQHKS0t1eyxZtdt9gWOw9"><h3 data-page-node-id="ZjCtodZ3AUzkUAQCAP9xQq">资质到期与监测</h3><span class="more" data-page-node-id="1gNsTNYV1ywk0VmY1ZUFtm">更多 &gt;</span></div>
-        <div class="mini-stats" style="margin-bottom:10px;" data-page-node-id="WRsCku5X8QpJBY1dZVWnNj">
-          <div class="mini-stat" data-page-node-id="q1WUI1XnzMArVPLgkj4ntO"><div class="lab" data-page-node-id="zpZeqwgXEHdKfItJEuqR13">企业资质即将到期</div><div class="val warn" id="qualSoon" data-page-node-id="iaRk98ueF6u7asjQrVE7FB">6<span style="font-size:12px" data-page-node-id="N6vieohK3TwINJFsDoUrAR">家</span></div></div>
-          <div class="mini-stat" data-page-node-id="ANxRGMuxEtizZgJOfHFHjX"><div class="lab" data-page-node-id="HHgg6qoqh9ExC2aadgfAsG">企业资质已过期</div><div class="val warn" id="qualOver" data-page-node-id="9IJva4a7hdJRw9I8jFi0LA">2<span style="font-size:12px" data-page-node-id="BQ6YF2zkeRi1g0JI3UBnnr">家</span></div></div>
-          <div class="mini-stat" data-page-node-id="VKMq25DrmhECRselvPTsha"><div class="lab" data-page-node-id="fc99GQ2FHPwX0rVebZRhDn">人员资质即将到期</div><div class="val warn" id="pQualSoon" data-page-node-id="jEpx9OjVmKj2QvQLNH8Fta">23<span style="font-size:12px" data-page-node-id="WBgoFLCEg2cRKKfEXi2wto">人</span></div></div>
-          <div class="mini-stat" data-page-node-id="a1HZ5xiMQQP9uFhgI53LYP"><div class="lab" data-page-node-id="593r1uVuMom0HCJ6IkPP6m">人员资质已过期</div><div class="val warn" id="pQualOver" data-page-node-id="3V1JVhFko1FBDRM2Hv5wjn">9<span style="font-size:12px" data-page-node-id="qAdWLjsrYruGFk2vrV24hC">人</span></div></div>
+      <div class="panel" style="flex: 1;">
+        <div class="panel-title"><h3>资质到期与运输预警</h3><span class="more">更多 &gt;</span></div>
+        <div class="mini-stats" style="margin-bottom:10px;">
+          <div class="mini-stat"><div class="lab">企业运输许可即将到期</div><div class="val warn" id="qualSoon">38<span style="font-size:12px">家</span></div></div>
+          <div class="mini-stat"><div class="lab">企业运输许可已过期</div><div class="val warn" id="qualOver">12<span style="font-size:12px">家</span></div></div>
+          <div class="mini-stat"><div class="lab">从业资格即将到期</div><div class="val warn" id="pQualSoon">38<span style="font-size:12px">人</span></div></div>
+          <div class="mini-stat"><div class="lab">从业资格已过期</div><div class="val warn" id="pQualOver">14<span style="font-size:12px">人</span></div></div>
         </div>
-        <div class="warning-list" id="warnList" data-page-node-id="gMAqej8WuEHLq5phJvDWf1"></div>
+        <div class="warning-list" id="warnList"></div>
       </div>
     </section>
   </main>
@@ -541,90 +575,173 @@
     // ================= 省级基础数据 =================
     const MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月'];
     const BASE = {
-      // 在产/停产/检修（家）
-      prod: 860, stop: 92, repair: 24,
-      // 生产用电（万kWh）月度
-      power: [1180, 1205, 1230, 1210, 1240, 1265, 1270, 1286],
-      rooms: 6420,
-      // 企业资质：有效/即将到期/已过期
-      qualOk: 832, qualSoon: 6, qualOver: 2,
-      // 从业人员资质
-      pQualSoon: 23, pQualOver: 9,
-      // 分级预警（省级起数）
+      // 车辆运营状态（辆）
+      transit: 428, loading: 186, idle: 2150, down: 96,
+      // 运输趟次 / 运输量（月度，省级）
+      trips: [1240, 1310, 1425, 1380, 1465, 1520, 1586, 1642],
+      tons:  [3820, 4010, 4380, 4260, 4520, 4680, 4870, 5040],
+      // 道路运输证
+      vehOk: 2742, vehSoon: 78, vehOver: 40,
+      // 从业人员资格
+      pQualOk: 3068, pQualSoon: 38, pQualOver: 14,
+      // 分级运输预警（省级起数）
       warns: {
-        '停产作业': 18, '涉药机械运行时长': 12, '工库房超员': 9, '静电未释放': 7,
-        '非法入侵': 5, '堵塞通道': 8, '超高堆垛': 6, '烟火识别': 14, '产品不合格': 4
+        '疑似异常卸货': 22, '疑似违法运输行为': 16, '运输企业资质到期': 12, '人员资质到期': 14,
+        '超速行驶': 10, '疲劳驾驶': 8, '偏离规定路线': 7, '未按规定时段通行': 4, '电子运单缺失': 3
       }
     };
     const WARN_COLORS = {
-      '停产作业': '#ff4d4f', '涉药机械运行时长': '#ff9f2e', '工库房超员': '#ffd23f',
-      '静电未释放': '#38c8f5', '非法入侵': '#a855f7', '堵塞通道': '#22c55e',
-      '超高堆垛': '#ff79e1', '烟火识别': '#ff6b6b', '产品不合格': '#51cf66'
+      '疑似异常卸货': '#ff4d4f', '疑似违法运输行为': '#ff9f2e', '运输企业资质到期': '#ffd23f',
+      '人员资质到期': '#38c8f5', '超速行驶': '#a855f7', '疲劳驾驶': '#22c55e',
+      '偏离规定路线': '#ff79e1', '未按规定时段通行': '#ff6b6b', '电子运单缺失': '#51cf66'
     };
 
     // ================= 图表初始化 =================
     const statusChart = echarts.init(document.getElementById('statusChart'));
-    const powerChart = echarts.init(document.getElementById('powerChart'));
+    const tripChart = echarts.init(document.getElementById('tripChart'));
     const qualChart = echarts.init(document.getElementById('qualChart'));
     const warnChart = echarts.init(document.getElementById('warnChart'));
     const warnTypeChart = echarts.init(document.getElementById('warnTypeChart'));
-    const trendChart = echarts.init(document.getElementById('trendChart'));
 
+    // 车辆运营状态
     function renderStatus(m) {
+      const data = [
+        { name: '在途运输', value: Math.max(1, Math.round(BASE.transit * m)), itemStyle: { color: '#00d4ff' } },
+        { name: '装卸作业', value: Math.max(1, Math.round(BASE.loading * m)), itemStyle: { color: '#ffd23f' } },
+        { name: '待命', value: Math.max(1, Math.round(BASE.idle * m)), itemStyle: { color: '#22c55e' } },
+        { name: '停运检修', value: Math.max(0, Math.round(BASE.down * m)), itemStyle: { color: '#ff4d4f' } }
+      ];
       statusChart.setOption({
-        tooltip: Object.assign({ trigger: 'item', formatter: '{b}：{c} 家（{d}%）' }, tipBase),
+        tooltip: Object.assign({ trigger: 'item', formatter: '{b}：{c} 辆（{d}%）' }, tipBase),
         legend: { bottom: 0, textStyle: { color: textColor, fontSize: 11 }, itemWidth: 12, itemHeight: 8 },
         series: [{
-          type: 'pie', radius: ['45%', '70%'], center: ['50%', '44%'],
-          label: { color: '#cfe9ff', fontSize: 11, formatter: '{b}\n{c}家' },
+          type: 'pie', radius: ['46%', '66%'], center: ['50%', '44%'],
+          label: {
+            show: true, position: 'center',
+            formatter: '在途率\n' + (BASE.transit / (BASE.transit + BASE.loading + BASE.idle + BASE.down) * 100).toFixed(1) + '%',
+            color: '#fff', fontSize: 15, fontWeight: 700, lineHeight: 22
+          },
+          itemStyle: { borderColor: '#050b14', borderWidth: 2 },
+          data
+        }]
+      }, true);
+    }
+
+    // 运输趟次与运输量趋势（支持周期切换）
+    let curPeriod = 'm8';
+    function tripSet(p) {
+      if (p === 'd7') {
+        const days = ['8-20', '8-21', '8-22', '8-23', '8-24', '8-25', '8-26'];
+        return {
+          x: days,
+          bar: days.map((_, i) => 118 + Math.round(hash01('td' + i) * 46)),
+          line: days.map((_, i) => 326 + Math.round(hash01('tt' + i) * 42)),
+          yoy: 9.8, mom: 2.1, unit: '近 7 日'
+        };
+      }
+      if (p === 'w8') {
+        const ws = ['第1周', '第2周', '第3周', '第4周', '第5周', '第6周', '第7周', '第8周'];
+        return {
+          x: ws,
+          bar: ws.map((_, i) => 386 + Math.round(hash01('tw' + i) * 88)),
+          line: ws.map((_, i) => 1180 + Math.round(hash01('vw' + i) * 260)),
+          yoy: 11.2, mom: 3.6, unit: '近 8 周'
+        };
+      }
+      return { x: MONTHS, bar: BASE.trips, line: BASE.tons, yoy: 12.4, mom: 3.2, unit: '2026 年 1-8 月' };
+    }
+    function renderTrip() {
+      const m = Math.max(0.05, curNode()[MAIN_KEY] / ROOT[MAIN_KEY]);
+      const d = tripSet(curPeriod);
+      const bar = d.bar.map(v => Math.max(1, Math.round(v * m)));
+      const line = d.line.map(v => Math.max(1, Math.round(v * m)));
+      const totalBar = bar.reduce((a, b) => a + b, 0);
+      const totalTons = line.reduce((a, b) => a + b, 0);
+      const yoyTxt = '同比 +' + d.yoy + '%   环比 ' + (d.mom > 0 ? '+' : '') + d.mom + '%';
+      tripChart.setOption({
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, tipBase),
+        legend: { top: 0, right: 2, textStyle: { color: textColor, fontSize: 11 }, itemWidth: 12, itemHeight: 8 },
+        title: {
+          text: '累计 ' + fmt(totalBar) + ' 趟 · ' + fmt(totalTons) + ' 吨（' + d.unit + '）',
+          subtext: yoyTxt,
+          left: 2, top: 0,
+          textStyle: { color: '#8aa4bf', fontSize: 11, fontWeight: 400 },
+          subtextStyle: { color: '#7fe3a0', fontSize: 11, fontWeight: 700 }
+        },
+        grid: { left: 46, right: 48, top: 48, bottom: 22 },
+        xAxis: {
+          type: 'category', data: d.x,
+          axisLabel: { color: textColor, fontSize: 10 }, axisTick: { show: false },
+          axisLine: { lineStyle: { color: axisColor } }
+        },
+        yAxis: [
+          {
+            type: 'value', name: '趟次', nameTextStyle: { color: '#8aa4bf', fontSize: 10 },
+            axisLabel: { color: textColor, fontSize: 10 },
+            splitLine: { lineStyle: { color: 'rgba(255,255,255,0.07)' } }
+          },
+          {
+            type: 'value', name: '吨', nameTextStyle: { color: '#8aa4bf', fontSize: 10 },
+            axisLabel: { color: textColor, fontSize: 10 }, splitLine: { show: false }
+          }
+        ],
+        series: [
+          {
+            name: '运输趟次', type: 'bar', barWidth: '46%',
+            itemStyle: {
+              borderRadius: [3, 3, 0, 0],
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#2ea0e8' }, { offset: 1, color: 'rgba(0,120,200,0.22)' }
+              ])
+            },
+            data: bar
+          },
+          {
+            name: '运输量(吨)', type: 'line', yAxisIndex: 1, smooth: true, symbolSize: 5,
+            lineStyle: { color: '#ffd23f', width: 2 }, itemStyle: { color: '#ffd23f' }, data: line
+          }
+        ]
+      }, true);
+    }
+    document.getElementById('periodSeg').addEventListener('click', e => {
+      const el = e.target.closest('.seg');
+      if (!el) return;
+      curPeriod = el.dataset.p;
+      document.querySelectorAll('#periodSeg .seg').forEach(x => x.classList.toggle('active', x === el));
+      renderTrip();
+    });
+
+    // 运输资质（车辆道路运输证）
+    function renderQual(m) {
+      const ok = Math.max(1, Math.round(BASE.vehOk * m));
+      const soon = Math.max(0, Math.round(BASE.vehSoon * m));
+      const over = Math.max(0, Math.round(BASE.vehOver * m));
+      const total = ok + soon + over;
+      qualChart.setOption({
+        tooltip: Object.assign({ trigger: 'item', formatter: '{b}：{c} 辆（{d}%）' }, tipBase),
+        legend: { bottom: 0, textStyle: { color: textColor, fontSize: 11 }, itemWidth: 12, itemHeight: 8 },
+        series: [{
+          type: 'pie', radius: ['48%', '68%'], center: ['50%', '44%'],
+          label: {
+            show: true, position: 'center',
+            formatter: '证件有效率\n' + (ok / total * 100).toFixed(1) + '%',
+            color: '#fff', fontSize: 15, fontWeight: 700, lineHeight: 22
+          },
           itemStyle: { borderColor: '#050b14', borderWidth: 2 },
           data: [
-            { name: '在产', value: Math.round(BASE.prod * m), itemStyle: { color: '#22c55e' } },
-            { name: '停产', value: Math.round(BASE.stop * m), itemStyle: { color: '#ff4d4f' } },
-            { name: '检修', value: Math.round(BASE.repair * m), itemStyle: { color: '#ff9f2e' } }
+            { name: '证件有效', value: ok, itemStyle: { color: '#22c55e' } },
+            { name: '即将到期', value: soon, itemStyle: { color: '#ffd23f' } },
+            { name: '已过期', value: over, itemStyle: { color: '#ff4d4f' } }
           ]
         }]
       }, true);
     }
 
-    function renderPower(m) {
-      powerChart.setOption({
-        tooltip: Object.assign({ trigger: 'axis' }, tipBase),
-        grid: { left: 48, right: 14, top: 24, bottom: 22 },
-        xAxis: { type: 'category', data: MONTHS, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        yAxis: { type: 'value', name: '万kWh', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        series: [{
-          type: 'line', smooth: true, symbol: 'none',
-          lineStyle: { color: '#00d4ff', width: 2 },
-          areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,212,255,0.25)'},{offset:1,color:'rgba(0,212,255,0.01)'}]) },
-          data: scaleArr(BASE.power, m)
-        }]
-      }, true);
-    }
-
-    function renderQual(m) {
-      const cats = ['资质有效', '即将到期', '已过期'];
-      const vals = [Math.max(1, Math.round(BASE.qualOk * m)), Math.max(0, Math.round(BASE.qualSoon * m)), Math.max(0, Math.round(BASE.qualOver * m))];
-      qualChart.setOption({
-        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, tipBase),
-        grid: { left: 44, right: 16, top: 24, bottom: 22 },
-        xAxis: { type: 'category', data: cats, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 11 } },
-        yAxis: { type: 'value', name: '家', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        series: [{
-          type: 'bar', barWidth: 26,
-          data: vals.map((v, i) => ({
-            value: v,
-            itemStyle: { color: [ '#22c55e', '#ff9f2e', '#ff4d4f' ][i], borderRadius: [3,3,0,0] }
-          })),
-          label: { show: true, position: 'top', color: '#fff', fontSize: 11 }
-        }]
-      }, true);
-    }
-
+    // 运输预警总体（已处置 / 处置中 / 待处置）
     function renderWarn(m) {
-      const done = Math.round(60 * m);
-      const doing = Math.round(16 * m);
-      const todo = Math.max(0, Math.round(7 * m));
+      const done = Math.round(68 * m);
+      const doing = Math.round(17 * m);
+      const todo = Math.max(0, Math.round(11 * m));
       const total = done + doing + todo;
       const data = total > 0 ? [
         { name: '已处置', value: done, itemStyle: { color: '#22c55e' } },
@@ -632,51 +749,45 @@
         { name: '待处置', value: todo, itemStyle: { color: '#ff4d4f' } }
       ] : [{ name: '暂无预警', value: 1, itemStyle: { color: 'rgba(81,207,102,0.28)' } }];
       warnChart.setOption({
-        tooltip: Object.assign({ trigger: 'item', formatter: total > 0 ? '{b}：{c} 起（{d}%）' : '当前层级暂无生产预警' }, tipBase),
+        tooltip: Object.assign({ trigger: 'item', formatter: total > 0 ? '{b}：{c} 起（{d}%）' : '当前层级暂无运输预警' }, tipBase),
         legend: { bottom: 0, textStyle: { color: textColor, fontSize: 11 }, itemWidth: 12, itemHeight: 8 },
         series: [{
           type: 'pie', radius: ['48%', '68%'], center: ['50%', '44%'],
-          label: { show: true, position: 'center', formatter: total > 0 ? `处置率\n${Math.round(done/total*100)}%` : '暂无\n预警', color: total > 0 ? '#fff' : '#51cf66', fontSize: 15, fontWeight: 700, lineHeight: 22 },
+          label: {
+            show: true, position: 'center',
+            formatter: total > 0 ? '处置率\n' + Math.round(done / total * 100) + '%' : '暂无\n预警',
+            color: total > 0 ? '#fff' : '#51cf66', fontSize: 15, fontWeight: 700, lineHeight: 22
+          },
           itemStyle: { borderColor: '#050b14', borderWidth: 2 },
           data
         }]
       }, true);
     }
 
+    // 运输预警分级分类（横向条）
     function renderWarnType(m) {
       const entries = Object.entries(BASE.warns);
       const data = entries.map(([k, v]) => ({
-        name: k,
-        value: Math.max(0, Math.round(v * m)),
-        itemStyle: { color: WARN_COLORS[k] }
-      })).sort((a, b) => b.value - a.value);
+        name: k, value: Math.max(0, Math.round(v * m)),
+        itemStyle: { color: WARN_COLORS[k] || '#00d4ff' }
+      })).sort((a, b) => a.value - b.value);
       warnTypeChart.setOption({
-        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: ps => `${ps[0].name}<br/>预警：${ps[0].value} 起` }, tipBase),
-        grid: { left: 8, right: 30, top: 6, bottom: 6, containLabel: true },
-        xAxis: { type: 'value', splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        yAxis: { type: 'category', inverse: true, data: data.map(d => d.name), axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#cfe9ff', fontSize: 10 } },
-        series: [{ type: 'bar', barWidth: 10, data, label: { show: true, position: 'right', color: '#8aa4bf', fontSize: 10 } }]
-      }, true);
-    }
-
-    function renderTrend(m) {
-      const workers = MONTHS.map((_, i) => Math.round(46000 + i * 300 + hash01('w' + i) * 1500));
-      const rooms = MONTHS.map((_, i) => Math.round(6200 + i * 30 + hash01('r' + i) * 200));
-      const power = scaleArr(BASE.power, m);
-      trendChart.setOption({
-        tooltip: Object.assign({ trigger: 'axis' }, tipBase),
-        legend: { data: ['生产用电(万kWh)', '用工人数', '工库房(栋)'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
-        grid: { left: 48, right: 48, top: 30, bottom: 22 },
-        xAxis: { type: 'category', data: MONTHS, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-        yAxis: [
-          { type: 'value', name: '万kWh', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-          { type: 'value', name: '人/栋', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, axisLabel: { color: '#8aa4bf', fontSize: 10 } }
-        ],
-        series: [
-          { name: '生产用电(万kWh)', type: 'line', smooth: true, symbol: 'none', lineStyle: { color: '#00d4ff', width: 2 }, data: power, yAxisIndex: 0 },
-          { name: '用工人数', type: 'bar', barWidth: 10, yAxisIndex: 1, itemStyle: { color: 'rgba(255,159,46,0.8)' }, data: scaleArr(workers, m/10000) },
-          { name: '工库房(栋)', type: 'bar', barWidth: 10, yAxisIndex: 1, itemStyle: { color: 'rgba(168,85,247,0.8)' }, data: scaleArr(rooms, m) }
-        ]
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: '{b}：{c} 起' }, tipBase),
+        grid: { left: 92, right: 40, top: 8, bottom: 6 },
+        xAxis: {
+          type: 'value', axisLabel: { color: textColor, fontSize: 10 },
+          splitLine: { lineStyle: { color: 'rgba(255,255,255,0.06)' } }
+        },
+        yAxis: {
+          type: 'category', data: data.map(d => d.name),
+          axisLabel: { color: textColor, fontSize: 10.5 }, axisTick: { show: false },
+          axisLine: { lineStyle: { color: axisColor } }
+        },
+        series: [{
+          type: 'bar', barWidth: 10, data,
+          itemStyle: { borderRadius: [0, 5, 5, 0] },
+          label: { show: true, position: 'right', color: '#c8e2f5', fontSize: 10 }
+        }]
       }, true);
     }
 
@@ -830,18 +941,18 @@
     }
 
     // ================= 数据模型：子节点由父节点总量拆分，保证上下级自洽 =================
-    const ROOT = { name: '江西省', level: 0, prod: 860, stop: 92, workers: 48200, rooms: 6420, video: 3752, warns: 83 };
+    const ROOT = { name: '江西省', level: 0, veh: 2860, transit: 428, driver: 3120, wbill: 18640, tons: 52400, warns: 96 };
     const METRICS = [
-      { key: 'prod',    label: '在产企业',   unit: '家', dec: 0, tbl: true },
-      { key: 'stop',    label: '停产企业',   unit: '家', dec: 0, tbl: true },
-      { key: 'workers', label: '作业人员',   unit: '人', dec: 0, tbl: true, cell: s => (s.workers / 10000).toFixed(2) + '万' },
-      { key: 'rooms',   label: '工库房',     unit: '栋', dec: 0, tbl: true },
-      { key: 'video',   label: '视频监测点', unit: '路', dec: 0, tbl: true }
+      { key: 'veh',     label: '运输车辆', unit: '辆', dec: 0, tbl: true },
+      { key: 'transit', label: '在途车辆', unit: '辆', dec: 0, tbl: true },
+      { key: 'driver',  label: '持证人员', unit: '人', dec: 0, tbl: true },
+      { key: 'wbill',   label: '电子运单', unit: '单', dec: 0, tbl: true },
+      { key: 'tons',    label: '运输量',   unit: '吨', dec: 0, tbl: true, cell: s => (s.tons / 10000).toFixed(2) + '万吨' }
     ];
     const TABLE_KEYS = METRICS.filter(m => m.tbl).map(m => m.key);
-    const MAIN_KEY = 'prod';
-    const MAIN_LABEL = '在产';
-    const MAIN_UNIT = '家';
+    const MAIN_KEY = 'veh';
+    const MAIN_LABEL = '运输车辆';
+    const MAIN_UNIT = '辆';
 
     function splitTo(total, keys, dec) {
       if (!keys.length) return [];
@@ -928,9 +1039,125 @@
     }
 
     // ---- 行政区着色地图（省级 / 市级） ----
+    // ---- GIS 图层：运输车辆 GPS 点位与运输路线 ----
+    let focusRoute = -1;
+    const ROUTE_PAIRS_PROV = [
+      ['宜春市', '南昌市'], ['萍乡市', '南昌市'], ['宜春市', '九江市'], ['萍乡市', '赣州市'],
+      ['宜春市', '上饶市'], ['南昌市', '鹰潭市'], ['宜春市', '吉安市'], ['萍乡市', '新余市'],
+      ['宜春市', '抚州市'], ['上饶市', '景德镇市']
+    ];
+    function centroidOf(feat) {
+      const c = feat && feat.properties && feat.properties.centroid;
+      if (c && c.length === 2) return c;
+      const rings = featureRings(feat);
+      if (!rings.length) return null;
+      let sx = 0, sy = 0, n = 0;
+      rings[0].forEach(p => { sx += p[0]; sy += p[1]; n++; });
+      return n ? [sx / n, sy / n] : null;
+    }
+    function cityCentroid(name) {
+      const f = ((GEO['360000'] || {}).features || []).find(x => x.properties.name === name);
+      return f ? centroidOf(f) : null;
+    }
+    function countyCentroid(cityName, countyName) {
+      const ad = CITY_ADCODE[cityName];
+      const gj = ad && GEO[ad];
+      const f = gj && (gj.features || []).find(x => x.properties.name === countyName);
+      return f ? centroidOf(f) : null;
+    }
+    // 三点折线（模拟道路走向）
+    function curve3(a, b, seed) {
+      const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+      const dx = b[0] - a[0], dy = b[1] - a[1];
+      const off = (hash01('cv' + seed) - 0.5) * 0.55;
+      return [[a[0], a[1]], [mx - dy * off, my + dx * off], [b[0], b[1]]];
+    }
+    function pointOnCurve(coords, t) {
+      if (t <= 0.5) {
+        const k = t / 0.5;
+        return [coords[0][0] + (coords[1][0] - coords[0][0]) * k, coords[0][1] + (coords[1][1] - coords[0][1]) * k];
+      }
+      const k = (t - 0.5) / 0.5;
+      return [coords[1][0] + (coords[2][0] - coords[1][0]) * k, coords[1][1] + (coords[2][1] - coords[1][1]) * k];
+    }
+    function carPlate(seed) {
+      const L = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+      return '赣' + L[Math.floor(hash01('pl' + seed) * L.length)] + '·' +
+        (10000 + Math.floor(hash01('pn' + seed) * 89999));
+    }
+    // 依据当前层级构造路线与车辆点位
+    function gpsLayers(node, mode, names, points, center) {
+      const routes = [];
+      if (mode === 'region' && node.level === 0) {
+        ROUTE_PAIRS_PROV.slice(0, 8).forEach((pr, i) => {
+          const a = cityCentroid(pr[0]), b = cityCentroid(pr[1]);
+          if (a && b) routes.push({ coords: curve3(a, b, pr[0] + pr[1] + i), label: pr[0] + ' → ' + pr[1] });
+        });
+      } else if (mode === 'region') {
+        const cityName = node.name;
+        for (let i = 0; i < Math.min(6, Math.max(0, names.length - 1)); i++) {
+          const a = countyCentroid(cityName, names[i]), b = countyCentroid(cityName, names[i + 1]);
+          if (a && b) routes.push({ coords: curve3(a, b, cityName + names[i] + i), label: names[i] + ' → ' + names[i + 1] });
+        }
+      } else {
+        points.slice(0, 4).forEach((p, i) => {
+          if (center) routes.push({ coords: curve3(p, center, node.name + 'r' + i), label: (names[i] || '乡镇') + ' → ' + node.name + '县城' });
+        });
+      }
+      if (!routes.length) return [];
+      const carN = node.level === 0 ? 26 : (node.level === 1 ? 14 : 8);
+      const cars = [];
+      for (let i = 0; i < carN; i++) {
+        const ri = i % routes.length;
+        const t = 0.14 + hash01('ct' + node.name + i) * 0.7;
+        const c = pointOnCurve(routes[ri].coords, t);
+        cars.push({
+          plate: carPlate(node.name + i),
+          x: c[0] + (hash01('cx' + node.name + i) - 0.5) * 0.018,
+          y: c[1] + (hash01('cy' + node.name + i) - 0.5) * 0.018,
+          over: hash01('co' + node.name + i) > 0.84
+        });
+      }
+      const lines = {
+        type: 'lines', coordinateSystem: 'geo', geoIndex: 0, zlevel: 3, polyline: true,
+        data: routes.map((r, i) => {
+          const on = i === (focusRoute % routes.length);
+          return {
+            coords: r.coords, name: r.label,
+            lineStyle: on ? { color: '#ffd23f', width: 3.2, opacity: 1 } : { color: '#3ec2ff', width: 1.3, opacity: 0.6 },
+            effect: {
+              show: true, period: on ? 3 : 5, trailLength: 0.24, symbol: 'arrow',
+              symbolSize: on ? 8 : 5, color: on ? '#ffd23f' : '#3ec2ff'
+            }
+          };
+        })
+      };
+      const carsS = {
+        type: 'scatter', coordinateSystem: 'geo', geoIndex: 0, zlevel: 4, symbolSize: 7,
+        tooltip: {
+          formatter: p => '<b>' + p.data.plate + '</b><br/>状态：' +
+            (p.data.over ? '<span style="color:#ff7875">异常（预警核查中）</span>' : '正常运输中') +
+            '<br/>GPS：' + p.data.x.toFixed(4) + ', ' + p.data.y.toFixed(4)
+        },
+        data: cars.map(c => ({
+          name: c.plate, plate: c.plate, over: c.over, x: c.x, y: c.y,
+          value: [c.x, c.y],
+          itemStyle: {
+            color: c.over ? '#ff4d4f' : '#ffd23f',
+            borderColor: 'rgba(255,255,255,0.7)', borderWidth: 1,
+            shadowBlur: 8, shadowColor: c.over ? 'rgba(255,77,79,0.8)' : 'rgba(255,210,63,0.8)'
+          }
+        }))
+      };
+      return [lines, carsS];
+    }
+
+    // ---- 行政区着色地图（省级 / 市级）+ 车辆 GPS 图层 ----
     function regionMapOption(mapName, children, isProv) {
       const maxV = Math.max.apply(null, children.map(c => c[MAIN_KEY]).concat([1]));
       const topN = isProv ? children.length : Math.min(8, children.length);
+      const names = children.map(c => c.name);
+      const gps = gpsLayers(curNode(), 'region', names, [], null);
       return {
         tooltip: Object.assign({
           trigger: 'item',
@@ -965,11 +1192,10 @@
             METRICS.forEach(mt => { o[mt.key] = c[mt.key]; });
             return o;
           })
-        }]
+        }].concat(gps)
       };
     }
 
-    // ---- 面内散点地图底图（县级 / 乡镇级共用） ----
     function baseGeo(mapName, regionName) {
       return {
         map: mapName, roam: false, aspectScale: 0.92,
@@ -1012,7 +1238,7 @@
       };
     }
 
-    // ---- 县级视图：在县界内布乡镇点 ----
+    // ---- 县级视图：县界内布乡镇点 + 短途运输路线 ----
     function renderTownMap(node) {
       const mn = ensureCountyMap(path[1] ? path[1].name : '', node.name);
       const feat = mn && COUNTY_FEAT[mn];
@@ -1024,13 +1250,15 @@
       const items = packItems(childNodes(node)).map(it => Object.assign(it, {
         lng: posMap[it.name][0], lat: posMap[it.name][1]
       }));
+      const center = centroidOf(feat);
+      const gps = gpsLayers(node, 'county', names, pts, center);
       mapChart.setOption({
         tooltip: Object.assign({
           trigger: 'item',
           formatter: p => tipHtml(p.data || {}, '<br/><span style="color:#6bc9ff">点击下钻 ›</span>')
         }, tipBase),
         geo: baseGeo(mn, node.name),
-        series: [pointSeries(items)]
+        series: [pointSeries(items)].concat(gps)
       }, true);
       setMapBadge(node.name, '县级 · 乡镇分布');
       setMapHint('点击乡镇圆点下钻 ›');
@@ -1214,79 +1442,133 @@
       });
     }
 
-    // 企业生产画像
+    // 运输企业画像
+    function entVehRows(node) {
+      const types = ['重型厢式货车', '中型厢式货车', '危险品罐式车'];
+      const drivers = ['张建明', '李国平', '王少华', '刘志强', '陈永红', '周立新'];
+      const out = [];
+      for (let i = 0; i < 6; i++) {
+        const st = hash01('vs' + node.name + i) > 0.86 ? '停运检修' : (hash01('vq' + node.name + i) > 0.78 ? '预警核查' : '正常运营');
+        out.push({
+          plate: carPlate(node.name + 'e' + i),
+          type: types[i % types.length],
+          driver: drivers[i % drivers.length],
+          status: st,
+          trips: 18 + Math.round(hash01('vt' + node.name + i) * 26),
+          km: 2600 + Math.round(hash01('vk' + node.name + i) * 6800)
+        });
+      }
+      return out;
+    }
     function renderEntDetail(node) {
       const over = (node.warns || 0) > 0;
-      const util = over ? (104 + Math.round(hash01(node.name + 'o') * 26)) : (62 + Math.round(hash01(node.name + 'c') * 36));
-      const status = hash01(node.name + 'st') > 0.78 ? '停产' : (hash01(node.name + 'rp') > 0.85 ? '检修' : '在产');
-      document.getElementById('tableTitle').textContent = '企业生产画像';
+      const rows = entVehRows(node);
+      document.getElementById('tableTitle').textContent = '运输企业画像';
       document.getElementById('entPanel').innerHTML = `
         <div class="ent-head">
           <h4>${node.name}</h4>
           <p>所属区域：${path.slice(0, 4).map(p => p.name).join(' / ')}</p>
-          <p>生产状态：${status} · 安全生产许可证有效 · 涉药工序在线监控</p>
-          <span class="ent-status ${over ? 'warn' : 'ok'}">${over ? '● 生产超产能预警中' : '● 生产运行正常'}</span>
+          <p>经营资质：道路危险货物运输许可有效 · 车辆全部接入联网联控 · 电子运单实时上传</p>
+          <span class="ent-status ${over ? 'warn' : 'ok'}">${over ? '● 运输异常预警核查中' : '● 运输运行正常'}</span>
         </div>
         <div class="ent-kpis">
-          <div class="ent-kpi"><div class="lab">生产状态</div><div class="val">${status}</div></div>
-          <div class="ent-kpi"><div class="lab">生产区作业人员</div><div class="val">${fmt(node.workers)} 人</div></div>
-          <div class="ent-kpi"><div class="lab">产能利用率</div><div class="val ${over ? 'warn' : ''}">${util}%</div></div>
-          <div class="ent-kpi"><div class="lab">工库房</div><div class="val">${fmt(node.rooms)} 栋</div></div>
-          <div class="ent-kpi"><div class="lab">视频监测点</div><div class="val">${fmt(node.video)} 路</div></div>
+          <div class="ent-kpi"><div class="lab">运输车辆</div><div class="val">${fmt(node.veh)} 辆</div></div>
+          <div class="ent-kpi"><div class="lab">在途车辆</div><div class="val">${fmt(node.transit)} 辆</div></div>
+          <div class="ent-kpi"><div class="lab">持证人员</div><div class="val">${fmt(node.driver)} 人</div></div>
+          <div class="ent-kpi"><div class="lab">本月运单</div><div class="val">${fmt(node.wbill)} 单</div></div>
+          <div class="ent-kpi"><div class="lab">本月运输量</div><div class="val">${(node.tons / 10000).toFixed(2)} 万吨</div></div>
           <div class="ent-kpi"><div class="lab">本月预警</div><div class="val ${over ? 'warn' : ''}">${node.warns} 起</div></div>
         </div>
-        <div class="ent-mat-title">生产品类产量明细（本月）</div>
+        <div class="ent-mat-title">车辆运输明细（本月）</div>
         <table class="ent-mat">
           <thead>
-            <tr><th>品类</th><th class="num">本月产量(吨)</th><th class="num">上月(吨)</th><th class="num">环比</th><th class="num">库存(吨)</th></tr>
+            <tr><th>车牌号</th><th>车型</th><th>驾驶员</th><th>状态</th><th class="num">趟次</th><th class="num">里程(km)</th></tr>
           </thead>
-          <tbody>${entProducts(node).map(r => `
+          <tbody>${rows.map(r => `
             <tr>
-              <td>${r.name}</td>
-              <td class="num">${fmt(r.out)}</td>
-              <td class="num">${fmt(r.prev)}</td>
-              <td class="num">${r.mom > 0 ? '+' : ''}${r.mom}%</td>
-              <td class="num">${fmt(r.stock)}</td>
+              <td>${r.plate}</td>
+              <td>${r.type}</td>
+              <td>${r.driver}</td>
+              <td>${r.status}</td>
+              <td class="num">${r.trips}</td>
+              <td class="num">${fmt(r.km)}</td>
             </tr>`).join('')}
           </tbody>
         </table>
       `;
     }
 
-    // 生产品类明细：按典型产品结构配比，结合企业规模确定性浮动
-    function entProducts(node) {
-      const defs = [
-        { name: '烟花类', w: 0.46 },
-        { name: '爆竹类', w: 0.34 },
-        { name: '黑火药', w: 0.12 },
-        { name: '引火线', w: 0.08 }
-      ];
-      const k = 0.6 + (node.rooms / 6.5) * 0.5 + hash01(node.name + 'pd') * 0.25;
-      return defs.map((d, i) => {
-        const out = Math.max(1, Math.round(320 * d.w * k));
-        const prev = Math.max(1, Math.round(out / (1 + (hash01(node.name + 'm' + i) - 0.35) * 0.3)));
-        const mom = Math.round((out / prev - 1) * 1000) / 10;
-        const stock = Math.max(0, Math.round(out * (0.5 + hash01(node.name + 'k' + i) * 0.9)));
-        return { name: d.name, out, prev, mom, stock };
-      });
+    // 在途车辆实时监控（车辆 / 人员 / 托运货物 / 电子运单）
+    const GOODS = [['烟花类', '8.6'], ['爆竹类', '12.4'], ['黑火药', '3.2'], ['引火线', '1.8'], ['组合烟花', '9.4'], ['喷花类', '6.2']];
+    const DRIVERS = ['张建明', '李国平', '王少华', '刘志强', '陈永红', '周立新', '黄开文', '徐海涛'];
+    const ESCORTS = ['赵文斌', '孙立军', '吴国栋', '郑明辉', '何建华', '曾国平', '许志远', '邓小龙'];
+    const DESTS = ['南昌市', '九江市', '赣州市', '上饶市', '宜春市', '吉安市'];
+    function transitList(node) {
+      const n = Math.min(8, Math.max(2, Math.round((node.transit || 1) / 55)));
+      const city = path[1] ? path[1].name : '南昌市';
+      const county = path[2] ? path[2].name : ((CITY_COUNTIES[city] || [''])[0] || city);
+      const town = path[3] ? path[3].name : '桐木镇';
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const g = GOODS[i % GOODS.length];
+        const st = hash01('st' + node.name + i) > 0.86 ? 'bad' : (hash01('ld' + node.name + i) > 0.7 ? 'load' : 'run');
+        out.push({
+          plate: carPlate(node.name + 't' + i),
+          type: ['重型厢式货车', '中型厢式货车', '危险品罐式车'][i % 3],
+          cap: [12, 8, 16][i % 3],
+          driver: DRIVERS[i % DRIVERS.length],
+          escort: ESCORTS[i % ESCORTS.length],
+          goods: g[0] + ' ' + g[1] + ' 吨',
+          bill: 'YD2026' + (82600 + Math.floor(hash01('bd' + node.name + i) * 999)),
+          from: county + ' · ' + town,
+          to: DESTS[i % DESTS.length],
+          status: st,
+          statusTxt: st === 'bad' ? '异常停靠' : (st === 'load' ? '装卸作业' : '运输中'),
+          gx: (115.6 + hash01('gx' + node.name + i) * 1.6).toFixed(4),
+          gy: (27.3 + hash01('gy' + node.name + i) * 1.9).toFixed(4)
+        });
+      }
+      return out;
+    }
+    function renderTransit(node) {
+      const box = document.getElementById('transitList');
+      const list = transitList(node);
+      document.getElementById('transitCount').textContent = node.name + ' · 在途 ' + fmt(node.transit) + ' 辆 · 实时刷新 ›';
+      box.innerHTML = list.map((v, i) => `
+        <div class="tv-card">
+          <div class="tv-hd"><span class="tv-plate">${v.plate}</span><span class="tv-tag ${v.status}">${v.statusTxt}</span></div>
+          <div class="tv-rows">
+            <div><b>车辆</b>${v.type} · 核载 ${v.cap} 吨</div>
+            <div><b>人员</b>${v.driver}（驾驶员）· ${v.escort}（押运员）</div>
+            <div><b>货物</b>${v.goods}</div>
+            <div><b>运单</b>${v.bill}</div>
+            <div><b>行程</b>${v.from} → ${v.to}</div>
+          </div>
+          <div class="tv-ft"><span>GPS ${v.gx}, ${v.gy}</span><span class="tv-route" data-idx="${i}">路线查看 ›</span></div>
+        </div>`).join('');
+      box.querySelectorAll('.tv-route').forEach(el => el.addEventListener('click', () => {
+        focusRoute = +el.dataset.idx;
+        renderMapView();
+        document.getElementById('mapHint').textContent = '已高亮该车辆运输路线（黄色）· 点击地图区域继续下钻 ›';
+      }));
     }
 
-    // 生产预警列表：按省级类型权重把当前层级预警总数拆分，保证与 KPI 自洽
+    // 运输预警列表：按省级类型权重把当前层级预警总数拆分
     function renderWarnList(node) {
       const box = document.getElementById('warnList');
       if (node.level >= 4) {
-        box.innerHTML = '<div style="color:#8aa4bf;font-size:12px;padding:12px;text-align:center;line-height:1.8;">企业级视图<br/>请在上方查看该企业生产画像与预警情况</div>';
+        box.innerHTML = '<div style="color:#8aa4bf;font-size:12px;padding:12px;text-align:center;line-height:1.8;">企业级视图<br/>请在上方查看该企业运输画像与预警情况</div>';
         return;
       }
       const keys = Object.keys(BASE.warns);
       const total = node.warns || 0;
-      if (!total) { box.innerHTML = '<div class="empty-state">✓ 当前层级暂无生产预警</div>'; return; }
+      if (!total) { box.innerHTML = '<div class="empty-state">✓ 当前层级暂无运输预警</div>'; return; }
       const vals = splitTo(total, keys, 0);
       let html = '';
       keys.forEach((k, i) => {
         const v = Math.round(vals[i]);
         if (v <= 0) return;
-        const high = ['停产作业', '涉药机械运行时长', '非法入侵', '烟火识别'].indexOf(k) >= 0;
+        const high = ['疑似违法运输行为', '疑似异常卸货', '人员资质到期'].indexOf(k) >= 0;
         html += `
           <div class="warning-item ${high ? '' : 'warn'}">
             <div class="warning-info">
@@ -1298,7 +1580,6 @@
       });
       box.innerHTML = html;
     }
-
 
     // KPI 数字刷新（带动画）
     function setKpi(id, target, dec) {
@@ -1329,32 +1610,33 @@
       entPanel.style.display = isLeaf ? 'flex' : 'none';
 
       document.getElementById('drillTitle').textContent = isLeaf
-        ? (entShort(node.name) + ' · 企业生产画像')
-        : (node.name + ' · 各' + LEVEL_NAMES[children[0].level].replace('级', '') + '生产数据分布（地图）');
+        ? (entShort(node.name) + ' · 运输企业画像')
+        : (node.name + ' · 各' + LEVEL_NAMES[children[0].level].replace('级', '') + '运输数据分布（地图）');
 
+      focusRoute = -1;
       renderMapView();
       if (isLeaf) renderEntDetail(node); else renderTable(children);
 
       const m = node[MAIN_KEY] / ROOT[MAIN_KEY];
       const mw = node.warns / ROOT.warns;
       renderStatus(m);
-      renderPower(m);
       renderQual(m);
       renderWarn(mw);
       renderWarnType(mw);
-      renderTrend(m);
+      renderTrip();
       renderWarnList(node);
+      renderTransit(node);
 
-      setKpi('kpiProd', node.prod, 0);
-      setKpi('kpiPower', Math.round(BASE.power[7] * m), 0);
-      setKpi('kpiWorkers', +(node.workers / 10000).toFixed(2), 2);
-      setKpi('kpiOnSite', +(31200 * m / 10000).toFixed(2), 2);
-      setKpi('kpiRoom', node.rooms, 0);
-      setKpi('kpiVideo', node.video, 0);
+      setKpi('kpiVeh', node.veh, 0);
+      setKpi('kpiTransit', node.transit, 0);
+      setKpi('kpiDriver', node.driver, 0);
+      setKpi('kpiBill', node.wbill, 0);
+      setKpi('kpiTons', +(node.tons / 10000).toFixed(2), 2);
+      setKpi('kpiGps', Math.round(node.veh * 0.9587), 0);
       setKpi('kpiWarn', node.warns, 0);
-      setKpi('kpiQual', Math.max(1, Math.round(8 * m)), 0);
-      document.getElementById('qualSoon').innerHTML = Math.max(0, Math.round(BASE.qualSoon * m)) + '<span style="font-size:12px">家</span>';
-      document.getElementById('qualOver').innerHTML = Math.max(0, Math.round(BASE.qualOver * m)) + '<span style="font-size:12px">家</span>';
+      setKpi('kpiQual', Math.max(1, Math.round(50 * m)), 0);
+      document.getElementById('qualSoon').innerHTML = Math.max(0, Math.round(BASE.vehSoon * m)) + '<span style="font-size:12px">家</span>';
+      document.getElementById('qualOver').innerHTML = Math.max(0, Math.round(BASE.vehOver * m)) + '<span style="font-size:12px">家</span>';
       document.getElementById('pQualSoon').innerHTML = Math.max(0, Math.round(BASE.pQualSoon * m)) + '<span style="font-size:12px">人</span>';
       document.getElementById('pQualOver').innerHTML = Math.max(0, Math.round(BASE.pQualOver * m)) + '<span style="font-size:12px">人</span>';
 

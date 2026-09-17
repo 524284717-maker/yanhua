@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>烟花爆竹仓储隐蔽囤货与账面造假风险智能识别系统 · 专利技术方案演示</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #050b14;
+    --panel: rgba(10, 30, 60, 0.55);
+    --panel-border: rgba(0, 180, 255, 0.35);
+    --accent: #00d4ff;
+    --warn: #ff9f2e;
+    --danger: #ff4d4f;
+    --ok: #22c55e;
+    --text: #e0f7ff;
+    --text-dim: #8aa4bf;
+    --title: #ffffff;
+  }
+  html, body { width: 100%; height: 100%; background: #02060d; overflow: hidden; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+  }
+  .screen {
+    position: absolute; left: 50%; top: 50%;
+    width: 1920px; height: 1080px; transform-origin: center center;
+    background:
+      radial-gradient(1200px 600px at 20% 0%, rgba(0, 90, 170, 0.28), transparent 70%),
+      radial-gradient(1000px 700px at 85% 100%, rgba(0, 130, 200, 0.2), transparent 70%),
+      linear-gradient(180deg, #04101f 0%, #02070f 100%);
+    padding: 14px 20px 16px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .screen::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .35;
+    background-image:
+      linear-gradient(rgba(0, 180, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 180, 255, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  header {
+    position: relative; display: flex; align-items: center; gap: 18px;
+    padding-bottom: 10px; border-bottom: 1px solid rgba(0, 180, 255, 0.22);
+  }
+  header h1 {
+    font-size: 26px; color: var(--title); letter-spacing: 2px; font-weight: 700;
+    text-shadow: 0 0 18px rgba(0, 212, 255, 0.55);
+  }
+  header .sub { font-size: 12.5px; color: var(--text-dim); line-height: 1.6; flex: 1; }
+  header .sub b { color: #6bc9ff; font-weight: 600; }
+  header .ctrl { display: flex; align-items: center; gap: 8px; }
+  .btn {
+    font-size: 12px; padding: 5px 12px; border-radius: 14px; cursor: pointer;
+    border: 1px solid rgba(0, 180, 255, 0.4); color: #bfe6ff; background: rgba(0, 90, 160, 0.25);
+    user-select: none; transition: all .2s;
+  }
+  .btn:hover { border-color: var(--accent); color: #fff; background: rgba(0, 140, 220, 0.35); }
+  .btn.primary { background: var(--accent); color: #04121f; border-color: var(--accent); font-weight: 700; }
+  .tag-step {
+    font-size: 12px; padding: 4px 12px; border-radius: 12px; font-weight: 700;
+    background: rgba(0, 212, 255, 0.14); border: 1px solid rgba(0, 212, 255, 0.5); color: #9fe8ff;
+  }
+  main { flex: 1; display: grid; grid-template-columns: 388px 1fr 452px; gap: 12px; min-height: 0; }
+  .col { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+  .panel {
+    position: relative; background: var(--panel); border: 1px solid var(--panel-border);
+    border-radius: 10px; padding: 12px 14px; backdrop-filter: blur(8px);
+    display: flex; flex-direction: column; min-height: 0;
+    box-shadow: inset 0 0 30px rgba(0, 120, 220, 0.08);
+  }
+  .panel-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .panel-title h3 { font-size: 14.5px; color: var(--title); font-weight: 600; display: flex; align-items: center; gap: 7px; }
+  .panel-title h3::before { content: ""; width: 3px; height: 13px; background: var(--accent); border-radius: 2px; }
+  .panel-title .more { font-size: 11.5px; color: var(--text-dim); }
+  .step-no {
+    font-style: normal; font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: 6px;
+    background: rgba(0, 212, 255, 0.16); border: 1px solid rgba(0, 212, 255, 0.45); color: #9fe8ff;
+  }
+  .panel.active { border-color: rgba(0, 212, 255, 0.85); box-shadow: 0 0 22px rgba(0, 180, 255, 0.3), inset 0 0 30px rgba(0, 150, 240, 0.12); }
+  #panelS5 { overflow-y: auto; }
+  #panelS5::-webkit-scrollbar { width: 4px; }
+  #panelS5::-webkit-scrollbar-thumb { background: rgba(0, 180, 255, 0.35); border-radius: 2px; }
+
+  /* S1 参数 */
+  .param-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; font-size: 11.5px; }
+  .param { display: flex; align-items: center; justify-content: space-between; gap: 6px; color: var(--text-dim); }
+  .param b { color: #cfe9ff; font-weight: 600; font-family: "DIN Alternate", "Arial Black", sans-serif; }
+  .param.th b { color: var(--warn); }
+  .ware-select {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+    font-size: 12.5px; color: #cfe9ff; padding: 6px 10px; border-radius: 8px;
+    background: rgba(0, 90, 160, 0.25); border: 1px solid rgba(0, 150, 255, 0.3);
+  }
+  .ware-select span.k { color: var(--text-dim); font-size: 11px; }
+  #gaugeSat { width: 100%; height: 150px; }
+  .scan-head { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-dim); margin: 2px 0 5px; }
+  .scan-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; }
+  .scan-list::-webkit-scrollbar { width: 5px; }
+  .scan-list::-webkit-scrollbar-thumb { background: rgba(0, 180, 255, 0.35); border-radius: 3px; }
+  .scan-item {
+    display: flex; align-items: center; gap: 8px; padding: 5px 9px; border-radius: 6px;
+    background: rgba(0, 0, 0, 0.22); border-left: 2px solid rgba(0, 180, 255, 0.5);
+  }
+  .scan-item.in { border-left-color: #22c55e; }
+  .scan-item.out { border-left-color: #ff9f2e; }
+  .scan-item .t { color: #6b8aa8; font-size: 10.5px; }
+  .scan-item .c { flex: 1; color: #cfe9ff; }
+  .scan-item .q { font-weight: 700; }
+  .scan-item.in .q { color: #7fe3a0; }
+  .scan-item.out .q { color: #ffc078; }
+
+  /* 中列地图 */
+  .map-panel { flex: 1.35; min-height: 0; }
+  #gisMap { flex: 1; min-height: 0; }
+  .veh-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  .veh-table thead th {
+    color: var(--text-dim); font-weight: 500; text-align: left; padding: 6px 9px; white-space: nowrap;
+    background: rgba(0, 150, 255, 0.08); border-bottom: 1px solid rgba(0, 180, 255, 0.3);
+  }
+  .veh-table tbody td { padding: 6px 9px; border-bottom: 1px solid rgba(0, 150, 255, 0.1); white-space: nowrap; }
+  .veh-table td.num, .veh-table th.num { text-align: right; }
+  .veh-table tr.stay td { background: rgba(255, 77, 79, 0.08); }
+  .veh-table tr.stay td:first-child { color: #ff9d9f; font-weight: 700; }
+  .chip { font-size: 10px; padding: 1px 7px; border-radius: 8px; }
+  .chip.bad { color: #ff4d4f; border: 1px solid rgba(255, 77, 79, 0.5); background: rgba(255, 77, 79, 0.1); }
+  .chip.ok { color: #51cf66; border: 1px solid rgba(81, 207, 102, 0.5); background: rgba(81, 207, 102, 0.1); }
+  .chip.mid { color: #ff9f2e; border: 1px solid rgba(255, 159, 46, 0.5); background: rgba(255, 159, 46, 0.1); }
+
+  /* 右列流程 */
+  .flow { display: flex; flex-direction: column; gap: 7px; }
+  .flow-item {
+    display: flex; gap: 9px; padding: 7px 10px; border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(0, 150, 255, 0.16);
+    transition: all .3s;
+  }
+  .flow-item .idx {
+    flex: 0 0 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #7fa6c9; border: 1px solid rgba(0, 180, 255, 0.35);
+  }
+  .flow-item .txt { flex: 1; font-size: 11.5px; color: var(--text-dim); line-height: 1.5; }
+  .flow-item .txt b { display: block; color: #cfe9ff; font-size: 12px; margin-bottom: 1px; font-weight: 600; }
+  .flow-item.on { background: rgba(0, 140, 220, 0.2); border-color: rgba(0, 212, 255, 0.75); box-shadow: 0 0 14px rgba(0, 180, 255, 0.25); }
+  .flow-item.on .idx { background: var(--accent); color: #04121f; border-color: var(--accent); }
+  .flow-item.on .txt { color: #d8f2ff; }
+  .flow-item.done .idx { background: rgba(34, 197, 94, 0.85); color: #04121f; border-color: rgba(34, 197, 94, 0.9); }
+
+  /* 风险判定 */
+  .risk-row { display: flex; gap: 10px; }
+  .risk-card {
+    flex: 1; border-radius: 8px; padding: 9px 11px; text-align: center;
+    background: rgba(0, 0, 0, 0.24); border: 1px solid rgba(0, 150, 255, 0.2);
+  }
+  .risk-card .lab { font-size: 11.5px; color: var(--text-dim); margin-bottom: 5px; }
+  .risk-card .st { font-size: 15px; font-weight: 700; color: #6b8aa8; letter-spacing: .5px; }
+  .risk-card.hit { border-color: rgba(255, 77, 79, 0.75); background: rgba(255, 77, 79, 0.12); box-shadow: 0 0 18px rgba(255, 60, 60, 0.28); }
+  .risk-card.hit .st { color: #ff6b6d; }
+  .risk-card .cond { font-size: 10.5px; color: #6b8aa8; margin-top: 4px; line-height: 1.5; }
+  .rule { font-size: 11px; color: var(--text-dim); line-height: 1.65; margin-top: 8px; }
+  .rule b { color: #9fe8ff; }
+  .rule code { color: #ffd23f; font-family: "SF Mono", Consolas, monospace; font-size: 10.5px; }
+
+  /* 置信度与预警 */
+  .conf-line { display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; padding: 1.5px 0; }
+  .conf-line .bar { flex: 1; height: 6px; margin: 0 8px; border-radius: 3px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+  .conf-line .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #0e6fb8, #00d4ff); transition: width .4s; }
+  .conf-total { display: flex; align-items: baseline; gap: 6px; justify-content: center; margin: 3px 0 2px; }
+  .conf-total b { font-size: 26px; color: #7fe3a0; font-family: "DIN Alternate", "Arial Black", sans-serif; }
+  .conf-total span { font-size: 11.5px; color: var(--text-dim); }
+  .alert-box {
+    margin-top: 6px; border-radius: 8px; padding: 8px 10px; font-size: 11.5px; line-height: 1.55;
+    background: rgba(255, 77, 79, 0.1); border: 1px solid rgba(255, 77, 79, 0.45); color: #ffd0d1;
+    display: none;
+  }
+  .alert-box.on { display: block; }
+  .alert-box b { color: #fff; }
+  .legend-mini { display: flex; gap: 10px; font-size: 11px; color: var(--text-dim); margin-top: 6px; flex-wrap: wrap; }
+  .legend-mini i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+  .back { position: absolute; right: 0; top: -2px; font-size: 11.5px; color: #6bc9ff; text-decoration: none; }
+  .back:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <header>
+    <div>
+      <h1>烟花爆竹仓储隐蔽囤货与账面造假风险智能识别系统</h1>
+    </div>
+    <div class="sub">
+      专利技术方案演示 · <b>S1</b> 扫码出入库与库存饱和度 → <b>S2</b> 地理电子围栏与车辆轨迹 → <b>S3</b> 异常滞留指数 → <b>S4</b> 隐蔽囤货 / 账面造假双风险判定 → <b>S5</b> 置信度校验与政务云 GIS 管控预警
+    </div>
+    <div class="ctrl">
+      <span class="tag-step" id="stepTag">S1 / S5</span>
+      <span class="btn primary" id="btnPlay">暂停演示</span>
+      <span class="btn" id="btnReset">重置</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- 左列：S1 -->
+    <section class="col">
+      <div class="panel active" id="panelS1" style="flex: 1; min-height: 0;">
+        <div class="panel-title">
+          <h3><i class="step-no">S1</i>扫码出入库与库存饱和度</h3>
+          <span class="more" id="satState">实时采集中</span>
+        </div>
+        <div class="ware-select">
+          <span><span class="k">目标仓储：</span>万载县烟花爆竹仓储中心 A 库</span>
+          <span class="k">仓储编码 WZ-A-01</span>
+        </div>
+        <div class="param-grid">
+          <div class="param">设计容量 <b>800 吨</b></div>
+          <div class="param th">满载阈值 <b>85%</b></div>
+          <div class="param">静态阈值 <b>2 km/h</b></div>
+          <div class="param th">装卸容忍 <b>15 min</b></div>
+          <div class="param">当前库存 <b id="pStock">498 吨</b></div>
+          <div class="param th">滞留阈值 <b>0.60</b></div>
+        </div>
+        <div id="gaugeSat"></div>
+        <div class="scan-head">
+          <span>扫码出入库实时流水（扫码枪 / PDA / 电子台账）</span>
+          <span id="scanSum">入库 0 · 出库 0</span>
+        </div>
+        <div class="scan-list" id="scanList"></div>
+      </div>
+    </section>
+
+    <!-- 中列：S2 / S3 地图 -->
+    <section class="col">
+      <div class="panel map-panel" id="panelS2">
+        <div class="panel-title">
+          <h3><i class="step-no">S2 / S3</i>地理电子围栏与运输车辆定位轨迹</h3>
+          <span class="more" id="fenceInfo">围栏半径 800 m · 围栏内车辆 0 辆</span>
+        </div>
+        <div id="gisMap"></div>
+        <div class="legend-mini">
+          <span><i style="background:#ffd23f;"></i>目标仓储</span>
+          <span><i style="background:#00d4ff;"></i>电子围栏</span>
+          <span><i style="background:#7fe3a0;"></i>正常行驶车辆</span>
+          <span><i style="background:#ff4d4f;"></i>滞留车辆</span>
+          <span><i style="background:#ff9f2e;"></i>车辆定位轨迹</span>
+        </div>
+      </div>
+      <div class="panel" id="panelS3" style="flex: 1; min-height: 0;">
+        <div class="panel-title">
+          <h3><i class="step-no">S3</i>围栏内车辆滞留监测</h3>
+          <span class="more" id="vehInfo">滞留车辆集合 0 辆 · 异常滞留指数 0.00</span>
+        </div>
+        <table class="veh-table">
+          <thead>
+            <tr>
+              <th>车牌号</th><th>进入围栏时刻</th><th class="num">围栏内停留</th><th class="num">移动速度</th>
+              <th>判定</th><th class="num">滞留权重</th><th>电子运单</th>
+            </tr>
+          </thead>
+          <tbody id="vehTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 右列：流程 + S4 + S5 -->
+    <section class="col">
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3>识别流程状态机（S1 → S5）</h3><span class="more" id="flowTick">t = 0.0 min</span></div>
+        <div class="flow">
+          <div class="flow-item" id="f1"><div class="idx">S1</div><div class="txt"><b>库存饱和度计算</b>扫码出入库数据 + 设计容量 → 当前时刻库存饱和度</div></div>
+          <div class="flow-item" id="f2"><div class="idx">S2</div><div class="txt"><b>电子围栏与轨迹获取</b>以仓储为中心构建地理电子围栏，实时获取围栏内车辆定位轨迹</div></div>
+          <div class="flow-item" id="f3"><div class="idx">S3</div><div class="txt"><b>滞留车辆筛选与滞留指数</b>筛选「速度低于静止阈值 且 停留超过装卸容忍时间」车辆，计算异常滞留指数</div></div>
+          <div class="flow-item" id="f4"><div class="idx">S4</div><div class="txt"><b>双风险判定</b>饱和度与滞留指数双超阈 → 隐蔽囤货风险；饱和度下降但无驶离轨迹 → 账面造假风险</div></div>
+          <div class="flow-item" id="f5"><div class="idx">S5</div><div class="txt"><b>置信度校验与管控预警</b>多源数据一致性校验通过后确认风险，生成管控预警并在政务云 GIS 显示仓储及车辆坐标</div></div>
+        </div>
+      </div>
+
+      <div class="panel" id="panelS4" style="flex: 0 0 auto;">
+        <div class="panel-title">
+          <h3><i class="step-no">S4</i>风险判定结果</h3>
+          <span class="more" id="ruleState">等待判定</span>
+        </div>
+        <div class="risk-row">
+          <div class="risk-card" id="riskHide">
+            <div class="lab">隐蔽囤货风险</div>
+            <div class="st" id="stHide">未触发</div>
+            <div class="cond">饱和度 &gt; 85%<br/>且 异常滞留指数 &gt; 0.60</div>
+          </div>
+          <div class="risk-card" id="riskBook">
+            <div class="lab">账面造假风险</div>
+            <div class="st" id="stBook">未触发</div>
+            <div class="cond">饱和度（预设时间段内）下降 &gt; 15%<br/>且 未监测到驶离轨迹</div>
+          </div>
+        </div>
+        <div class="rule">
+          <div><b>判定式 A（隐蔽囤货）：</b><code>S(t) ≥ 85% ∧ I(t) ≥ 0.60 → Risk_Hidden</code></div>
+          <div><b>判定式 B（账面造假）：</b><code>ΔS(Δt) ≤ −15% ∧ ¬Departure(Δt) → Risk_Phantom</code></div>
+        </div>
+      </div>
+
+      <div class="panel" id="panelS5" style="flex: 1; min-height: 0;">
+        <div class="panel-title">
+          <h3><i class="step-no">S5</i>置信度校验与管控预警</h3>
+          <span class="more" id="confState">未校验</span>
+        </div>
+        <div class="conf-line"><span>扫码出入库数据</span><span class="bar"><i id="cf1"></i></span><b id="cv1">--</b></div>
+        <div class="conf-line"><span>视频监控核验</span><span class="bar"><i id="cf2"></i></span><b id="cv2">--</b></div>
+        <div class="conf-line"><span>车辆定位轨迹</span><span class="bar"><i id="cf3"></i></span><b id="cv3">--</b></div>
+        <div class="conf-line"><span>电子运单比对</span><span class="bar"><i id="cf4"></i></span><b id="cv4">--</b></div>
+        <div class="conf-total"><b id="confTotal">--</b><span>综合置信度（阈值 85%）</span></div>
+        <div class="alert-box" id="alertBox">
+          <div><b>【管控预警】</b><span id="alertTitle">—</span></div>
+          <div id="alertBody">—</div>
+          <div style="color:#ffb0b2;">已推送：省应急管理厅 · 属地应急管理局 · 公安治安部门</div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="geo-data.js"></script>
+<script>
+(function () {
+  /* ---------------- 自适应缩放 ---------------- */
+  function fitScreen() {
+    const el = document.querySelector('.screen');
+    const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    el.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitScreen);
+  fitScreen();
+
+  const GEO = window.GEO_DATA || {};
+  const textColor = '#e0f7ff';
+  const axisColor = 'rgba(255,255,255,0.15)';
+  const tipBase = {
+    backgroundColor: 'rgba(6,26,55,0.95)', borderColor: '#00d4ff',
+    textStyle: { color: '#fff', fontSize: 12 }
+  };
+  function fmt(v) { return Number(v).toLocaleString('zh-CN'); }
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  /* ---------------- 专利参数（可调阈值） ---------------- */
+  const P = {
+    capacity: 800,        // 设计容量（吨）
+    fullRatio: 0.85,      // 满载阈值
+    staticSpeed: 2,       // 静止阈值 km/h
+    tolerance: 15,        // 装卸容忍时间 min
+    stayThreshold: 0.60,  // 滞留报警阈值
+    confThreshold: 0.85,  // 置信度阈值
+    fenceR: 0.0082        // 围栏半径（度，≈800m）
+  };
+
+  /* ---------------- 定位：万载县 ---------------- */
+  const cityFeat = ((GEO['360000'] || {}).features || []).find(f => f.properties.name === '宜春市');
+  const cityAd = cityFeat ? String(cityFeat.properties.adcode) : '360900';
+  const countyList = ((GEO[cityAd] || {}).features || []);
+  const countyFeat = countyList.find(f => f.properties.name === '万载县') || countyList[0];
+  function centroidOf(f) {
+    if (!f) return [114.44, 28.10];
+    const c = f.properties && f.properties.centroid;
+    if (c && c.length === 2) return c;
+    const g = f.geometry;
+    const ring = g.type === 'Polygon' ? g.coordinates[0] : g.coordinates[0][0];
+    let sx = 0, sy = 0;
+    ring.forEach(p => { sx += p[0]; sy += p[1]; });
+    return [sx / ring.length, sy / ring.length];
+  }
+  const center = centroidOf(countyFeat);
+  if (window.echarts && countyFeat) {
+    echarts.registerMap('patent_county', { type: 'FeatureCollection', features: [countyFeat] });
+  }
+
+  // 目标仓储坐标（县域中心偏北）
+  const WARE = [center[0] + 0.004, center[1] + 0.006];
+
+  /* ---------------- 车辆定义（在围栏内形成滞留） ---------------- */
+  // 轨迹：起点在县域外围 → 进入围栏 → 停靠（滞留）或绕行离开
+  function pathFor(a, b, seed, bulge) {
+    const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    const off = bulge;
+    return [[a[0], a[1]], [mx - dy * off, my + dx * off], [b[0], b[1]]];
+  }
+  const VEHICLES = [
+    {
+      plate: '赣C·A8823', type: 'heavy', stay: true, inAt: 3,
+      entry: pathFor([center[0] - 0.0135, center[1] - 0.0100], WARE, 1, 0.35),
+      bill: 'YD2026082681', goods: '组合烟花 12.6 吨'
+    },
+    {
+      plate: '赣C·B1290', type: 'heavy', stay: true, inAt: 6,
+      entry: pathFor([center[0] + 0.0128, center[1] - 0.0075], WARE, 2, -0.3),
+      bill: 'YD2026082682', goods: '爆竹类 9.4 吨'
+    },
+    {
+      plate: '赣C·C7734', type: 'mid', stay: true, inAt: 9,
+      entry: pathFor([center[0] - 0.0035, center[1] + 0.0138], WARE, 3, 0.28),
+      bill: 'YD2026082683', goods: '喷花类 7.2 吨'
+    },
+    {
+      plate: '赣C·D2168', type: 'mid', stay: false, inAt: 12,
+      entry: pathFor([center[0] + 0.0095, center[1] + 0.0076], WARE, 4, -0.32),
+      bill: 'YD2026082684', goods: '升空类 5.6 吨'
+    },
+    {
+      plate: '赣C·E5902', type: 'small', stay: false, inAt: 15,
+      entry: pathFor([center[0] - 0.0122, center[1] + 0.0048], WARE, 5, 0.33),
+      bill: 'YD2026082685', goods: '玩具烟花 3.1 吨'
+    }
+  ];
+  // 停靠点：仓储周边按方位均匀散布在围栏内（互相不遮挡）
+  VEHICLES.forEach((v, i) => {
+    const ang = (i / VEHICLES.length) * Math.PI * 2 + 0.55;
+    const rad = 0.0034 + (i % 3) * 0.0017;
+    v.park = [WARE[0] + Math.cos(ang) * rad, WARE[1] + Math.sin(ang) * rad * 0.78];
+    v.exit = pathFor(v.park, [center[0] + Math.cos(ang) * 0.028, center[1] + Math.sin(ang) * 0.028], i, 0.3);
+  });
+
+  function pointOnCurve(coords, t) {
+    if (t <= 0.5) {
+      const k = t / 0.5;
+      return [coords[0][0] + (coords[1][0] - coords[0][0]) * k, coords[0][1] + (coords[1][1] - coords[0][1]) * k];
+    }
+    const k = (t - 0.5) / 0.5;
+    return [coords[1][0] + (coords[2][0] - coords[1][0]) * k, coords[1][1] + (coords[2][1] - coords[1][1]) * k];
+  }
+  function distDeg(a, b) { return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2)); }
+
+  /* ---------------- 时间线（分钟） ---------------- */
+  const TL = { s1: [0, 9], s2: [9, 17], s3: [17, 32], s4: [32, 41], s5: [41, 56], end: 60 };
+  // 账面造假考察窗口起点（预设时间段起点，演示压缩：T+36.8 起）
+  const BOOK_WIN = 36.8;
+  let tmin = 0, playing = true, speed = 1, lastTs = 0, lastMapTs = 0;
+
+  const state = {
+    stock: 498, scanIn: 0, scanOut: 0, scans: [],
+    satHistory: [],   // {t, sat}
+    bookFlag: false,
+    satPeakS4: 0,     // S4 判定窗口内的饱和度峰值（作为降幅基准）
+    bookDrop: 0, noDeparture: false,
+    riskHide: false, riskBook: false,
+    conf: { a: 0, b: 0, c: 0, d: 0, total: 0 },
+    alertOn: false
+  };
+
+  /* ---------------- 图表：库存饱和度仪表 ---------------- */
+  const gauge = echarts.init(document.getElementById('gaugeSat'));
+  function drawGauge() {
+    const sat = Math.min(1.2, state.stock / P.capacity);
+    const over = sat >= P.fullRatio;
+    gauge.setOption({
+      series: [{
+        type: 'gauge', min: 0, max: 120, startAngle: 210, endAngle: -30,
+        center: ['50%', '62%'], radius: '96%',
+        progress: {
+          show: true, width: 14,
+          itemStyle: { color: over ? '#ff4d4f' : new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color: '#0e6fb8' }, { offset: 1, color: '#00d4ff' }]) }
+        },
+        axisLine: { lineStyle: { width: 14, color: [[P.fullRatio * 100 / 120, 'rgba(255,255,255,0.10)'], [1, 'rgba(255,77,79,0.28)']] } },
+        axisTick: { show: false },
+        splitLine: { length: 8, lineStyle: { color: 'rgba(255,255,255,0.25)', width: 1 } },
+        axisLabel: { color: '#7fa6c9', fontSize: 9, distance: 14 },
+        pointer: { show: false },
+        anchor: { show: false },
+        title: { show: true, offsetCenter: [0, '42%'], color: '#8aa4bf', fontSize: 11 },
+        detail: {
+          valueAnimation: false, offsetCenter: [0, '8%'],
+          formatter: v => v.toFixed(1) + '%',
+          color: over ? '#ff6b6d' : '#e0f7ff', fontSize: 26, fontWeight: 700,
+          fontFamily: '"DIN Alternate","Arial Black",sans-serif'
+        },
+        data: [{ value: sat * 100, name: '库存饱和度 S(t)' }]
+      }]
+    }, true);
+  }
+  drawGauge();
+
+  /* ---------------- 图表：GIS 地图 ---------------- */
+  const map = echarts.init(document.getElementById('gisMap'));
+  const LABEL_BOX = {
+    backgroundColor: 'rgba(6, 26, 55, 0.8)', borderColor: 'rgba(0, 180, 255, 0.45)',
+    borderWidth: 1, borderRadius: 4, padding: [3, 6]
+  };
+
+  function vehPos(v, t) {
+    // t: 分钟；返回 [lng, lat] 与速度 km/h
+    if (t < v.inAt) return { pos: v.entry[0], spd: 0, phase: 'before' };
+    const tIn = t - v.inAt;
+    const travel = 3.0;   // 行驶到停靠点用时（分钟）
+    if (tIn < travel) {
+      const k = tIn / travel;
+      return { pos: pointOnCurve(v.entry, k), spd: 34 - 18 * k, phase: 'in' };
+    }
+    const stayMin = tIn - travel;
+    if (v.stay) {
+      // 滞留：长时间停在停靠点（速度趋近 0）
+      const jitter = stayMin > 0.2 ? 0 : 1;
+      return { pos: v.park, spd: 0.4 * (1 - Math.min(1, stayMin / 3)), phase: 'park', stayMin: stayMin };
+    }
+    // 正常车辆：短暂装卸后驶离
+    if (stayMin < 6) return { pos: v.park, spd: 0.8, phase: 'park', stayMin: stayMin };
+    const k = Math.min(1, (stayMin - 6) / 5);
+    return { pos: pointOnCurve(v.exit, k), spd: 8 + 26 * k, phase: 'out' };
+  }
+
+  // 驶离轨迹监测：仅统计「考察窗口起点 BOOK_WIN 之后才开始驶离」的车辆
+  // （窗口之前已正常驶离的车辆不计入，避免误判）
+  function detectDeparture(t) {
+    return VEHICLES.some(v => {
+      const exitAt = v.inAt + 3.0 + 6;   // 进围栏 + 行驶到停靠点 + 装卸时长
+      if (exitAt < BOOK_WIN) return false;
+      return vehPos(v, t).phase === 'out';
+    });
+  }
+
+  function renderMap() {
+    const t = tmin;
+    // 围栏内车辆
+    const inFence = [];
+    VEHICLES.forEach(v => {
+      const r = vehPos(v, t);
+      if (distDeg(r.pos, WARE) <= P.fenceR * 1.6) inFence.push({ v, r });
+    });
+    const sat = state.stock / P.capacity;
+
+    const fenceSeries = {
+      type: 'custom', coordinateSystem: 'geo', zlevel: 2, silent: true,
+      renderItem: function (params, api) {
+        const c0 = api.coord(WARE);
+        const c1 = api.coord([WARE[0] + P.fenceR, WARE[1]]);
+        const r = Math.max(20, Math.abs(c1[0] - c0[0]));
+        const parts = [{
+          type: 'circle',
+          shape: { cx: c0[0], cy: c0[1], r: r },
+          style: {
+            fill: 'rgba(0, 212, 255, 0.13)', stroke: 'rgba(0, 212, 255, 0.9)',
+            lineWidth: 2.4, lineDash: [8, 5]
+          }
+        }, {
+          type: 'text',
+          style: {
+            text: '地理电子围栏 R = 800 m',
+            x: c0[0], y: c0[1] + r + 16, textAlign: 'center',
+            fill: '#8fe3ff', font: '600 12px sans-serif'
+          }
+        }];
+        return { type: 'group', children: parts };
+      },
+      data: [[0, 0]]
+    };
+
+    const trackLines = {
+      type: 'lines', coordinateSystem: 'geo', zlevel: 3, polyline: true,
+      lineStyle: { width: 1.4, opacity: 0.5 },
+      effect: { show: true, period: 6, trailLength: 0.22, symbol: 'arrow', symbolSize: 5, color: '#ff9f2e' },
+      data: VEHICLES.map(v => ({
+        coords: v.entry.concat([v.park]),
+        name: v.plate,
+        lineStyle: { color: v.stay ? 'rgba(255,159,46,0.85)' : 'rgba(127,227,160,0.7)', width: v.stay ? 1.8 : 1.3 },
+        effect: { show: true, period: v.stay ? 4 : 7, trailLength: 0.24, symbol: 'arrow', symbolSize: 5, color: v.stay ? '#ff9f2e' : '#7fe3a0' }
+      }))
+    };
+
+    const wareMark = {
+      type: 'effectScatter', coordinateSystem: 'geo', zlevel: 5,
+      rippleEffect: { brushType: 'stroke', scale: 3.4, period: 3.6 },
+      symbolSize: 19,
+      itemStyle: {
+        color: sat >= P.fullRatio ? '#ff4d4f' : '#ffd23f',
+        shadowBlur: 16, shadowColor: 'rgba(255, 210, 63, 0.85)'
+      },
+      label: Object.assign({
+        show: true, position: 'top', distance: 9,
+        formatter: '目标仓储 A 库\n库存 ' + Math.round(state.stock) + ' 吨 / 800 吨',
+        color: '#ffe08a', fontSize: 11.5, fontWeight: 700, lineHeight: 15,
+        textShadowColor: 'rgba(0,0,0,0.8)', textShadowBlur: 4,
+        align: 'center'
+      }, LABEL_BOX),
+      data: [{ name: '目标仓储', value: WARE }]
+    };
+
+    const vehMarks = {
+      type: 'scatter', coordinateSystem: 'geo', zlevel: 6, symbol: 'path://M0,-9 L6,6 L-6,6 Z',
+      symbolSize: 19,
+      data: VEHICLES.map(v => {
+        const r = vehPos(v, t);
+        if (r.phase === 'before') return null;
+        const staying = v.stay && r.phase === 'park' && (r.stayMin || 0) * 60 >= 0;
+        const marked = v.stay && r.phase === 'park' && (r.stayMin || 0) >= P.tolerance;
+        return {
+          name: v.plate, value: r.pos, plate: v.plate, spd: r.spd, stayMin: r.stayMin || 0,
+          staying: marked,
+          itemStyle: {
+            color: marked ? '#ff4d4f' : (r.phase === 'park' ? '#ffd23f' : '#7fe3a0'),
+            borderColor: 'rgba(255,255,255,0.85)', borderWidth: 1,
+            shadowBlur: 10, shadowColor: marked ? 'rgba(255,77,79,0.9)' : 'rgba(0,212,255,0.6)'
+          },
+          label: {
+            show: r.phase === 'park', position: 'bottom', distance: 6, formatter: v.plate,
+            color: marked ? '#ff9d9f' : '#cfe9ff', fontSize: 10.5, fontWeight: 600,
+            textShadowColor: 'rgba(0,0,0,0.8)', textShadowBlur: 4
+          }
+        };
+      }).filter(Boolean)
+    };
+
+    // 预警高亮层（留空占位，保证 series 索引稳定）
+    const alertMark = {
+      type: 'effectScatter', coordinateSystem: 'geo', zlevel: 7, silent: true,
+      rippleEffect: { brushType: 'stroke', scale: 2.8, period: 2.4 }, symbolSize: 17,
+      data: state.alertOn ? VEHICLES.filter(v => v.stay).map(v => ({
+        name: v.plate, value: v.park,
+        itemStyle: { color: '#ff4d4f', shadowBlur: 16, shadowColor: 'rgba(255,77,79,0.95)' }
+      })) : []
+    };
+
+    map.setOption({
+      title: {
+      text: '万载县（宜春市）· 目标仓储作业范围',
+      left: 12, top: 8,
+      textStyle: { color: 'rgba(150, 200, 240, 0.75)', fontSize: 11.5, fontWeight: 600 }
+    },
+    tooltip: Object.assign({
+      trigger: 'item',
+      formatter: p => {
+        if (p.data && p.data.plate) {
+          return '<b>' + p.data.plate + '</b><br/>移动速度：' + p.data.spd.toFixed(1) + ' km/h' +
+            '<br/>围栏内停留：' + Math.round(p.data.stayMin) + ' min' +
+            '<br/>判定：' + (p.data.staying ? '<span style="color:#ff7875">滞留车辆</span>' : '正常') +
+            '<br/>坐标：' + p.data.value[0].toFixed(4) + ', ' + p.data.value[1].toFixed(4);
+        }
+        if (p.name === '目标仓储') return '<b>万载县烟花爆竹仓储中心 A 库</b><br/>库存 ' + Math.round(state.stock) + ' 吨 / 800 吨<br/>饱和度 ' + (sat * 100).toFixed(1) + '%';
+        return p.name || '';
+      }
+    }, tipBase),
+    geo: {
+      map: 'patent_county', roam: false, zoom: 9.0, aspectScale: 0.92,
+      center: [WARE[0] - 0.0012, WARE[1] - 0.0010],
+      left: 10, right: 10, top: 26, bottom: 10,
+      itemStyle: {
+        areaColor: 'rgba(10, 58, 110, 0.42)',
+        borderColor: 'rgba(0, 212, 255, 0.55)', borderWidth: 1.5,
+        shadowColor: 'rgba(0, 120, 220, 0.45)', shadowBlur: 18
+      },
+      emphasis: { disabled: true },
+      label: { show: false }
+    },
+    series: [fenceSeries, trackLines, wareMark, vehMarks, alertMark]
+  }, false);
+
+    document.getElementById('fenceInfo').textContent =
+      '围栏半径 800 m · 围栏内车辆 ' + inFence.length + ' 辆';
+    return inFence;
+  }
+
+  /* ---------------- S3：滞留指数 ---------------- */
+  function computeStagnation(t) {
+    const rows = [];
+    let sumW = 0, stayCount = 0;
+    VEHICLES.forEach(v => {
+      const r = vehPos(v, t);
+      if (r.phase === 'before') return;
+      const stayMin = r.phase === 'park' ? (r.stayMin || 0) : 0;
+      const inFenceMin = Math.max(0, t - v.inAt);
+      const wStay = Math.min(1, stayMin / P.tolerance);
+      const wSlow = Math.max(0, 1 - r.spd / P.staticSpeed);
+      const weight = 0.5 * wStay + 0.5 * wSlow;
+      const isStay = stayMin >= P.tolerance && r.spd < P.staticSpeed;   // 停留超容忍 且 速度低于静止阈值
+      if (isStay) { stayCount++; sumW += weight; }
+      rows.push({
+        plate: v.plate, inAt: v.inAt, inFenceMin: inFenceMin, spd: r.spd,
+        stayMin: stayMin, weight: weight, stay: isStay, bill: v.bill, goods: v.goods, phase: r.phase
+      });
+    });
+    // 异常滞留指数：滞留车辆权重和 / 参考车辆数（3 辆为满值）
+    const index = Math.min(1, sumW / 3 * 0.78 + (sumW > 0 ? 0.1 : 0));
+    return { rows: rows, count: stayCount, index: index };
+  }
+
+  function renderVehTable(st) {
+    document.getElementById('vehTbody').innerHTML = st.rows.map(r => `
+      <tr class="${r.stay ? 'stay' : ''}">
+        <td>${r.plate}</td>
+        <td>${r.phase === 'before' ? '—' : 'T+' + r.inAt.toFixed(1) + ' min'}</td>
+        <td class="num">${r.phase === 'before' ? '—' : r.inFenceMin.toFixed(1) + ' min'}</td>
+        <td class="num">${r.spd.toFixed(1)} km/h</td>
+        <td>${r.stay ? '<span class="chip bad">滞留车辆</span>' : (r.phase === 'park' ? '<span class="chip mid">停靠中</span>' : '<span class="chip ok">正常行驶</span>')}</td>
+        <td class="num">${r.weight.toFixed(3)}</td>
+        <td>${r.bill}</td>
+      </tr>`).join('') || '<tr><td colspan="7" style="color:#6b8aa8;text-align:center;padding:14px;">围栏内暂无车辆</td></tr>';
+    document.getElementById('vehInfo').textContent =
+      '滞留车辆集合 ' + st.count + ' 辆 · 异常滞留指数 ' + st.index.toFixed(2);
+  }
+
+  /* ---------------- S1：扫码流水与饱和度演进 ---------------- */
+  // 每条扫码记录带时间戳 at（分钟），保证饱和度演进与 S1~S5 流程严格对齐
+  const OP = [
+    // —— S1（T+0~9）：常规出入库，饱和度由 62% 缓升至 68%
+    { at: 0.6, act: 'in', name: '组合烟花（产成品）', qty: 12.6 },
+    { at: 2.0, act: 'in', name: '爆竹类（产成品）', qty: 18.4 },
+    { at: 3.4, act: 'out', name: '组合烟花（发运）', qty: 9.8 },
+    { at: 4.8, act: 'in', name: '黑火药（原料）', qty: 6.2 },
+    { at: 6.2, act: 'in', name: '喷花类（产成品）', qty: 14.2 },
+    { at: 7.8, act: 'in', name: '引火线（原材料）', qty: 3.6 },
+    // —— S2（T+9~17）：电子围栏构建、轨迹接入，出入库持续
+    { at: 9.4, act: 'out', name: '爆竹类（发运）', qty: 12.1 },
+    { at: 10.8, act: 'in', name: '组合烟花（产成品）', qty: 21.4 },
+    { at: 12.2, act: 'in', name: '升空类（产成品）', qty: 11.8 },
+    { at: 13.6, act: 'in', name: '玩具烟花（产成品）', qty: 9.2 },
+    { at: 15.0, act: 'out', name: '喷花类（发运）', qty: 8.6 },
+    { at: 16.4, act: 'in', name: '黑火药（原料）', qty: 4.8 },
+    // —— S3（T+17~32）：入库集中放量，饱和度突破满载阈值 85%（680 吨）
+    { at: 17.6, act: 'in', name: '爆竹类（产成品）', qty: 18.6 },
+    { at: 19.0, act: 'in', name: '喷花类（产成品）', qty: 14.2 },
+    { at: 20.4, act: 'out', name: '升空类（发运）', qty: 7.4 },
+    { at: 21.8, act: 'in', name: '组合烟花（产成品）', qty: 14.4 },
+    { at: 23.2, act: 'in', name: '玩具烟花（产成品）', qty: 11.6 },
+    { at: 24.6, act: 'in', name: '组合烟花（产成品）', qty: 19.2 },
+    { at: 26.0, act: 'out', name: '喷花类（发运）', qty: 6.2 },
+    { at: 27.4, act: 'in', name: '爆竹类（产成品）', qty: 16.8 },
+    { at: 28.8, act: 'in', name: '组合烟花（产成品）', qty: 24.4 },
+    { at: 30.0, act: 'in', name: '黑火药（原料）', qty: 12.6 },
+    { at: 31.4, act: 'out', name: '玩具烟花（发运）', qty: 5.2 },
+    // —— S4 前半段（T+32~36）：饱和度维持 86% 以上 → 隐蔽囤货风险成立
+    { at: 32.8, act: 'in', name: '组合烟花（产成品）', qty: 10.4 },
+    { at: 34.2, act: 'out', name: '喷花类（发运）', qty: 4.6 },
+    { at: 35.6, act: 'in', name: '爆竹类（产成品）', qty: 8.2, peak: true },
+    // —— S4 后半段（T+36~41）：批量「扫码出库」但围栏内无任何驶离轨迹 → 账面造假风险
+    { at: 36.8, act: 'out', name: '组合烟花（发运）', qty: 26.4, phantom: true },
+    { at: 37.8, act: 'out', name: '爆竹类（发运）', qty: 28.6, phantom: true },
+    { at: 38.8, act: 'out', name: '喷花类（发运）', qty: 24.8, phantom: true },
+    { at: 39.8, act: 'out', name: '升空类（发运）', qty: 30.2, phantom: true },
+    { at: 40.6, act: 'out', name: '组合烟花（发运）', qty: 22.4, phantom: true },
+    // —— S5（T+41~60）：账面仍在持续「发货」，滞留车辆始终未驶离围栏
+    { at: 42.4, act: 'out', name: '玩具烟花（发运）', qty: 18.6, phantom: true },
+    { at: 44.6, act: 'out', name: '黑火药（发运）', qty: 15.4, phantom: true },
+    { at: 47.0, act: 'out', name: '爆竹类（发运）', qty: 12.8, phantom: true },
+    { at: 50.0, act: 'out', name: '组合烟花（发运）', qty: 10.2, phantom: true },
+    { at: 53.0, act: 'out', name: '喷花类（发运）', qty: 8.4, phantom: true },
+    { at: 56.0, act: 'out', name: '升空类（发运）', qty: 6.2, phantom: true }
+  ];
+  let opIdx = 0;
+  function pushScan(t) {
+    while (opIdx < OP.length && OP[opIdx].at <= t) {
+      const o = OP[opIdx++];
+      const before = state.stock;
+      if (o.act === 'in') { state.stock += o.qty; state.scanIn++; }
+      else { state.stock = Math.max(0, state.stock - o.qty); state.scanOut++; }
+      state.scans.unshift({
+        act: o.act, name: o.name, qty: o.qty, t: o.at, before: before, after: state.stock,
+        phantom: !!o.phantom
+      });
+      if (state.scans.length > 26) state.scans.pop();
+    }
+    renderScans();
+    document.getElementById('pStock').textContent = Math.round(state.stock) + ' 吨';
+    document.getElementById('scanSum').textContent = '入库 ' + state.scanIn + ' · 出库 ' + state.scanOut;
+    drawGauge();
+  }
+  function renderScans() {
+    document.getElementById('scanList').innerHTML = state.scans.map(s => `
+      <div class="scan-item ${s.act}">
+        <span class="t">T+${s.t.toFixed(1)}′</span>
+        <span class="c">${s.act === 'in' ? '扫码入库' : '扫码出库'} · ${s.name}${s.phantom ? ' <span class="chip bad">无对应驶离轨迹</span>' : ''}</span>
+        <span class="q">${s.act === 'in' ? '+' : '−'}${s.qty} 吨</span>
+      </div>`).join('');
+  }
+
+  /* ---------------- S4 / S5：状态机与结果 ---------------- */
+  const panels = {
+    s1: document.getElementById('panelS1'), s2: document.getElementById('panelS2'),
+    s3: document.getElementById('panelS3'), s4: document.getElementById('panelS4'),
+    s5: document.getElementById('panelS5')
+  };
+  const flows = {
+    1: document.getElementById('f1'), 2: document.getElementById('f2'), 3: document.getElementById('f3'),
+    4: document.getElementById('f4'), 5: document.getElementById('f5')
+  };
+  function setFlow(cur, doneAll) {
+    for (let i = 1; i <= 5; i++) {
+      const el = flows[i];
+      el.classList.toggle('on', i === cur && !doneAll);
+      el.classList.toggle('done', doneAll ? true : i < cur);
+    }
+    for (const k in panels) panels[k].classList.remove('active');
+    const cur2 = cur <= 1 ? 's1' : (cur === 2 ? 's2' : (cur === 3 ? 's3' : (cur === 4 ? 's4' : 's5')));
+    panels[cur2].classList.add('active');
+    document.getElementById('stepTag').textContent = doneAll ? 'S1-S5 完成' : ('S' + cur + ' / S5');
+  }
+
+  function updateStage() {
+    const t = tmin;
+    let cur = 1;
+    if (t >= TL.s2[0]) cur = 2;
+    if (t >= TL.s3[0]) cur = 3;
+    if (t >= TL.s4[0]) cur = 4;
+    if (t >= TL.s5[0]) cur = 5;
+    setFlow(cur, state.alertOn);
+    document.getElementById('flowTick').textContent = 't = ' + t.toFixed(1) + ' min';
+
+    // S4 判定
+    const sat = state.stock / P.capacity;
+    // 判定式 A（隐蔽囤货）：S(t) ≥ 满载阈值 ∧ I(t) ≥ 滞留报警阈值 —— 命中即置位保持
+    if (t >= TL.s4[0]) {
+      if (sat >= P.fullRatio && lastIndex >= P.stayThreshold) state.riskHide = true;
+      state.satPeakS4 = Math.max(state.satPeakS4 || 0, sat);
+    }
+    // 判定式 B（账面造假）：预设时间段内饱和度下降 ≥ 15% ∧ 围栏内无驶离轨迹
+    if (t >= BOOK_WIN) {
+      state.riskBook = true;
+      state.bookDrop = Math.max(0, (state.satPeakS4 || sat) - sat);
+      state.noDeparture = !detectDeparture(t);
+    }
+    renderRisk();
+
+    // S5 置信度校验
+    if (t >= TL.s5[0]) {
+      runConfidence();
+    } else {
+      resetConfidence();
+    }
+    updateStageDone();
+  }
+  let lastIndex = 0;
+
+  function renderRisk() {
+    const sat = state.stock / P.capacity;
+    document.getElementById('stHide').textContent = state.riskHide ? '风险成立' : '未触发';
+    document.getElementById('riskHide').classList.toggle('hit', state.riskHide);
+    const bookCond = (state.bookDrop || 0) >= 0.15 && state.noDeparture;
+    document.getElementById('stBook').textContent = (state.riskBook && bookCond) ? '风险成立' : (state.riskBook ? '校验中' : '未触发');
+    document.getElementById('riskBook').classList.toggle('hit', state.riskBook && bookCond);
+    const condTxt = 'S(t) ' + (sat * 100).toFixed(1) + '%（峰值 ' + ((state.satPeakS4 || 0) * 100).toFixed(1) +
+      '%）· I(t) ' + lastIndex.toFixed(2) + ' · ΔS ' + ((state.bookDrop || 0) * 100).toFixed(1) +
+      '% · 驶离轨迹 ' + (state.bookDrop > 0 ? (state.noDeparture ? '未监测到' : '已监测到') : '监测中');
+    document.getElementById('ruleState').textContent = condTxt;
+  }
+
+  function resetConfidence() {
+    state.conf = { a: 0, b: 0, c: 0, d: 0, total: 0 };
+    ['1', '2', '3', '4'].forEach(i => {
+      document.getElementById('cf' + i).style.width = '0%';
+      document.getElementById('cv' + i).textContent = '--';
+    });
+    document.getElementById('confTotal').textContent = '--';
+    document.getElementById('confState').textContent = '未校验';
+    document.getElementById('alertBox').classList.remove('on');
+    state.alertOn = false;
+  }
+
+  function runConfidence() {
+    const sat = state.stock / P.capacity;
+    const bookCond = (state.bookDrop || 0) >= 0.15 && state.noDeparture;
+    const anyRisk = state.riskHide || (state.riskBook && bookCond);
+    // 多源一致性：各分项 0-100
+    const parts = {
+      a: 88 + Math.round(hash01('a' + Math.round(tmin)) * 9),          // 扫码出入库数据完整性
+      b: 86 + Math.round(hash01('b' + Math.round(tmin)) * 12),         // 视频监控核验
+      c: 90 + Math.round(hash01('c' + Math.round(tmin)) * 9),          // 车辆定位轨迹连续性
+      d: 82 + Math.round(hash01('d' + Math.round(tmin)) * 14)          // 电子运单比对
+    };
+    const total = parts.a * 0.32 + parts.b * 0.24 + parts.c * 0.26 + parts.d * 0.18;
+    state.conf = Object.assign({}, parts, { total: total });
+    document.getElementById('cf1').style.width = parts.a + '%';
+    document.getElementById('cv1').textContent = parts.a + '%';
+    document.getElementById('cf2').style.width = parts.b + '%';
+    document.getElementById('cv2').textContent = parts.b + '%';
+    document.getElementById('cf3').style.width = parts.c + '%';
+    document.getElementById('cv3').textContent = parts.c + '%';
+    document.getElementById('cf4').style.width = parts.d + '%';
+    document.getElementById('cv4').textContent = parts.d + '%';
+    document.getElementById('confTotal').textContent = total.toFixed(1) + '%';
+    const pass = total >= P.confThreshold * 100;
+    document.getElementById('confState').textContent = pass ? '校验通过 · 风险确认' : '置信度不足 · 需人工复核';
+    if (anyRisk && pass) {
+      state.alertOn = true;
+      document.getElementById('alertBox').classList.add('on');
+      const kind = state.riskHide && !state.riskBook ? '隐蔽囤货风险'
+        : (!state.riskHide && state.riskBook) ? '账面造假风险' : '隐蔽囤货风险 + 账面造假风险';
+      document.getElementById('alertTitle').textContent =
+        kind + ' · 万载县烟花爆竹仓储中心 A 库（WZ-A-01）';
+      const stayCars = VEHICLES.filter(v => v.stay).map(v => v.plate + '（' + v.goods + '）').join('；');
+      document.getElementById('alertBody').innerHTML =
+        '判定依据：库存饱和度峰值 <b>' + ((state.satPeakS4 || 0) * 100).toFixed(1) + '%</b>（满载阈值 85%）· 车辆异常滞留指数 <b>' +
+        lastIndex.toFixed(2) + '</b>（滞留报警阈值 0.60）· 预设时间段内饱和度降幅 <b>' + ((state.bookDrop || 0) * 100).toFixed(1) + '%</b>，围栏内未监测到对应驶离轨迹。<br/>' +
+        '滞留车辆：' + stayCars + '。<br/>' +
+        'GIS 坐标已同步：仓储 <b>' + WARE[0].toFixed(4) + ', ' + WARE[1].toFixed(4) + '</b>，车辆坐标已在地图高亮标注。';
+      // 高亮地图：仓储与车辆闪烁（由 renderMap 的 alertMark 图层承载，不覆盖其他图层）
+      renderMap();
+    } else {
+      state.alertOn = false;
+      document.getElementById('alertBox').classList.remove('on');
+    }
+  }
+  function hash01(s) {
+    let h = 7;
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    return (h % 1000) / 1000;
+  }
+
+  function updateStageDone() {
+    if (tmin >= TL.end - 2) {
+      setFlow(5, true);
+      document.getElementById('ruleState').textContent = '识别完成 · 管控预警已下发';
+    }
+  }
+
+  /* ---------------- 主循环 ---------------- */
+  function tick(ts) {
+    if (!lastTs) lastTs = ts;
+    const dt = Math.min(0.12, (ts - lastTs) / 1000);
+    lastTs = ts;
+    if (playing) {
+      tmin += dt * speed * 1.15;   // 1.15 分钟/秒
+      if (tmin > TL.end) tmin = 0, resetState();
+    }
+    // S1 扫码（按时间戳推进）
+    if (tmin <= TL.end) pushScan(tmin);
+    // S3 计算
+    const st = computeStagnation(tmin);
+    lastIndex = st.index;
+    renderVehTable(st);
+    if (ts - lastMapTs > 50) { lastMapTs = ts; renderMap(); }
+    updateStage();
+    requestAnimationFrame(tick);
+  }
+
+  function resetState() {
+    tmin = 0; lastTs = 0; opIdx = 0;
+    state.stock = 498; state.scanIn = 0; state.scanOut = 0; state.scans = [];
+    state.satPeakS4 = 0; state.bookDrop = 0; state.noDeparture = false;
+    state.riskHide = false; state.riskBook = false;
+    lastIndex = 0;
+    renderScans(); drawGauge(); resetConfidence();
+    document.getElementById('pStock').textContent = '498 吨';
+    document.getElementById('scanSum').textContent = '入库 0 · 出库 0';
+    document.getElementById('stHide').textContent = '未触发';
+    document.getElementById('stBook').textContent = '未触发';
+    document.getElementById('ruleState').textContent = '等待判定';
+    document.getElementById('riskHide').classList.remove('hit');
+    document.getElementById('riskBook').classList.remove('hit');
+  }
+
+  document.getElementById('btnPlay').addEventListener('click', function () {
+    playing = !playing;
+    this.textContent = playing ? '暂停演示' : '继续演示';
+    this.classList.toggle('primary', playing);
+  });
+  document.getElementById('btnReset').addEventListener('click', function () {
+    resetState();
+    playing = true;
+    document.getElementById('btnPlay').textContent = '暂停演示';
+    document.getElementById('btnPlay').classList.add('primary');
+  });
+
+  // 初始化
+  renderScans();
+  renderVehTable(computeStagnation(0));
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
