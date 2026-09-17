@@ -1010,8 +1010,8 @@
       return h + (extra || '');
     }
     function mainLine(d) {
-      return '{nm|' + (d.lbl || d.name || '') + '}\\n{v|' + MAIN_LABEL + ' ' + fmt(d[MAIN_KEY]) + ' ' + MAIN_UNIT + '}' +
-        (d.warns ? '\\n{w|预警 ' + d.warns + ' 起}' : '');
+      return '{nm|' + (d.lbl || d.name || '') + '}\n{v|' + MAIN_LABEL + ' ' + fmt(d[MAIN_KEY]) + ' ' + MAIN_UNIT + '}' +
+        (d.warns ? '\n{w|预警 ' + d.warns + ' 起}' : '');
     }
 
     function setMapBadge(name, lv) {
@@ -1340,8 +1340,8 @@
         },
         label: Object.assign({
           show: true, position: 'right', distance: 10,
-          formatter: () => '{nm|' + entShort(node.name) + '}\\n{v|' + MAIN_LABEL + ' ' + fmt(node[MAIN_KEY]) + ' ' + MAIN_UNIT + '}' +
-            (over ? '\\n{w|预警未处置}' : '\\n{v|运行正常}'),
+          formatter: () => '{nm|' + entShort(node.name) + '}\n{v|' + MAIN_LABEL + ' ' + fmt(node[MAIN_KEY]) + ' ' + MAIN_UNIT + '}' +
+            (over ? '\n{w|预警未处置}' : '\n{v|运行正常}'),
           rich: LABEL_RICH
         }, LABEL_BOX),
         data: [Object.assign(entData, { value: pt })]

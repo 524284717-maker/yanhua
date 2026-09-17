@@ -1000,8 +1000,8 @@
       return h + (extra || '');
     }
     function mainLine(d) {
-      return '{nm|' + (d.lbl || d.name || '') + '}\\n{v|' + MAIN_LABEL + ' ' + fmt(d[MAIN_KEY]) + ' ' + MAIN_UNIT + '}' +
-        (d.warns ? '\\n{w|预警 ' + d.warns + ' 起}' : '');
+      return '{nm|' + (d.lbl || d.name || '') + '}\n{v|' + MAIN_LABEL + ' ' + fmt(d[MAIN_KEY]) + ' ' + MAIN_UNIT + '}' +
+        (d.warns ? '\n{w|预警 ' + d.warns + ' 起}' : '');
     }
 
     function setMapBadge(name, lv) {
