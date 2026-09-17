@@ -80,18 +80,6 @@
   .step-nav a.active b { opacity: 1; }
   .step-nav a.home { color: #b8dcff; }
 
-  /* ------- 识别流程阶段条（进页自动推进，无需手动控制） ------- */
-  .timeline { position: relative; display: flex; align-items: center; gap: 12px; flex-shrink: 0;
-    padding: 2px 2px 0; }
-  .timeline .lab { font-size: 11.5px; color: var(--text-dim); white-space: nowrap; }
-  .seg-marks { display: flex; gap: 8px; flex: 1; min-width: 0; }
-  .seg-marks span { flex: 1; text-align: center; font-size: 11.5px; padding: 3px 6px; border-radius: 8px;
-    color: #6b8aa8; border: 1px solid rgba(0, 180, 255, 0.18); background: rgba(0, 50, 95, 0.3);
-    white-space: nowrap; transition: color .25s, background .25s, border-color .25s, box-shadow .25s; }
-  .seg-marks span.on { color: #04121f; background: #00d4ff; border-color: #00d4ff; font-weight: 700;
-    box-shadow: 0 0 14px rgba(0, 212, 255, 0.55); }
-  .seg-marks span.hit { color: #8ff0b0; border-color: rgba(34,197,94,0.6); background: rgba(34,197,94,0.16); }
-
   main { flex: 1; display: grid; gap: 10px; min-height: 0; }
   .col { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
   .panel {
@@ -326,17 +314,6 @@
     </div>
   </header>
 
-  <div class="timeline">
-    <span class="lab">识别流程</span>
-    <div class="seg-marks" id="marks">
-      <span data-n="1">S1 0-9′</span>
-      <span data-n="2">S2 9-17′</span>
-      <span data-n="3">S3 17-32′</span>
-      <span data-n="4">S4 32-41′</span>
-      <span data-n="5">S5 41-60′</span>
-    </div>
-  </div>
-
   <main style="grid-template-columns: 1fr 1fr;">
     <div class="col">
       <div class="panel" style="flex: 0 0 auto;">
@@ -416,7 +393,7 @@
 
   <footer class="pager">
     <a href="patent-s3.html" data-step="3">← 上一流程 S3</a>
-    <span class="mid">S4 / S5 · 双风险判定 —— 进页自动按识别流程推进，各指标随监测时刻实时刷新</span>
+    <span class="mid">S4 / S5 · 双风险判定 —— 进页自 T+0 起按功能时序自动推进，各指标随监测时刻实时刷新</span>
     <a href="patent-s5.html" data-step="5">下一流程 S5 →</a>
   </footer>
 </div>
@@ -545,11 +522,8 @@
   window.addEventListener('resize', fitScreen);
   fitScreen();
 
-  /* ---------- 监测时刻 T：地址栏 ?t= 优先，其次取本流程代表时刻 ---------- */
-  var q = new URLSearchParams(location.search);
-  var T = parseFloat(q.get('t'));
-  if (!isFinite(T)) T = M.stageTime(PAGE_NO);
-  T = Math.max(0, Math.min(M.TL.end, T));
+  /* ---------- 监测时刻 T：各页进页统一从 T+0（S1 0-9′ 段起点）开始播放 ---------- */
+  var T = 0;
   var lastTs = 0;
 
   var elTick = document.getElementById('flowTick');
@@ -558,28 +532,18 @@
   function fmtT(t) { return 'T+' + t.toFixed(1) + '′'; }
 
   function syncLinks() {
-    var t = T.toFixed(1);
     document.querySelectorAll('a[data-step]').forEach(function (a) {
-      a.setAttribute('href', 'patent-s' + a.getAttribute('data-step') + '.html?t=' + t);
+      a.setAttribute('href', 'patent-s' + a.getAttribute('data-step') + '.html');
     });
     var navs = document.querySelectorAll('.step-nav a[data-step]');
     navs.forEach(function (a) { a.classList.toggle('active', +a.getAttribute('data-step') === PAGE_NO); });
   }
 
-  function syncMarks(stage) {
-    document.querySelectorAll('#marks span').forEach(function (s) {
-      var n = +s.getAttribute('data-n');
-      s.classList.toggle('on', n === stage.no);
-      s.classList.toggle('hit', n < stage.no || (stage.done && n <= 5));
-    });
-  }
-
   function paint() {
     var st = M.stateAt(T);
     elTick.textContent = fmtT(T);
-    elStep.textContent = st.stage.done ? 'S1-S5 全流程识别完成' : ('S' + st.stage.no + ' / S5 · 当前查看 S' + PAGE_NO);
+    elStep.textContent = st.stage.done ? 'S1-S5 全流程已完成' : ('S' + st.stage.no + ' / S5 · 当前查看 S' + PAGE_NO);
     elStep.classList.toggle('done', st.stage.done);
-    syncMarks(st.stage);
     syncLinks();
     if (typeof renderPage === 'function') renderPage(T, st);
   }
@@ -607,6 +571,8 @@
   if (typeof initPage === 'function') initPage();
   paint();
   window.addEventListener('resize', function () { setTimeout(function () { if (typeof relayout === 'function') relayout(); }, 60); });
+  /* 首次布局稳定后再对齐一次画布尺寸，避免图表底边超出容器 */
+  setTimeout(function () { if (typeof relayout === 'function') relayout(); }, 220);
   requestAnimationFrame(tick);
 })();
 
