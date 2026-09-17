@@ -43,45 +43,47 @@
       position: relative; z-index: 10;
       height: 72px;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 24px;
-      background: linear-gradient(180deg, rgba(6, 26, 55, 0.95) 0%, rgba(6, 26, 55, 0.6) 100%);
-      border-bottom: 1px solid rgba(0, 180, 255, 0.25);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      padding: 0 28px;
+      background: linear-gradient(90deg, #1263d2 0%, #1b79e6 48%, #3e9cf3 100%);
+      box-shadow: 0 2px 14px rgba(14, 76, 158, 0.28);
+      overflow: hidden;
     }
     .header::after {
-      content: "";
-      position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
-      width: 60%; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background:
+        linear-gradient(105deg, rgba(255,255,255,0) 15%, rgba(255,255,255,0.10) 34%, rgba(255,255,255,0.02) 48%, rgba(255,255,255,0.13) 66%, rgba(255,255,255,0) 88%),
+        linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0) 62%);
     }
-    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand {
+      position: relative; z-index: 2; display: flex; align-items: center; gap: 12px;
+    }
     .brand-icon {
-      width: 42px; height: 42px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #00d4ff, #0066aa);
-      box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+      width: 44px; height: 44px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px; font-weight: bold; color: #fff;
+      filter: drop-shadow(0 3px 8px rgba(120, 45, 0, 0.35));
     }
-    .brand h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; color: var(--title); text-shadow: 0 0 12px rgba(0, 212, 255, 0.5); }
-    .nav { display: flex; gap: 8px; margin: 0 auto; }
+    .brand h1 {
+      font-size: 22px; font-weight: 700; letter-spacing: 2px; color: #fff;
+      text-shadow: 0 2px 8px rgba(9, 55, 120, 0.35); white-space: nowrap;
+    }
+    .nav {
+      position: relative; z-index: 2; display: flex; gap: 6px; margin: 0 auto;
+    }
     .nav a {
-      position: relative;
-      padding: 8px 18px;
-      color: var(--text-dim); text-decoration: none; font-size: 14px;
-      border-radius: 4px; transition: all 0.25s;
-      background: rgba(0, 120, 200, 0.08);
-      border: 1px solid transparent;
+      position: relative; padding: 8px 16px; color: rgba(255,255,255,0.9);
+      text-decoration: none; font-size: 14px; border-radius: 6px;
+      border: 1px solid transparent; transition: all .2s; white-space: nowrap;
+      background: transparent;
     }
-    .nav a:hover { color: var(--accent); background: rgba(0, 180, 255, 0.12); }
+    .nav a:hover {
+      color: #fff; background: rgba(255,255,255,0.18);
+    }
     .nav a.active {
-      color: #fff; background: linear-gradient(180deg, rgba(0, 150, 255, 0.25), rgba(0, 80, 160, 0.15));
-      border-color: rgba(0, 212, 255, 0.45);
-      box-shadow: 0 0 12px rgba(0, 180, 255, 0.25) inset, 0 0 8px rgba(0, 180, 255, 0.2);
+      color: #1263d2; background: #fff; border-color: #fff; font-weight: 600;
+      box-shadow: 0 2px 10px rgba(9, 55, 120, 0.2);
     }
     .nav a.active::before {
-      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      content: none;
     }
     .time { font-family: "DIN Alternate", "Arial Black", sans-serif; font-size: 16px; color: var(--accent); letter-spacing: 1px; }
 
@@ -344,15 +346,16 @@
     .tv-rows { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; color: #c8e2f5; line-height: 1.45; }
     .tv-rows b { color: #7fa6c9; font-weight: 500; margin-right: 5px; }
     .tv-ft { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #8aa4bf; margin-top: auto; }
-  </style>
+  .brand-icon svg { width: 100%; height: 100%; display: block; }
+</style>
 </head>
 <body>
   <div class="screen">
   <header class="header">
     <div class="brand">
-      <div class="brand-icon">赣</div>
+      <div class="brand-icon"><svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="yhBrandIcon" x1="0.15" y1="0" x2="0.7" y2="1"><stop offset="0" stop-color="#FFC24D"/><stop offset="1" stop-color="#F97316"/></linearGradient></defs><path d="M24 3.6 L41.4 10.2 V23.4 C41.4 33.6 33.3 41.4 24 44.6 C14.7 41.4 6.6 33.6 6.6 23.4 V10.2 Z" fill="url(#yhBrandIcon)"/><g stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"><path d="M24 15.4 V25.6"/><path d="M18.1 18.6 L21.4 24.1"/><path d="M29.9 18.6 L26.6 24.1"/><path d="M15.4 25.4 L20 27.5"/><path d="M32.6 25.4 L28 27.5"/></g><circle cx="24" cy="30.2" r="2.4" fill="#fff"/><path d="M3.4 30.4 C8 39.4 16.4 44.5 24 45.3" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.92"/><circle cx="4.6" cy="24" r="1.9" fill="#fff"/><circle cx="44" cy="33.4" r="2.1" fill="#fff"/></svg></div>
       <div>
-        <h1>省级烟花爆竹产业全链条监管服务平台</h1>
+        <h1>烟花爆竹监管平台</h1>
       </div>
     </div>
     <nav class="nav">
@@ -365,7 +368,7 @@
       <a href="retail.html">经营态势</a>
       <a href="firework.html">燃放态势</a>
       <a href="enforcement.html">打非治违态势</a>
-      <a href="monitor.html">智能监控中心</a>
+      <a href="monitor.html">智能预警中心</a>
       <a href="admin.html">业务管理</a>
     </nav>
   </header>
