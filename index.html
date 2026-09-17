@@ -7,34 +7,32 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <script src="geo-data.js"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --bg: #050b14;
-      --panel: rgba(10, 30, 60, 0.55);
-      --panel-border: rgba(0, 180, 255, 0.35);
-      --accent: #00d4ff;
-      --accent-dim: rgba(0, 212, 255, 0.15);
-      --warn: #ff9f2e;
-      --danger: #ff4d4f;
-      --text: #e0f7ff;
-      --text-dim: #8aa4bf;
-      --title: #ffffff;
+    *{ margin: 0; padding: 0; box-sizing: border-box; }
+    :root{
+      --bg: #eef2f8;
+      --panel: rgba(255, 255, 255, 0.96);
+      --panel-border: rgba(22, 119, 255, 0.16);
+      --accent: #1677ff;
+      --accent-dim: rgba(22, 119, 255, 0.10);
+      --warn: #f5821f;
+      --danger: #e5484d;
+      --text: #243447;
+      --text-dim: #6b7c93;
+      --title: #12263f;
     }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; }
-    body {
+    html, body{ width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; }
+    body{
       display: flex; align-items: center; justify-content: center;
-      background:
-        radial-gradient(circle at 50% 0%, rgba(0, 90, 150, 0.25), transparent 60%),
-        radial-gradient(circle at 80% 80%, rgba(0, 60, 100, 0.2), transparent 50%),
-        linear-gradient(180deg, #050b14 0%, #081322 100%);
+      background: radial-gradient(circle at 50% 0%, rgba(22, 119, 255, 0.25), transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(15, 35, 70, 0.03), transparent 50%),
+        linear-gradient(180deg, #eef2f8 0%, #ffffff 100%);
     }
-    .screen { position: relative; flex-shrink: 0; width: 1920px; height: 1080px; transform-origin: center center; }
-    body::before {
+    .screen{ position: relative; flex-shrink: 0; width: 1920px; height: 1080px; transform-origin: center center; }
+    body::before{
       content: "";
       position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(22, 119, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(22, 119, 255, 0.04) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
@@ -88,10 +86,10 @@
     .nav a.active::before {
       content: none;
     }
-    .time { font-family: "DIN Alternate", "Arial Black", sans-serif; font-size: 16px; color: var(--accent); letter-spacing: 1px; }
+    .time{ font-family: "DIN Alternate", "Arial Black", sans-serif; font-size: 16px; color: var(--accent); letter-spacing: 1px; }
 
     /* Main */
-    .main {
+    .main{
       position: relative; z-index: 5;
       height: calc(100% - 72px);
       padding: 16px 20px 20px;
@@ -99,184 +97,183 @@
       grid-template-columns: 23% 1fr 23%;
       gap: 18px;
     }
-    .col { display: flex; flex-direction: column; gap: 16px; height: 100%; overflow: hidden; }
-    .col-center { gap: 14px; }
+    .col{ display: flex; flex-direction: column; gap: 16px; height: 100%; overflow: hidden; }
+    .col-center{ gap: 14px; }
 
     /* Panel */
-    .panel {
+    .panel{
       position: relative;
       background: var(--panel);
       border: 1px solid var(--panel-border);
       border-radius: 8px;
       padding: 14px;
       backdrop-filter: blur(8px);
-      box-shadow: 0 0 20px rgba(0, 40, 80, 0.4) inset;
+      box-shadow: 0 0 20px rgba(15, 35, 70, 0.18) inset;
       display: flex; flex-direction: column;
     }
-    .panel::before, .panel::after {
+    .panel::before, .panel::after{
       content: ""; position: absolute; width: 10px; height: 10px;
       border: 2px solid var(--accent); transition: all 0.3s;
     }
-    .panel::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
-    .panel::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
-    .panel-title {
+    .panel::before{ top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .panel::after{ bottom: -1px; right: -1px; border-left: none; border-top: none; }
+    .panel-title{
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 12px;
     }
-    .panel-title h3 {
+    .panel-title h3{
       font-size: 15px; font-weight: 600; color: var(--title);
       display: flex; align-items: center; gap: 8px;
-      text-shadow: 0 0 8px rgba(0, 180, 255, 0.3);
+      text-shadow: 0 0 8px rgba(22, 119, 255, 0.17);
     }
-    .panel-title h3::before {
+    .panel-title h3::before{
       content: ""; display: inline-block; width: 4px; height: 14px;
-      background: linear-gradient(180deg, var(--accent), #0055aa);
+      background: linear-gradient(180deg, var(--accent), #2563eb);
       border-radius: 2px;
     }
-    .panel-title .more { font-size: 12px; color: var(--text-dim); cursor: pointer; }
-    .panel-title .more:hover { color: var(--accent); }
+    .panel-title .more{ font-size: 12px; color: var(--text-dim); cursor: pointer; }
+    .panel-title .more:hover{ color: var(--accent); }
 
     /* KPI Grid */
-    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .kpi-card {
-      background: linear-gradient(135deg, rgba(0, 100, 180, 0.15), rgba(0, 60, 110, 0.08));
-      border: 1px solid rgba(0, 150, 255, 0.18);
+    .kpi-grid{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .kpi-card{
+      background: linear-gradient(135deg, rgba(22, 119, 255, 0.15), rgba(15, 35, 70, 0.03));
+      border: 1px solid rgba(22, 119, 255, 0.14);
       border-radius: 6px;
       padding: 10px 12px;
       display: flex; flex-direction: column; gap: 6px;
       transition: all 0.2s;
     }
-    .kpi-card:hover { border-color: rgba(0, 212, 255, 0.4); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 180, 255, 0.15); }
-    .kpi-label { font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
-    .kpi-label i { font-style: normal; width: 18px; height: 18px; border-radius: 3px; background: rgba(0, 180, 255, 0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--accent); }
-    .kpi-value { font-size: 22px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate", "Arial Black", sans-serif; text-shadow: 0 0 8px rgba(0, 212, 255, 0.35); }
-    .kpi-trend { font-size: 11px; color: var(--text-dim); }
-    .kpi-trend.up { color: #ff6b6b; }
-    .kpi-trend.down { color: #51cf66; }
+    .kpi-card:hover{ border-color: rgba(22, 119, 255, 0.3); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(22, 119, 255, 0.08); }
+    .kpi-label{ font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+    .kpi-label i{ font-style: normal; width: 18px; height: 18px; border-radius: 3px; background: rgba(22, 119, 255, 0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--accent); }
+    .kpi-value{ font-size: 22px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate", "Arial Black", sans-serif; text-shadow: 0 0 8px rgba(22, 119, 255, 0.19); }
+    .kpi-trend{ font-size: 11px; color: var(--text-dim); }
+    .kpi-trend.up{ color: #e5484d; }
+    .kpi-trend.down{ color: #16a34a; }
 
     /* Chart containers */
-    .chart { flex: 1; min-height: 140px; }
-    .chart-sm { flex: 1; min-height: 110px; }
+    .chart{ flex: 1; min-height: 140px; }
+    .chart-sm{ flex: 1; min-height: 110px; }
 
     /* Center KPI cards overlay on map */
-    .center-top {
+    .center-top{
       position: absolute; top: 10px; left: 12px; right: 12px; z-index: 6;
       display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
     }
-    .center-top .summary-card {
-      background: rgba(4, 18, 38, 0.8);
+    .center-top .summary-card{
+      background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(0, 150, 255, 0.35);
+      border: 1px solid rgba(22, 119, 255, 0.26);
       border-radius: 8px;
       padding: 10px 6px;
       text-align: center;
       position: relative; overflow: hidden;
       transition: all 0.25s;
     }
-    .center-top .summary-card:hover { border-color: rgba(0, 212, 255, 0.6); box-shadow: 0 0 16px rgba(0, 180, 255, 0.2); transform: translateY(-2px); }
-    .center-top .summary-card::before {
+    .center-top .summary-card:hover{ border-color: rgba(22, 119, 255, 0.34); box-shadow: 0 0 16px rgba(22, 119, 255, 0.11); transform: translateY(-2px); }
+    .center-top .summary-card::before{
       content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, transparent, var(--accent), transparent);
     }
-    .center-top .summary-card:nth-child(2)::before { background: linear-gradient(90deg, transparent, var(--warn), transparent); }
-    .center-top .summary-card:nth-child(3)::before { background: linear-gradient(90deg, transparent, #a855f7, transparent); }
-    .center-top .summary-card:nth-child(4)::before { background: linear-gradient(90deg, transparent, #22c55e, transparent); }
-    .center-top .summary-card:nth-child(5)::before { background: linear-gradient(90deg, transparent, #f43f5e, transparent); }
-    .center-top .summary-card:nth-child(6)::before { background: linear-gradient(90deg, transparent, #38c8f5, transparent); }
-    .center-top .summary-card:nth-child(7)::before { background: linear-gradient(90deg, transparent, #f43f5e, transparent); }
-    .summary-label { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
-    .summary-value { font-size: 26px; font-weight: 800; color: #fff; font-family: "DIN Alternate", "Arial Black", sans-serif; text-shadow: 0 0 10px rgba(255,255,255,0.15); }
-    .summary-unit { font-size: 12px; color: var(--text-dim); margin-left: 2px; }
-    .summary-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+    .center-top .summary-card:nth-child(2)::before{ background: linear-gradient(90deg, transparent, var(--warn), transparent); }
+    .center-top .summary-card:nth-child(3)::before{ background: linear-gradient(90deg, transparent, #7c3aed, transparent); }
+    .center-top .summary-card:nth-child(4)::before{ background: linear-gradient(90deg, transparent, #16a34a, transparent); }
+    .center-top .summary-card:nth-child(5)::before{ background: linear-gradient(90deg, transparent, #f43f5e, transparent); }
+    .center-top .summary-card:nth-child(6)::before{ background: linear-gradient(90deg, transparent, #3b82f6, transparent); }
+    .center-top .summary-card:nth-child(7)::before{ background: linear-gradient(90deg, transparent, #f43f5e, transparent); }
+    .summary-label{ font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
+    .summary-value{ font-size: 26px; font-weight: 800; color: #1f2d3d; font-family: "DIN Alternate", "Arial Black", sans-serif; text-shadow: 0 0 10px rgba(15, 35, 70, 0.09); }
+    .summary-unit{ font-size: 12px; color: var(--text-dim); margin-left: 2px; }
+    .summary-sub{ font-size: 11px; color: var(--text-dim); margin-top: 4px; }
 
     /* Map container */
-    .map-wrap {
+    .map-wrap{
       flex: 1; position: relative;
-      border: 1px solid rgba(0, 150, 255, 0.2);
+      border: 1px solid rgba(22, 119, 255, 0.15);
       border-radius: 10px;
-      background: radial-gradient(circle at 50% 50%, rgba(0, 80, 140, 0.15), transparent 70%);
+      background: radial-gradient(circle at 50% 50%, rgba(22, 119, 255, 0.15), transparent 70%);
       overflow: hidden;
     }
-    .map-bg {
+    .map-bg{
       position: absolute; inset: 0;
-      background-image:
-        radial-gradient(circle at 20% 30%, rgba(0, 180, 255, 0.08) 0%, transparent 25%),
-        radial-gradient(circle at 75% 65%, rgba(0, 180, 255, 0.06) 0%, transparent 30%);
+      background-image: radial-gradient(circle at 20% 30%, rgba(22, 119, 255, 0.08) 0%, transparent 25%),
+        radial-gradient(circle at 75% 65%, rgba(22, 119, 255, 0.06) 0%, transparent 30%);
     }
-    #jxMapChart { position: absolute; inset: 0; z-index: 2; }
+    #jxMapChart{ position: absolute; inset: 0; z-index: 2; }
 
     /* Legend（浮动于全链条卡片上方右侧） */
-    .map-toolbar {
+    .map-toolbar{
       position: absolute; bottom: 116px; right: 12px; z-index: 6;
       display: flex; gap: 14px;
-      background: rgba(4, 18, 38, 0.82);
+      background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(0, 150, 255, 0.25);
+      border: 1px solid rgba(22, 119, 255, 0.19);
       border-radius: 6px;
       padding: 6px 14px;
     }
-    .map-toolbar span { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 5px; white-space: nowrap; }
-    .map-toolbar i { width: 10px; height: 8px; border-radius: 2px; display: inline-block; }
-    .map-toolbar i.lg-dot { width: 9px; height: 9px; border-radius: 50%; }
-    .map-toolbar i.lg-grad { width: 22px; height: 9px; border-radius: 2px; background: linear-gradient(90deg,#0b3b6b,#38c8f5); }
+    .map-toolbar span{ font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .map-toolbar i{ width: 10px; height: 8px; border-radius: 2px; display: inline-block; }
+    .map-toolbar i.lg-dot{ width: 9px; height: 9px; border-radius: 50%; }
+    .map-toolbar i.lg-grad{ width: 22px; height: 9px; border-radius: 2px; background: linear-gradient(90deg,#eaf3ff,#3b82f6); }
 
     /* Breadcrumb (top-right of map) */
-    .map-crumb {
+    .map-crumb{
       position: absolute; top: 124px; right: 16px; z-index: 7;
       display: flex; align-items: center; gap: 6px;
-      background: rgba(4, 18, 38, 0.82);
+      background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(0, 150, 255, 0.35);
+      border: 1px solid rgba(22, 119, 255, 0.26);
       border-radius: 20px;
       padding: 6px 14px;
       font-size: 12px; color: var(--text-dim);
-      box-shadow: 0 0 12px rgba(0, 150, 255, 0.15);
+      box-shadow: 0 0 12px rgba(22, 119, 255, 0.08);
     }
-    .map-crumb .crumb-sep { color: rgba(0, 180, 255, 0.5); }
-    .map-crumb .crumb-cur { color: var(--accent); font-weight: 700; }
-    .map-crumb .crumb-ico { font-size: 13px; }
-    .map-crumb .crumb-item { cursor: pointer; transition: color .2s; }
-    .map-crumb .crumb-item:hover { color: var(--accent); text-decoration: underline; }
-    .map-crumb .crumb-back {
+    .map-crumb .crumb-sep{ color: rgba(22, 119, 255, 0.8); }
+    .map-crumb .crumb-cur{ color: var(--accent); font-weight: 700; }
+    .map-crumb .crumb-ico{ font-size: 13px; }
+    .map-crumb .crumb-item{ cursor: pointer; transition: color .2s; }
+    .map-crumb .crumb-item:hover{ color: var(--accent); text-decoration: underline; }
+    .map-crumb .crumb-back{
       margin-left: 6px; padding: 2px 10px;
-      border: 1px solid rgba(0, 212, 255, 0.4); border-radius: 10px;
+      border: 1px solid rgba(22, 119, 255, 0.3); border-radius: 10px;
       color: var(--accent); font-size: 11px; cursor: pointer;
-      background: rgba(0, 150, 255, 0.1); transition: all .2s;
+      background: rgba(22, 119, 255, 0.1); transition: all .2s;
     }
-    .map-crumb .crumb-back:hover { background: rgba(0, 150, 255, 0.25); box-shadow: 0 0 8px rgba(0,180,255,0.3); }
-    .map-crumb .crumb-back.hidden { display: none; }
+    .map-crumb .crumb-back:hover{ background: rgba(22, 119, 255, 0.25); box-shadow: 0 0 8px rgba(22, 119, 255, 0.17); }
+    .map-crumb .crumb-back.hidden{ display: none; }
 
     /* Chain flow overlay (bottom of map) */
-    .chain-overlay {
+    .chain-overlay{
       position: absolute; bottom: 10px; left: 12px; right: 12px; z-index: 6;
-      background: rgba(4, 18, 38, 0.82);
+      background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(0, 150, 255, 0.3);
+      border: 1px solid rgba(22, 119, 255, 0.22);
       border-radius: 8px;
       padding: 8px 18px 6px;
     }
-    .chain-overlay h4 {
+    .chain-overlay h4{
       font-size: 13px; color: var(--title); font-weight: 600;
       display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
     }
-    .chain-overlay h4::before {
+    .chain-overlay h4::before{
       content: ""; display: inline-block; width: 4px; height: 13px;
-      background: linear-gradient(180deg, var(--accent), #0055aa); border-radius: 2px;
+      background: linear-gradient(180deg, var(--accent), #2563eb); border-radius: 2px;
     }
-    .chain-flow { display: flex; justify-content: space-around; align-items: center; }
-    .chain-node { text-align: center; }
-    .chain-node .icon {
+    .chain-flow{ display: flex; justify-content: space-around; align-items: center; }
+    .chain-node{ text-align: center; }
+    .chain-node .icon{
       width: 36px; height: 36px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 4px; color: #fff; font-size: 15px; font-weight: 600;
+      margin: 0 auto 4px; color: #1f2d3d; font-size: 15px; font-weight: 600;
     }
-    .chain-node .name { font-size: 12px; color: var(--text-dim); }
-    .chain-arrow { width: 36px; height: 2px; background: linear-gradient(90deg, rgba(0,212,255,0.8), transparent); }
-    .chain-parallel { display: flex; gap: 14px; align-items: center; padding: 4px 8px; border: 1px dashed rgba(0, 212, 255, 0.35); border-radius: 10px; }
+    .chain-node .name{ font-size: 12px; color: var(--text-dim); }
+    .chain-arrow{ width: 36px; height: 2px; background: linear-gradient(90deg, rgba(22, 119, 255, 0.85), transparent); }
+    .chain-parallel{ display: flex; gap: 14px; align-items: center; padding: 4px 8px; border: 1px dashed rgba(22, 119, 255, 0.26); border-radius: 10px; }
 
     /* Warning list */
-    .warning-list { display: flex; flex-direction: column; gap: 8px; }
-    .warning-item {
+    .warning-list{ display: flex; flex-direction: column; gap: 8px; }
+    .warning-item{
       display: flex; align-items: center; justify-content: space-between;
       background: rgba(255, 79, 79, 0.06);
       border-left: 3px solid var(--danger);
@@ -284,171 +281,171 @@
       padding: 9px 10px;
       font-size: 12px;
     }
-    .warning-item.warn { border-left-color: var(--warn); background: rgba(255, 159, 46, 0.06); }
-    .warning-item.normal { border-left-color: #22c55e; background: rgba(34, 197, 94, 0.06); }
-    .warning-info { display: flex; flex-direction: column; gap: 3px; }
-    .warning-title { color: #fff; font-weight: 500; }
-    .warning-meta { color: var(--text-dim); font-size: 11px; }
-    .warning-level { font-size: 11px; padding: 2px 6px; border-radius: 3px; }
-    .warning-level.high { background: rgba(255, 77, 79, 0.2); color: #ff7875; }
-    .warning-level.mid { background: rgba(255, 159, 46, 0.2); color: #ffc078; }
-    .warning-level.low { background: rgba(34, 197, 94, 0.2); color: #95faa3; }
+    .warning-item.warn{ border-left-color: var(--warn); background: rgba(255, 159, 46, 0.06); }
+    .warning-item.normal{ border-left-color: #22c55e; background: rgba(34, 197, 94, 0.06); }
+    .warning-info{ display: flex; flex-direction: column; gap: 3px; }
+    .warning-title{ color: #1f2d3d; font-weight: 500; }
+    .warning-meta{ color: var(--text-dim); font-size: 11px; }
+    .warning-level{ font-size: 11px; padding: 2px 6px; border-radius: 3px; }
+    .warning-level.high{ background: rgba(255, 77, 79, 0.2); color: #e5484d; }
+    .warning-level.mid{ background: rgba(255, 159, 46, 0.2); color: #d97706; }
+    .warning-level.low{ background: rgba(34, 197, 94, 0.2); color: #16a34a; }
 
     /* Chain warnings */
-    .chain-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 12px; }
-    .chain-name { width: 60px; color: var(--text-dim); text-align: right; }
-    .chain-bar { flex: 1; height: 10px; background: rgba(255,255,255,0.06); border-radius: 5px; overflow: hidden; }
-    .chain-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, #0055aa, var(--accent)); box-shadow: 0 0 8px rgba(0, 212, 255, 0.3); }
-    .chain-fill.warn { background: linear-gradient(90deg, #aa4400, var(--warn)); box-shadow: 0 0 8px rgba(255, 159, 46, 0.3); }
-    .chain-value { width: 40px; color: var(--accent); font-weight: 700; text-align: right; }
+    .chain-row{ display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 12px; }
+    .chain-name{ width: 60px; color: var(--text-dim); text-align: right; }
+    .chain-bar{ flex: 1; height: 10px; background: rgba(15, 35, 70, 0.02); border-radius: 5px; overflow: hidden; }
+    .chain-fill{ height: 100%; border-radius: 5px; background: linear-gradient(90deg, #2563eb, var(--accent)); box-shadow: 0 0 8px rgba(22, 119, 255, 0.17); }
+    .chain-fill.warn{ background: linear-gradient(90deg, #aa4400, var(--warn)); box-shadow: 0 0 8px rgba(255, 159, 46, 0.14); }
+    .chain-value{ width: 40px; color: var(--accent); font-weight: 700; text-align: right; }
 
     /* Top5 undisposed warning enterprises */
-    .top5-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding-right: 2px; }
-    .top5-item { background: rgba(0,0,0,0.18); border: 1px solid rgba(0,150,255,0.15); border-radius: 8px; overflow: hidden; transition: border-color .25s; }
-    .top5-item:hover { border-color: rgba(0,150,255,0.35); }
-    .top5-item.open { border-color: rgba(0,150,255,0.4); background: rgba(0,60,120,0.12); }
-    .top5-header { display: flex; align-items: center; gap: 8px; padding: 10px 12px; cursor: pointer; }
-    .top5-level { font-size: 11px; padding: 2px 8px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
-    .top5-level.major { color: #ff4d4f; border-color: #ff4d4f; background: rgba(255,77,79,0.12); }
-    .top5-level.large { color: #ff9f2e; border-color: #ff9f2e; background: rgba(255,159,46,0.12); }
-    .top5-level.normal { color: #38c8f5; border-color: #38c8f5; background: rgba(56,200,245,0.12); }
-    .top5-title { flex: 1; font-size: 13px; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .top5-arrow { color: #8aa4bf; font-size: 12px; transition: transform .3s; }
-    .top5-item.open .top5-arrow { transform: rotate(180deg); }
-    .top5-body { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
-    .top5-item.open .top5-body { max-height: 130px; }
-    .top5-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0 12px 12px; }
-    .top5-kpi { background: rgba(0,0,0,0.22); border: 1px solid rgba(0,150,255,0.12); border-radius: 6px; padding: 8px 4px; text-align: center; }
-    .top5-kpi .lab { font-size: 11px; color: #8aa4bf; }
-    .top5-kpi .val { font-size: 17px; font-weight: 700; color: #fff; margin-top: 2px; }
-    .top5-kpi .val.warn { color: #ff4d4f; }
+    .top5-list{ display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding-right: 2px; }
+    .top5-item{ background: rgba(15, 35, 70, 0.07); border: 1px solid rgba(22, 119, 255, 0.12); border-radius: 8px; overflow: hidden; transition: border-color .25s; }
+    .top5-item:hover{ border-color: rgba(22, 119, 255, 0.26); }
+    .top5-item.open{ border-color: rgba(22, 119, 255, 0.3); background: rgba(22, 119, 255, 0.12); }
+    .top5-header{ display: flex; align-items: center; gap: 8px; padding: 10px 12px; cursor: pointer; }
+    .top5-level{ font-size: 11px; padding: 2px 8px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+    .top5-level.major{ color: #e5484d; border-color: #e5484d; background: rgba(255,77,79,0.12); }
+    .top5-level.large{ color: #f5821f; border-color: #f5821f; background: rgba(255,159,46,0.12); }
+    .top5-level.normal{ color: #3b82f6; border-color: #3b82f6; background: rgba(22, 119, 255, 0.12); }
+    .top5-title{ flex: 1; font-size: 13px; color: #1f2d3d; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .top5-arrow{ color: rgb(107, 124, 147); font-size: 12px; transition: transform .3s; }
+    .top5-item.open .top5-arrow{ transform: rotate(180deg); }
+    .top5-body{ max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+    .top5-item.open .top5-body{ max-height: 130px; }
+    .top5-kpis{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0 12px 12px; }
+    .top5-kpi{ background: rgba(15, 35, 70, 0.09); border: 1px solid rgba(22, 119, 255, 0.12); border-radius: 6px; padding: 8px 4px; text-align: center; }
+    .top5-kpi .lab{ font-size: 11px; color: rgb(107, 124, 147); }
+    .top5-kpi .val{ font-size: 17px; font-weight: 700; color: #1f2d3d; margin-top: 2px; }
+    .top5-kpi .val.warn{ color: #e5484d; }
 
     /* Region distribution */
-    .region-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
-    .region-row:last-child { border-bottom: none; }
-    .region-name { color: var(--text-dim); }
-    .region-bar-wrap { display: flex; align-items: center; gap: 8px; }
-    .region-bar { width: 80px; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
-    .region-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #0066aa, var(--accent)); }
-    .region-value { color: var(--accent); font-weight: 600; width: 30px; text-align: right; }
+    .region-row{ display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(15, 35, 70, 0.06); font-size: 12px; }
+    .region-row:last-child{ border-bottom: none; }
+    .region-name{ color: var(--text-dim); }
+    .region-bar-wrap{ display: flex; align-items: center; gap: 8px; }
+    .region-bar{ width: 80px; height: 6px; background: rgba(15, 35, 70, 0.02); border-radius: 3px; overflow: hidden; }
+    .region-fill{ height: 100%; border-radius: 3px; background: linear-gradient(90deg, #3b82f6, var(--accent)); }
+    .region-value{ color: var(--accent); font-weight: 600; width: 30px; text-align: right; }
 
     /* Scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-thumb { background: rgba(0, 150, 255, 0.3); border-radius: 2px; }
+    ::-webkit-scrollbar{ width: 4px; }
+    ::-webkit-scrollbar-thumb{ background: rgba(22, 119, 255, 0.3); border-radius: 2px; }
 
     /* AI Assistant floating button & modal */
-    .ai-fab {
+    .ai-fab{
       position: fixed; right: 24px; bottom: 24px; z-index: 100;
       width: 56px; height: 56px; border-radius: 50%;
-      background: linear-gradient(135deg, #00d4ff, #0066ff);
-      border: 2px solid rgba(255,255,255,0.3);
-      box-shadow: 0 0 20px rgba(0,180,255,0.45);
+      background: linear-gradient(135deg, #1677ff, #2563eb);
+      border: 2px solid rgba(15, 35, 70, 0.15);
+      box-shadow: 0 0 20px rgba(22, 119, 255, 0.25);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: transform .25s, box-shadow .25s;
     }
-    .ai-fab:hover { transform: scale(1.08); box-shadow: 0 0 30px rgba(0,180,255,0.65); }
-    .ai-fab svg { width: 28px; height: 28px; fill: #fff; }
-    .ai-modal {
+    .ai-fab:hover{ transform: scale(1.08); box-shadow: 0 0 30px rgba(22, 119, 255, 0.28); }
+    .ai-fab svg{ width: 28px; height: 28px; fill: #ffffff; }
+    .ai-modal{
       position: fixed; inset: 0; z-index: 200;
-      background: rgba(2, 10, 22, 0.85);
+      background: rgba(15, 35, 70, 0.12);
       backdrop-filter: blur(6px);
       display: none; align-items: center; justify-content: center;
       opacity: 0; transition: opacity .25s;
     }
-    .ai-modal.open { display: flex; opacity: 1; }
-    .ai-container {
+    .ai-modal.open{ display: flex; opacity: 1; }
+    .ai-container{
       width: 920px; max-width: 92vw; height: 76vh;
-      background: linear-gradient(180deg, rgba(8,28,60,0.98), rgba(4,16,36,0.98));
-      border: 1px solid rgba(0,150,255,0.35);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.98));
+      border: 1px solid rgba(22, 119, 255, 0.26);
       border-radius: 16px;
-      box-shadow: 0 0 40px rgba(0,100,200,0.35);
+      box-shadow: 0 0 40px rgba(22, 119, 255, 0.19);
       display: flex; flex-direction: column; overflow: hidden;
     }
-    .ai-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(0,150,255,0.2); }
-    .ai-header h3 { margin:0; font-size:18px; color:#fff; letter-spacing:1px; }
-    .ai-header h3::before { content: ""; display: inline-block; width: 4px; height: 16px; background: #00d4ff; border-radius: 2px; margin-right: 8px; vertical-align: middle; }
-    .ai-close { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; }
-    .ai-close:hover { background:rgba(255,77,79,0.25); border-color:rgba(255,77,79,0.4); }
-    .ai-tabs { display:flex; gap:10px; padding:12px 20px; border-bottom:1px solid rgba(0,150,255,0.15); }
-    .ai-tab { padding:8px 18px; border-radius:20px; background:rgba(0,0,0,0.2); border:1px solid rgba(0,150,255,0.2); color:#8aa4bf; cursor:pointer; transition:.2s; font-size:13px; }
-    .ai-tab:hover { border-color:rgba(0,180,255,0.4); color:#cfe9ff; }
-    .ai-tab.active { background:rgba(0,180,255,0.18); border-color:rgba(0,212,255,0.5); color:#fff; }
-    .ai-body { flex:1; overflow:hidden; position:relative; }
-    .ai-pane { position:absolute; inset:0; padding:20px; overflow-y:auto; display:none; }
-    .ai-pane.active { display:block; }
+    .ai-header{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom: 1px solid rgba(22, 119, 255, 0.15); }
+    .ai-header h3{ margin:0; font-size:18px; color: #1f2d3d; letter-spacing:1px; }
+    .ai-header h3::before{ content: ""; display: inline-block; width: 4px; height: 16px; background: #1677ff; border-radius: 2px; margin-right: 8px; vertical-align: middle; }
+    .ai-close{ width:32px; height:32px; border-radius:50%; background: rgba(15, 35, 70, 0.02); border: 1px solid rgba(15, 35, 70, 0.07); color: #1f2d3d; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; }
+    .ai-close:hover{ background: rgba(255,77,79,0.25); border-color: rgba(255,77,79,0.4); }
+    .ai-tabs{ display:flex; gap:10px; padding:12px 20px; border-bottom: 1px solid rgba(22, 119, 255, 0.12); }
+    .ai-tab{ padding:8px 18px; border-radius:20px; background: rgba(15, 35, 70, 0.08); border: 1px solid rgba(22, 119, 255, 0.15); color: rgb(107, 124, 147); cursor:pointer; transition:.2s; font-size:13px; }
+    .ai-tab:hover{ border-color: rgba(22, 119, 255, 0.3); color: #3b4d63; }
+    .ai-tab.active{ background: rgba(22, 119, 255, 0.18); border-color: rgba(22, 119, 255, 0.34); color: #1f2d3d; }
+    .ai-body{ flex:1; overflow:hidden; position:relative; }
+    .ai-pane{ position:absolute; inset:0; padding:20px; overflow-y:auto; display:none; }
+    .ai-pane.active{ display:block; }
 
     /* AI - 智能问数 */
-    .ai-chat { display:flex; flex-direction:column; height:100%; }
-    .ai-messages { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px; margin-bottom:12px; }
-    .ai-msg { max-width:80%; padding:10px 14px; border-radius:12px; font-size:13px; line-height:1.6; }
-    .ai-msg.user { align-self:flex-end; background:rgba(0,150,255,0.25); border:1px solid rgba(0,180,255,0.35); color:#fff; }
-    .ai-msg.bot { align-self:flex-start; background:rgba(0,0,0,0.25); border:1px solid rgba(0,150,255,0.2); color:#cfe9ff; }
-    .ai-hints { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
-    .ai-hint { padding:6px 12px; border-radius:14px; background:rgba(0,150,255,0.1); border:1px solid rgba(0,150,255,0.25); color:#8aa4bf; font-size:12px; cursor:pointer; }
-    .ai-hint:hover { background:rgba(0,150,255,0.2); color:#fff; }
-    .ai-inputbar { display:flex; gap:10px; }
-    .ai-inputbar input { flex:1; background:rgba(0,0,0,0.25); border:1px solid rgba(0,150,255,0.3); border-radius:24px; padding:10px 16px; color:#fff; outline:none; font-size:13px; }
-    .ai-inputbar input::placeholder { color:#5a7a9a; }
-    .ai-inputbar button { padding:10px 22px; border-radius:24px; background:linear-gradient(90deg,#00a8ff,#0066ff); border:none; color:#fff; cursor:pointer; font-size:13px; }
-    .ai-inputbar button:hover { filter: brightness(1.1); }
+    .ai-chat{ display:flex; flex-direction:column; height:100%; }
+    .ai-messages{ flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px; margin-bottom:12px; }
+    .ai-msg{ max-width:80%; padding:10px 14px; border-radius:12px; font-size:13px; line-height:1.6; }
+    .ai-msg.user{ align-self:flex-end; background: rgba(22, 119, 255, 0.25); border: 1px solid rgba(22, 119, 255, 0.26); color: #1f2d3d; }
+    .ai-msg.bot{ align-self:flex-start; background: rgba(15, 35, 70, 0.1); border: 1px solid rgba(22, 119, 255, 0.15); color: #3b4d63; }
+    .ai-hints{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+    .ai-hint{ padding:6px 12px; border-radius:14px; background: rgba(22, 119, 255, 0.1); border: 1px solid rgba(22, 119, 255, 0.19); color: rgb(107, 124, 147); font-size:12px; cursor:pointer; }
+    .ai-hint:hover{ background: rgba(22, 119, 255, 0.2); color: #1f2d3d; }
+    .ai-inputbar{ display:flex; gap:10px; }
+    .ai-inputbar input{ flex:1; background: rgba(15, 35, 70, 0.1); border: 1px solid rgba(22, 119, 255, 0.22); border-radius:24px; padding:10px 16px; color: #1f2d3d; outline: none; font-size:13px; }
+    .ai-inputbar input::placeholder{ color: #5a7a9a; }
+    .ai-inputbar button{ padding:10px 22px; border-radius:24px; background: linear-gradient(90deg,#1677ff,#2563eb); border: none; color: #1f2d3d; cursor:pointer; font-size:13px; }
+    .ai-inputbar button:hover{ filter: brightness(1.1); }
 
     /* AI - 智能报告 */
-    .ai-report-form { display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
-    .ai-report-form select, .ai-report-form input { background:rgba(0,0,0,0.25); border:1px solid rgba(0,150,255,0.3); color:#fff; padding:8px 12px; border-radius:6px; font-size:13px; outline:none; }
-    .ai-report-form select option { background:#061a37; }
-    .ai-report-form button { padding:8px 20px; border-radius:6px; background:linear-gradient(90deg,#00a8ff,#0066ff); border:none; color:#fff; cursor:pointer; font-size:13px; }
-    .ai-report-card { background:rgba(0,0,0,0.2); border:1px solid rgba(0,150,255,0.15); border-radius:8px; padding:16px; }
-    .ai-report-card h4 { margin:0 0 10px; color:#00d4ff; font-size:14px; }
-    .ai-report-card p { margin:0 0 6px; font-size:13px; color:#cfe9ff; line-height:1.6; }
+    .ai-report-form{ display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+    .ai-report-form select, .ai-report-form input{ background: rgba(15, 35, 70, 0.1); border: 1px solid rgba(22, 119, 255, 0.22); color: #1f2d3d; padding:8px 12px; border-radius:6px; font-size:13px; outline: none; }
+    .ai-report-form select option{ background: #ffffff; }
+    .ai-report-form button{ padding:8px 20px; border-radius:6px; background: linear-gradient(90deg,#1677ff,#2563eb); border: none; color: #1f2d3d; cursor:pointer; font-size:13px; }
+    .ai-report-card{ background: rgba(15, 35, 70, 0.08); border: 1px solid rgba(22, 119, 255, 0.12); border-radius:8px; padding:16px; }
+    .ai-report-card h4{ margin:0 0 10px; color: #1677ff; font-size:14px; }
+    .ai-report-card p{ margin:0 0 6px; font-size:13px; color: #3b4d63; line-height:1.6; }
 
     /* AI - 政策案例 */
-    .ai-search { display:flex; gap:10px; margin-bottom:14px; }
-    .ai-search input { flex:1; background:rgba(0,0,0,0.25); border:1px solid rgba(0,150,255,0.3); color:#fff; padding:8px 12px; border-radius:6px; font-size:13px; outline:none; }
-    .ai-search button { padding:8px 16px; border-radius:6px; background:rgba(0,150,255,0.18); border:1px solid rgba(0,150,255,0.3); color:#fff; cursor:pointer; font-size:13px; }
-    .ai-tags { display:flex; gap:8px; margin-bottom:14px; }
-    .ai-tag { padding:5px 12px; border-radius:14px; background:rgba(0,0,0,0.2); border:1px solid rgba(0,150,255,0.2); color:#8aa4bf; cursor:pointer; font-size:12px; }
-    .ai-tag.active { background:rgba(0,180,255,0.18); color:#fff; border-color:rgba(0,212,255,0.4); }
-    .ai-policy-list { display:flex; flex-direction:column; gap:10px; }
-    .ai-policy-item { background:rgba(0,0,0,0.18); border:1px solid rgba(0,150,255,0.12); border-radius:8px; padding:12px; }
-    .ai-policy-item h5 { margin:0 0 4px; font-size:13px; color:#fff; }
-    .ai-policy-item p { margin:0; font-size:12px; color:#8aa4bf; line-height:1.5; }
-    .ai-policy-item .tag { display:inline-block; margin-top:6px; padding:2px 8px; border-radius:10px; background:rgba(0,150,255,0.12); color:#00d4ff; font-size:11px; }
+    .ai-search{ display:flex; gap:10px; margin-bottom:14px; }
+    .ai-search input{ flex:1; background: rgba(15, 35, 70, 0.1); border: 1px solid rgba(22, 119, 255, 0.22); color: #1f2d3d; padding:8px 12px; border-radius:6px; font-size:13px; outline: none; }
+    .ai-search button{ padding:8px 16px; border-radius:6px; background: rgba(22, 119, 255, 0.18); border: 1px solid rgba(22, 119, 255, 0.22); color: #1f2d3d; cursor:pointer; font-size:13px; }
+    .ai-tags{ display:flex; gap:8px; margin-bottom:14px; }
+    .ai-tag{ padding:5px 12px; border-radius:14px; background: rgba(15, 35, 70, 0.08); border: 1px solid rgba(22, 119, 255, 0.15); color: rgb(107, 124, 147); cursor:pointer; font-size:12px; }
+    .ai-tag.active{ background: rgba(22, 119, 255, 0.18); color: #1f2d3d; border-color: rgba(22, 119, 255, 0.3); }
+    .ai-policy-list{ display:flex; flex-direction:column; gap:10px; }
+    .ai-policy-item{ background: rgba(15, 35, 70, 0.07); border: 1px solid rgba(22, 119, 255, 0.12); border-radius:8px; padding:12px; }
+    .ai-policy-item h5{ margin:0 0 4px; font-size:13px; color: #1f2d3d; }
+    .ai-policy-item p{ margin:0; font-size:12px; color: rgb(107, 124, 147); line-height:1.5; }
+    .ai-policy-item .tag{ display:inline-block; margin-top:6px; padding:2px 8px; border-radius:10px; background: rgba(22, 119, 255, 0.12); color: #1677ff; font-size:11px; }
 
     /* ===== 页面整体优化 ===== */
     /* 面板入场动画（逐层淡入上移） */
     @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-    .col .panel { animation: fadeUp .55s ease both; }
-    .col .panel:nth-child(2) { animation-delay: .08s; }
-    .col .panel:nth-child(3) { animation-delay: .16s; }
-    .col .panel:nth-child(4) { animation-delay: .24s; }
+    .col .panel{ animation: fadeUp .55s ease both; }
+    .col .panel:nth-child(2){ animation-delay: .08s; }
+    .col .panel:nth-child(3){ animation-delay: .16s; }
+    .col .panel:nth-child(4){ animation-delay: .24s; }
 
     /* 地图装饰：双层旋转科技环 */
-    .map-deco { position: absolute; left: 50%; top: 55%; transform: translate(-50%,-50%); border-radius: 50%; pointer-events: none; z-index: 1; }
-    .map-deco.ring1 { width: 470px; height: 470px; border: 1px dashed rgba(0,180,255,0.22); animation: spin 46s linear infinite; }
-    .map-deco.ring1::before { content: ""; position: absolute; bottom: -2px; left: calc(50% - 2px); width: 4px; height: 4px; border-radius: 50%; background: #38c8f5; box-shadow: 0 0 8px #38c8f5; }
-    .map-deco.ring2 { width: 570px; height: 570px; border: 1px solid rgba(0,150,255,0.10); animation: spin 70s linear infinite reverse; }
-    .map-deco.ring2::before { content: ""; position: absolute; top: -3px; left: calc(50% - 3px); width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+    .map-deco{ position: absolute; left: 50%; top: 55%; transform: translate(-50%,-50%); border-radius: 50%; pointer-events: none; z-index: 1; }
+    .map-deco.ring1{ width: 470px; height: 470px; border: 1px dashed rgba(22, 119, 255, 0.17); animation: spin 46s linear infinite; }
+    .map-deco.ring1::before{ content: ""; position: absolute; bottom: -2px; left: calc(50% - 2px); width: 4px; height: 4px; border-radius: 50%; background: #3b82f6; box-shadow: 0 0 8px rgb(15, 35, 70); }
+    .map-deco.ring2{ width: 570px; height: 570px; border: 1px solid rgba(22, 119, 255, 0.12); animation: spin 70s linear infinite reverse; }
+    .map-deco.ring2::before{ content: ""; position: absolute; top: -3px; left: calc(50% - 3px); width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
     @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
 
     /* 地图四角刻度 */
-    .map-corner { position: absolute; width: 16px; height: 16px; border: 2px solid rgba(0,212,255,0.55); z-index: 5; pointer-events: none; }
-    .map-corner.tl { top: -1px; left: -1px; border-right: none; border-bottom: none; border-top-left-radius: 10px; }
-    .map-corner.tr { top: -1px; right: -1px; border-left: none; border-bottom: none; border-top-right-radius: 10px; }
-    .map-corner.bl { bottom: -1px; left: -1px; border-right: none; border-top: none; border-bottom-left-radius: 10px; }
-    .map-corner.br { bottom: -1px; right: -1px; border-left: none; border-top: none; border-bottom-right-radius: 10px; }
+    .map-corner{ position: absolute; width: 16px; height: 16px; border: 2px solid rgba(22, 119, 255, 0.34); z-index: 5; pointer-events: none; }
+    .map-corner.tl{ top: -1px; left: -1px; border-right: none; border-bottom: none; border-top-left-radius: 10px; }
+    .map-corner.tr{ top: -1px; right: -1px; border-left: none; border-bottom: none; border-top-right-radius: 10px; }
+    .map-corner.bl{ bottom: -1px; left: -1px; border-right: none; border-top: none; border-bottom-left-radius: 10px; }
+    .map-corner.br{ bottom: -1px; right: -1px; border-left: none; border-top: none; border-bottom-right-radius: 10px; }
 
     /* 头部系统运行状态呼吸灯 */
 
     /* 实时预警列表项过渡（用于轮播与悬停） */
-    .warning-item { transition: opacity .3s, transform .3s, box-shadow .2s; }
-    .warning-item:hover { box-shadow: 0 0 10px rgba(0,150,255,0.15); }
+    .warning-item{ transition: opacity .3s, transform .3s, box-shadow .2s; }
+    .warning-item:hover{ box-shadow: 0 0 10px rgba(22, 119, 255, 0.08); }
 
     /* 全链条节点悬停反馈 */
-    .chain-node .icon { transition: transform .25s; }
-    .chain-node:hover .icon { transform: scale(1.12); }
+    .chain-node .icon{ transition: transform .25s; }
+    .chain-node:hover .icon{ transform: scale(1.12); }
 
     /* 选中文字颜色 */
-    ::selection { background: rgba(0, 150, 255, 0.35); }
+    ::selection{ background: rgba(22, 119, 255, 0.35); }
   .brand-icon svg { width: 100%; height: 100%; display: block; }
 </style>
 </head>
@@ -596,31 +593,31 @@
 
         <!-- Legend（全链条卡片上方右侧） -->
         <div class="map-toolbar" data-page-node-id="HxveoZksNw6H2Lju4RthFA">
-          <span data-page-node-id="SCgRiOKicrRePxV0fY3Fk6"><i class="lg-dot" style="background:#ff4d4f" data-page-node-id="yQcwukC5g60YiYxGE9hcAH"></i>高风险预警</span>
-          <span data-page-node-id="H7rTf2eQplITQHcR0grL70"><i class="lg-dot" style="background:#ff9f2e" data-page-node-id="DRD1Ew0L5rvXnKa15SMTrX"></i>中风险预警</span>
-          <span data-page-node-id="N7sR7Sj2oCrXBEPkqFj6sz"><i class="lg-dot" style="background:#ff4d4f;border:1px solid #fff" data-page-node-id="wQXZZaTStSRU9v2Jmgnc5o"></i>预警车辆</span>
-          <span data-page-node-id="UuITqcb3652ujTQgDeqo36"><i style="background:#ffd23f" data-page-node-id="6KsHy9avqWwJjGeTyDl6L2"></i>在途车辆</span>
-          <span data-page-node-id="ESzYGApAzz7RnyHZ3LI7rA"><i style="background:#ff4dd2" data-page-node-id="FXU7TQjPiWE6yp3CG7VHYd"></i>当日燃放活动</span>
+          <span data-page-node-id="SCgRiOKicrRePxV0fY3Fk6"><i class="lg-dot" style="background: #e5484d" data-page-node-id="yQcwukC5g60YiYxGE9hcAH"></i>高风险预警</span>
+          <span data-page-node-id="H7rTf2eQplITQHcR0grL70"><i class="lg-dot" style="background: #f5821f" data-page-node-id="DRD1Ew0L5rvXnKa15SMTrX"></i>中风险预警</span>
+          <span data-page-node-id="N7sR7Sj2oCrXBEPkqFj6sz"><i class="lg-dot" style="background: #e5484d;border: 1px solid rgb(15, 35, 70)" data-page-node-id="wQXZZaTStSRU9v2Jmgnc5o"></i>预警车辆</span>
+          <span data-page-node-id="UuITqcb3652ujTQgDeqo36"><i style="background: #d48806" data-page-node-id="6KsHy9avqWwJjGeTyDl6L2"></i>在途车辆</span>
+          <span data-page-node-id="ESzYGApAzz7RnyHZ3LI7rA"><i style="background: #ff4dd2" data-page-node-id="FXU7TQjPiWE6yp3CG7VHYd"></i>当日燃放活动</span>
         </div>
 
         <!-- Chain flow overlay -->
         <div class="chain-overlay" data-page-node-id="7p5qLoSiVQ1hLTYb4E2xR2">
           <h4 data-page-node-id="zrNeBsWIp4vuuC8J0y5aYw">全链条关键节点</h4>
           <div class="chain-flow" data-page-node-id="XDSOXpbp9CLDGe9RZjtH8D">
-            <div class="chain-node" data-page-node-id="drzGdVJaUjD5vOS1El0OCz"><div class="icon" style="background:linear-gradient(135deg,#00a8ff,#0055aa);box-shadow:0 0 12px rgba(0,180,255,0.4);" data-page-node-id="wrP9BIA8l1D7BGVyF02KbG">料</div><div class="name" data-page-node-id="xNLXrD92knUf3E5gcF5FCr">原材料</div></div>
+            <div class="chain-node" data-page-node-id="drzGdVJaUjD5vOS1El0OCz"><div class="icon" style="background: linear-gradient(135deg,#1677ff,#2563eb);box-shadow: 0 0 12px rgba(22, 119, 255, 0.22);" data-page-node-id="wrP9BIA8l1D7BGVyF02KbG">料</div><div class="name" data-page-node-id="xNLXrD92knUf3E5gcF5FCr">原材料</div></div>
             <div class="chain-arrow" data-page-node-id="1UEqv6PqCZG1j8vwYKfee5"></div>
-            <div class="chain-node" data-page-node-id="OeqA0inGB81D9WusQaXam1"><div class="icon" style="background:linear-gradient(135deg,#00d4ff,#0066aa);box-shadow:0 0 12px rgba(0,212,255,0.4);" data-page-node-id="5P0vmUV4q2zXJmRQugGuX2">产</div><div class="name" data-page-node-id="kIDIkLwra7T6DtF2UsMPE5">生产</div></div>
+            <div class="chain-node" data-page-node-id="OeqA0inGB81D9WusQaXam1"><div class="icon" style="background: linear-gradient(135deg,#1677ff,#3b82f6);box-shadow: 0 0 12px rgba(22, 119, 255, 0.22);" data-page-node-id="5P0vmUV4q2zXJmRQugGuX2">产</div><div class="name" data-page-node-id="kIDIkLwra7T6DtF2UsMPE5">生产</div></div>
             <div class="chain-arrow" data-page-node-id="sfZPZTDkPA6SAhvSrnfh9F"></div>
-            <div class="chain-node" data-page-node-id="7AVOPBLjdkVmvhsGOR1FaZ"><div class="icon" style="background:linear-gradient(135deg,#a855f7,#5b21b6);box-shadow:0 0 12px rgba(168,85,247,0.4);" data-page-node-id="K1nO91cr9RLCqxHmHFEGix">仓</div><div class="name" data-page-node-id="3Rd6QeCELwXVCoQK2a2T2m">仓储</div></div>
+            <div class="chain-node" data-page-node-id="7AVOPBLjdkVmvhsGOR1FaZ"><div class="icon" style="background: linear-gradient(135deg,#7c3aed,#f1edf7);box-shadow: 0 0 12px rgba(22, 119, 255, 0.22);" data-page-node-id="K1nO91cr9RLCqxHmHFEGix">仓</div><div class="name" data-page-node-id="3Rd6QeCELwXVCoQK2a2T2m">仓储</div></div>
             <div class="chain-arrow" data-page-node-id="t7AhVvCVBbkW3afvLF9Gbl"></div>
-            <div class="chain-node" data-page-node-id="dmNBG0Jc6qo2ZsldVYQbXF"><div class="icon" style="background:linear-gradient(135deg,#ff9f2e,#c2410c);box-shadow:0 0 12px rgba(255,159,46,0.4);" data-page-node-id="BMEMyHYQCE0AR0TYAvM1Eu">运</div><div class="name" data-page-node-id="gmqJa407hKKNsj3ZypKsz0">运输</div></div>
+            <div class="chain-node" data-page-node-id="dmNBG0Jc6qo2ZsldVYQbXF"><div class="icon" style="background: linear-gradient(135deg,#f5821f,#c2410c);box-shadow: 0 0 12px rgba(255, 159, 46, 0.18);" data-page-node-id="BMEMyHYQCE0AR0TYAvM1Eu">运</div><div class="name" data-page-node-id="gmqJa407hKKNsj3ZypKsz0">运输</div></div>
             <div class="chain-arrow" data-page-node-id="nsnxySiegGKcoC0n5p0Yh9"></div>
             <div class="chain-parallel" data-page-node-id="g0YuFkwNUVAH31kkLV2jq9">
-              <div class="chain-node" data-page-node-id="QT4d3KsDqP4H7dTzBkLzUD"><div class="icon" style="background:linear-gradient(135deg,#22c55e,#15803d);box-shadow:0 0 12px rgba(34,197,94,0.4);" data-page-node-id="sBhZ77DmJh6zzbnHETT3sK">出</div><div class="name" data-page-node-id="Ou2JCodSUzHSCcQjlQg4F9">出口</div></div>
-              <div class="chain-node" data-page-node-id="FR4BzVKSlZYdPIvFGIBkOf"><div class="icon" style="background:linear-gradient(135deg,#f43f5e,#be123c);box-shadow:0 0 12px rgba(244,63,94,0.4);" data-page-node-id="Xbql9l4dBZPTTrnrs5vk55">零</div><div class="name" data-page-node-id="dDBUojRAGGtnLs8umittep">零售</div></div>
+              <div class="chain-node" data-page-node-id="QT4d3KsDqP4H7dTzBkLzUD"><div class="icon" style="background: linear-gradient(135deg,#16a34a,#15803d);box-shadow: 0 0 12px rgba(34, 197, 94, 0.18);" data-page-node-id="sBhZ77DmJh6zzbnHETT3sK">出</div><div class="name" data-page-node-id="Ou2JCodSUzHSCcQjlQg4F9">出口</div></div>
+              <div class="chain-node" data-page-node-id="FR4BzVKSlZYdPIvFGIBkOf"><div class="icon" style="background: linear-gradient(135deg,#f43f5e,#be123c);box-shadow: 0 0 12px rgba(244, 63, 94, 0.18);" data-page-node-id="Xbql9l4dBZPTTrnrs5vk55">零</div><div class="name" data-page-node-id="dDBUojRAGGtnLs8umittep">零售</div></div>
             </div>
             <div class="chain-arrow" data-page-node-id="SCx7OR3DCAR5tNVEyO2y8C"></div>
-            <div class="chain-node" data-page-node-id="ETcEy3lN8UJFouHHXGuDxg"><div class="icon" style="background:linear-gradient(135deg,#e11d48,#7f1d1d);box-shadow:0 0 12px rgba(225,29,72,0.4);" data-page-node-id="tR43xbidaUTwiijpuH1ODA">燃</div><div class="name" data-page-node-id="u0qskhVzsyCRuMFshkmvB9">燃放</div></div>
+            <div class="chain-node" data-page-node-id="ETcEy3lN8UJFouHHXGuDxg"><div class="icon" style="background: linear-gradient(135deg,#e11d48,#f7eded);box-shadow: 0 0 12px rgba(225, 29, 72, 0.18);" data-page-node-id="tR43xbidaUTwiijpuH1ODA">燃</div><div class="name" data-page-node-id="u0qskhVzsyCRuMFshkmvB9">燃放</div></div>
           </div>
         </div>
       </div>
@@ -634,22 +631,22 @@
         <div class="kpi-grid" data-page-node-id="AGFRCBlHYXrO6GHjmUOoy2">
           <div class="kpi-card" data-page-node-id="SC2MThzW7Eu6igFyv3QFHP">
             <div class="kpi-label" data-page-node-id="gz9WCUT0E8lYZhFEqWFmr6"><i data-page-node-id="5iJcvEkZQ2h850Pm0xgOoo">警</i>今日预警</div>
-            <div class="kpi-value" style="color:#ff4d4f;text-shadow:0 0 8px rgba(255,77,79,0.4);" data-page-node-id="CBBGkub52dew9IDTqV0SyB">38</div>
+            <div class="kpi-value" style="color: #e5484d;text-shadow: 0 0 8px rgba(255, 77, 79, 0.18);" data-page-node-id="CBBGkub52dew9IDTqV0SyB">38</div>
             <div class="kpi-trend up" data-page-node-id="QG9yfhG1yEOUBuFPfoIzu9">同比 +12.5%</div>
           </div>
           <div class="kpi-card" data-page-node-id="ej4haADmfiMDaGwMqCnQKG">
             <div class="kpi-label" data-page-node-id="QiFau6P9cLg3hIjHRJOcOq"><i data-page-node-id="IIcgZTejBdxseQf01k9VYg">处</i>已处置</div>
-            <div class="kpi-value" style="color:#22c55e;text-shadow:0 0 8px rgba(34,197,94,0.4);" data-page-node-id="KmaLpGMpuFEmpVWkXV7gP3">31</div>
+            <div class="kpi-value" style="color: #16a34a;text-shadow: 0 0 8px rgba(34, 197, 94, 0.18);" data-page-node-id="KmaLpGMpuFEmpVWkXV7gP3">31</div>
             <div class="kpi-trend" data-page-node-id="cvv8uFCJpcM5VdCzkDqcLP">处置率 81.6%</div>
           </div>
           <div class="kpi-card" data-page-node-id="HqiuVk6KwYvyBgSX3gVU2o">
             <div class="kpi-label" data-page-node-id="y5uOZBqs8WUf9ivDUgkrso"><i data-page-node-id="KhpZWMzeFYopFkrQgTmlMp">高</i>高风险</div>
-            <div class="kpi-value" style="color:#ff4d4f;" data-page-node-id="hYzkNAxoLKaRaFBYcErjqQ">9</div>
+            <div class="kpi-value" style="color: #e5484d;" data-page-node-id="hYzkNAxoLKaRaFBYcErjqQ">9</div>
             <div class="kpi-trend" data-page-node-id="LNpmYqU7kMWZZd2F7BRh0D">需立即督办</div>
           </div>
           <div class="kpi-card" data-page-node-id="kgG9fPLyKg8EDz1DM5DtY1">
             <div class="kpi-label" data-page-node-id="IB0g6Hrsm9GyHg3GsVxFP1"><i data-page-node-id="gMJdfdUcyVvbFdE8ftigOB">中</i>中低风险</div>
-            <div class="kpi-value" style="color:#ff9f2e;" data-page-node-id="sgPUywwMscKXULLou2Uxfl">29</div>
+            <div class="kpi-value" style="color: #f5821f;" data-page-node-id="sgPUywwMscKXULLou2Uxfl">29</div>
             <div class="kpi-trend" data-page-node-id="WQPb9NgZ53uztYJHcVRcKw">跟踪处置中</div>
           </div>
         </div>
@@ -665,12 +662,12 @@
         <div class="chain-row" data-page-node-id="HX4y5BP5ZKASERDCiTF07a">
           <div class="chain-name" data-page-node-id="XIWZjsgnrBwPvygroncVq9">生产</div>
           <div class="chain-bar" data-page-node-id="C3sGyaZRDYhmKnLbbIJ5si"><div class="chain-fill warn" style="width:78%" data-page-node-id="P9n1ge3oxWBHOI8pK3fHgk"></div></div>
-          <div class="chain-value" style="color:#ff9f2e;" data-page-node-id="JvJayjRAxeuZSB06IVM1pA">14</div>
+          <div class="chain-value" style="color: #f5821f;" data-page-node-id="JvJayjRAxeuZSB06IVM1pA">14</div>
         </div>
         <div class="chain-row" data-page-node-id="gKG9Br8RGFEiBDJfQtLBml">
           <div class="chain-name" data-page-node-id="KlU2sND2Dh47FY0VXRPKGU">仓储</div>
           <div class="chain-bar" data-page-node-id="VtwThcJXR7P3q5274GNAiR"><div class="chain-fill warn" style="width:62%" data-page-node-id="CPlb4rnjwVDmtpuzziNZFO"></div></div>
-          <div class="chain-value" style="color:#ff9f2e;" data-page-node-id="3EgJcu1aKdsuOHlEoI52Wt">9</div>
+          <div class="chain-value" style="color: #f5821f;" data-page-node-id="3EgJcu1aKdsuOHlEoI52Wt">9</div>
         </div>
         <div class="chain-row" data-page-node-id="uAYTBQdmaJ0o4H3MCJCQ4p">
           <div class="chain-name" data-page-node-id="gIBrR1k7p5BdeIGBLHOx1F">运输</div>
@@ -680,7 +677,7 @@
         <div class="chain-row" data-page-node-id="6vHP23n0hLGeMNyAINfGMD">
           <div class="chain-name" data-page-node-id="CgPAw4uMKLDzfyvtw6iWaC">燃放</div>
           <div class="chain-bar" data-page-node-id="hEFyPvVdIkIU8i9Dw9lyWt"><div class="chain-fill warn" style="width:48%" data-page-node-id="c6QynCJAP8Efp9VjWg3gah"></div></div>
-          <div class="chain-value" style="color:#ff9f2e;" data-page-node-id="5GuwAhNTAhEHCliHVfvXBN">7</div>
+          <div class="chain-value" style="color: #f5821f;" data-page-node-id="5GuwAhNTAhEHCliHVfvXBN">7</div>
         </div>
       </div>
 
@@ -789,49 +786,49 @@
     })();
 
     // ECharts common dark theme options
-    const textColor = '#e0f7ff';
-    const axisColor = 'rgba(255,255,255,0.15)';
+    const textColor = '#eef2f6';
+    const axisColor = 'rgba(15, 35, 70, 0.04)';
 
     // Trend chart
     const trendChart = echarts.init(document.getElementById('trendChart'));
     trendChart.setOption({
-      tooltip: { trigger: 'axis', backgroundColor: 'rgba(6,26,55,0.95)', borderColor: '#00d4ff', textStyle: { color: '#fff' } },
+      tooltip: { trigger: 'axis', backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#1f2d3d' } },
       legend: { data: ['生产企业', '批发企业', '零售企业'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
       grid: { left: 36, right: 12, top: 32, bottom: 22 },
-      xAxis: { type: 'category', data: ['1月','2月','3月','4月','5月','6月','7月','8月'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
-      yAxis: { type: 'value', splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+      xAxis: { type: 'category', data: ['1月','2月','3月','4月','5月','6月','7月','8月'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 10 } },
+      yAxis: { type: 'value', splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 10 } },
       series: [
-        { name: '生产企业', type: 'line', smooth: true, data: [178,180,181,182,183,184,185,186], lineStyle: { color: '#00d4ff', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,212,255,0.25)'},{offset:1,color:'rgba(0,212,255,0.01)'}]) }, symbol: 'none' },
-        { name: '批发企业', type: 'line', smooth: true, data: [300,303,305,307,308,310,311,312], lineStyle: { color: '#ff9f2e', width: 2 }, symbol: 'none' },
-        { name: '零售企业', type: 'line', smooth: true, data: [712,720,728,735,740,744,747,749], lineStyle: { color: '#a855f7', width: 2 }, symbol: 'none' }
+        { name: '生产企业', type: 'line', smooth: true, data: [178,180,181,182,183,184,185,186], lineStyle: { color: '#1677ff', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(22, 119, 255, 0.25)'},{offset:1,color:'rgba(22, 119, 255, 0.01)'}]) }, symbol: 'none' },
+        { name: '批发企业', type: 'line', smooth: true, data: [300,303,305,307,308,310,311,312], lineStyle: { color: '#f5821f', width: 2 }, symbol: 'none' },
+        { name: '零售企业', type: 'line', smooth: true, data: [712,720,728,735,740,744,747,749], lineStyle: { color: '#7c3aed', width: 2 }, symbol: 'none' }
       ]
     });
 
     // Type distribution pie
     const typeChart = echarts.init(document.getElementById('typeChart'));
     typeChart.setOption({
-      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(6,26,55,0.95)', borderColor: '#00d4ff', textStyle: { color: '#fff' } },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#1f2d3d' } },
       legend: { data: ['烟花出口箱数', '爆竹出口箱数'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
       grid: { left: 40, right: 14, top: 30, bottom: 24 },
-      xAxis: { type: 'category', data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 9, interval: 0 } },
-      yAxis: { type: 'value', name: '箱', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+      xAxis: { type: 'category', data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 9, interval: 0 } },
+      yAxis: { type: 'value', name: '箱', nameTextStyle: { color: 'rgb(107, 124, 147)', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 10 } },
       series: [
-        { name: '烟花出口箱数', type: 'bar', barWidth: 8, itemStyle: { color: '#00d4ff', borderRadius: [2, 2, 0, 0] }, data: [12.6, 9.8, 14.2, 16.5, 18.3, 17.1, 15.8, 14.9, 19.4, 21.7, 24.3, 26.8] },
-        { name: '爆竹出口箱数', type: 'bar', barWidth: 8, itemStyle: { color: '#ff9f2e', borderRadius: [2, 2, 0, 0] }, data: [8.4, 6.5, 9.8, 11.2, 12.6, 11.8, 10.9, 10.3, 13.5, 15.1, 17.2, 19.1] }
+        { name: '烟花出口箱数', type: 'bar', barWidth: 8, itemStyle: { color: '#1677ff', borderRadius: [2, 2, 0, 0] }, data: [12.6, 9.8, 14.2, 16.5, 18.3, 17.1, 15.8, 14.9, 19.4, 21.7, 24.3, 26.8] },
+        { name: '爆竹出口箱数', type: 'bar', barWidth: 8, itemStyle: { color: '#f5821f', borderRadius: [2, 2, 0, 0] }, data: [8.4, 6.5, 9.8, 11.2, 12.6, 11.8, 10.9, 10.3, 13.5, 15.1, 17.2, 19.1] }
       ]
     });
 
     // Material procurement chart
     const materialChart = echarts.init(document.getElementById('materialChart'));
     materialChart.setOption({
-      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(6,26,55,0.95)', borderColor: '#00d4ff', textStyle: { color: '#fff' } },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#1f2d3d' } },
       legend: { data: ['本月采购量', '月末库存'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
       grid: { left: 40, right: 12, top: 30, bottom: 22 },
-      xAxis: { type: 'category', data: ['黑火药', '引线', '危化品'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#8aa4bf', fontSize: 11 } },
-      yAxis: { type: 'value', name: '吨', nameTextStyle: { color: '#8aa4bf', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#8aa4bf', fontSize: 10 } },
+      xAxis: { type: 'category', data: ['黑火药', '引线', '危化品'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 11 } },
+      yAxis: { type: 'value', name: '吨', nameTextStyle: { color: 'rgb(107, 124, 147)', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 10 } },
       series: [
-        { name: '本月采购量', type: 'bar', barWidth: 16, data: [320, 185, 96], itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#00d4ff'},{offset:1,color:'#0066aa'}]) }, label: { show: true, position: 'top', color: '#fff', fontSize: 10 } },
-        { name: '月末库存', type: 'bar', barWidth: 16, data: [540, 260, 150], itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#ff9f2e'},{offset:1,color:'#c2410c'}]) } }
+        { name: '本月采购量', type: 'bar', barWidth: 16, data: [320, 185, 96], itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#1677ff'},{offset:1,color:'#3b82f6'}]) }, label: { show: true, position: 'top', color: '#1f2d3d', fontSize: 10 } },
+        { name: '月末库存', type: 'bar', barWidth: 16, data: [540, 260, 150], itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#f5821f'},{offset:1,color:'#c2410c'}]) } }
       ]
     });
 
@@ -891,10 +888,10 @@
       { name: '上饶市', value: 21, workers: 6700, vehicles: 15, warnings: 2, adcode: 361100 }
     ];
     const warningPoints = [
-      { name: '赣州市', value: 4, coord: [114.93, 25.83], color: '#ff4d4f' },
-      { name: '宜春市', value: 3, coord: [114.39, 27.81], color: '#ff9f2e' },
-      { name: '上饶市', value: 2, coord: [117.94, 28.46], color: '#ff9f2e' },
-      { name: '南昌市', value: 1, coord: [115.89, 28.68], color: '#00d4ff' }
+      { name: '赣州市', value: 4, coord: [114.93, 25.83], color: '#e5484d' },
+      { name: '宜春市', value: 3, coord: [114.39, 27.81], color: '#f5821f' },
+      { name: '上饶市', value: 2, coord: [117.94, 28.46], color: '#f5821f' },
+      { name: '南昌市', value: 1, coord: [115.89, 28.68], color: '#1677ff' }
     ];
     // 在途运输车辆实时图层：每辆车的行驶路线(省内城市间)、进度与状态
     const CAR_PATH = 'path://M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z';
@@ -993,11 +990,11 @@
         return {
           vehicles: vehicles.map(v => ({
             name: v.plate, value: [v.route[0][0] + (v.route[1][0] - v.route[0][0]) * v.t, v.route[0][1] + (v.route[1][1] - v.route[0][1]) * v.t],
-            itemStyle: { color: v.status === '预警' ? '#ff4d4f' : '#ffd23f' }, v
+            itemStyle: { color: v.status === '预警' ? '#e5484d' : '#d48806' }, v
           })),
           fireworks: fireworks.map(f => ({
             name: f.name, value: [...f.coord, 0],
-            itemStyle: { color: f.status === '进行中' ? '#ff3df0' : (f.status === '已结束' ? '#b06bff' : '#ff79e1'), borderColor: '#fff', borderWidth: 1.5, shadowColor: 'rgba(255,77,210,0.9)', shadowBlur: 8 }, f
+            itemStyle: { color: f.status === '进行中' ? '#c026d3' : (f.status === '已结束' ? '#7c3aed' : '#d946ef'), borderColor: '#eef2f6', borderWidth: 1.5, shadowColor: 'rgba(255,77,210,0.9)', shadowBlur: 8 }, f
           }))
         };
       }
@@ -1013,7 +1010,7 @@
         const status = hash01(node.name + 's' + i) > 0.8 ? '预警' : '正常';
         veh.push({
           name: plate, value: [lon, lat],
-          itemStyle: { color: status === '预警' ? '#ff4d4f' : '#ffd23f', borderColor: '#fff', borderWidth: 0.5 },
+          itemStyle: { color: status === '预警' ? '#e5484d' : '#d48806', borderColor: '#eef2f6', borderWidth: 0.5 },
           v: { plate, company: node.name + '·运输队', status, speed: 40 + Math.round(hash01(node.name + 'sp' + i) * 40) }
         });
       }
@@ -1025,7 +1022,7 @@
         const status = ['计划中', '进行中', '已结束'][(hash01(node.name + 'st' + i) * 3) | 0];
         fws.push({
           name: node.name + '燃放点' + (i + 1), value: [lon, lat, 0],
-          itemStyle: { color: status === '进行中' ? '#ff3df0' : (status === '已结束' ? '#b06bff' : '#ff79e1'), borderColor: '#fff', borderWidth: 1.5, shadowColor: 'rgba(255,77,210,0.9)', shadowBlur: 8 },
+          itemStyle: { color: status === '进行中' ? '#c026d3' : (status === '已结束' ? '#7c3aed' : '#d946ef'), borderColor: '#eef2f6', borderWidth: 1.5, shadowColor: 'rgba(255,77,210,0.9)', shadowBlur: 8 },
           f: { name: node.name + '燃放点' + (i + 1), place: places[(hash01(node.name + 'pl' + i) * places.length) | 0], time: '20:00-21:00', count: 500 + Math.round(hash01(node.name + 'c' + i) * 4000), status }
         });
       }
@@ -1185,7 +1182,7 @@
           return {
             name: c.name,
             value: [cc[0] + offs[i][0], cc[1] + offs[i][1], s.value],
-            itemStyle: { color: '#38c8f5' },
+            itemStyle: { color: '#3b82f6' },
             s
           };
         });
@@ -1198,7 +1195,7 @@
           return {
             name: c.name,
             value: [cc[0] + offs[i][0], cc[1] + offs[i][1], s.value],
-            itemStyle: { color: c.level === 4 ? '#ffd23f' : '#38c8f5' },
+            itemStyle: { color: c.level === 4 ? '#d48806' : '#3b82f6' },
             s
           };
         });
@@ -1218,11 +1215,11 @@
         series.push({
           type: 'map', geoIndex: 0, data: regionData,
           label: {
-            show: true, color: '#cfe9ff', fontSize: node.level === 0 ? 10 : 11,
+            show: true, color: '#3b4d63', fontSize: node.level === 0 ? 10 : 11,
             lineHeight: 14,
             formatter: p => node.level === 0 ? `${p.name}\n在产${p.value}家` : `${p.name}\n${p.value}`
           },
-          emphasis: { label: { color: '#fff' } }
+          emphasis: { label: { color: '#1f2d3d' } }
         });
       }
       if (warnPoints.length) {
@@ -1230,7 +1227,7 @@
           name: '预警', type: 'effectScatter', coordinateSystem: 'geo', geoIndex: 0,
           symbolSize: v => 10 + v[2] * 1.1,
           rippleEffect: { brushType: 'stroke', scale: 3.5 },
-          label: { show: true, position: 'right', color: '#fff', fontSize: 10, formatter: p => '未处置' + p.value[2] + '起' },
+          label: { show: true, position: 'right', color: '#1f2d3d', fontSize: 10, formatter: p => '未处置' + p.value[2] + '起' },
           data: warnPoints
         });
       }
@@ -1241,8 +1238,8 @@
           symbol: node.level === 3 ? 'circle' : 'roundRect',
           symbolSize: v => (node.level === 3 ? 14 : 18),
           zlevel: 3,
-          itemStyle: { borderColor: '#fff', borderWidth: 1, shadowColor: 'rgba(0,212,255,0.8)', shadowBlur: 8 },
-          label: { show: true, position: 'right', color: '#cfe9ff', fontSize: 10, formatter: p => p.name.length > 8 ? p.name.slice(0, 8) + '…' : p.name },
+          itemStyle: { borderColor: '#eef2f6', borderWidth: 1, shadowColor: 'rgba(22, 119, 255, 0.85)', shadowBlur: 8 },
+          label: { show: true, position: 'right', color: '#3b4d63', fontSize: 10, formatter: p => p.name.length > 8 ? p.name.slice(0, 8) + '…' : p.name },
           data: markers
         });
       }
@@ -1268,7 +1265,7 @@
       mapChart.setOption({
         tooltip: {
           trigger: 'item',
-          backgroundColor: 'rgba(6,26,55,0.95)', borderColor: '#00d4ff', textStyle: { color: '#fff' },
+          backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#1f2d3d' },
           formatter: p => {
             if (p.data && p.data.v) {
               const v = p.data.v;
@@ -1284,7 +1281,7 @@
               const s = p.data.s;
               return `<b>${s.name}</b><br/>当前在产企业数：${s.value} 家`
                 + `<br/>当前作业人员数：${s.workers.toLocaleString()} 人`
-                + `<br/>未处置预警数：${s.warnings} 起<br/><span style="color:#00d4ff">点击查看详情</span>`;
+                + `<br/>未处置预警数：${s.warnings} 起<br/><span style="color: #1677ff">点击查看详情</span>`;
             }
             if (p.seriesName === '预警') return `${p.name}<br/>未处置预警数：${p.value[2]} 起`;
             const d = p.data;
@@ -1293,21 +1290,21 @@
             return `<b>${p.name}</b><br/>当前在产企业数：${d.value} 家`
               + `<br/>当前作业人员数：${(d.workers || 0).toLocaleString()} 人`
               + `<br/>未处置预警数：${d.warnings || 0} 起`
-              + (canDrill ? `<br/><span style="color:#00d4ff">点击下钻</span>` : '');
+              + (canDrill ? `<br/><span style="color: #1677ff">点击下钻</span>` : '');
           }
         },
         visualMap: hasGeo ? {
           min: 0, max: vmax, left: 10, bottom: 118,
           text: ['多', '少'], calculable: false,
-          inRange: { color: ['#0b3b6b', '#0f6aa8', '#17a2d8', '#38c8f5'] },
-          textStyle: { color: '#8aa4bf', fontSize: 11 },
+          inRange: { color: ['#eaf3ff', '#1677ff', '#38bdf8', '#3b82f6'] },
+          textStyle: { color: 'rgb(107, 124, 147)', fontSize: 11 },
           itemWidth: 12, itemHeight: 70
         } : null,
         geo: {
           map: activeMap, roam: false,
           layoutCenter: ['50%', '50%'], layoutSize: '78%',
-          itemStyle: { borderColor: 'rgba(0,212,255,0.7)', borderWidth: 1, areaColor: '#0a2a4a', shadowColor: 'rgba(0,180,255,0.45)', shadowBlur: 18 },
-          emphasis: { itemStyle: { areaColor: 'rgba(0,180,255,0.4)' } }
+          itemStyle: { borderColor: 'rgba(22, 119, 255, 0.85)', borderWidth: 1, areaColor: '#e8f0fe', shadowColor: 'rgba(22, 119, 255, 0.45)', shadowBlur: 18 },
+          emphasis: { itemStyle: { areaColor: 'rgba(22, 119, 255, 0.4)' } }
         },
         series
       }, true);
@@ -1315,7 +1312,7 @@
 
     function showMapError() {
       document.getElementById('jxMapChart').innerHTML =
-        '<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#8aa4bf;font-size:13px;">地图数据加载失败，请检查网络后刷新</div>';
+        '<div style="display:flex;height:100%;align-items:center;justify-content:center;color: rgb(107, 124, 147);font-size:13px;">地图数据加载失败，请检查网络后刷新</div>';
     }
 
     // 面包屑渲染（点击逐级回退）
@@ -1458,7 +1455,7 @@
         fill.style.width = (chainVals[i] / cmax * 100) + '%';
         fill.classList.toggle('warn', chainVals[i] / cmax > 0.55);
         val.textContent = chainVals[i];
-        val.style.color = chainVals[i] / cmax > 0.55 ? '#ff9f2e' : '';
+        val.style.color = chainVals[i] / cmax > 0.55 ? '#f5821f' : '';
       });
     }
     // 图表随层级缩放
@@ -1568,7 +1565,7 @@
         return {
           name: v.plate,
           value: [lon, lat],
-          itemStyle: { color: v.status === '预警' ? '#ff4d4f' : '#ffd23f' },
+          itemStyle: { color: v.status === '预警' ? '#e5484d' : '#d48806' },
           v
         };
       });
