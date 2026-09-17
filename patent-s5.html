@@ -80,23 +80,16 @@
   .step-nav a.active b { opacity: 1; }
   .step-nav a.home { color: #b8dcff; }
 
-  /* ------- 时间轴 ------- */
-  .timeline { position: relative; display: flex; align-items: center; gap: 14px; flex-shrink: 0;
-    padding: 4px 4px 0; }
+  /* ------- 识别流程阶段条（进页自动推进，无需手动控制） ------- */
+  .timeline { position: relative; display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+    padding: 2px 2px 0; }
   .timeline .lab { font-size: 11.5px; color: var(--text-dim); white-space: nowrap; }
-  input[type=range] {
-    -webkit-appearance: none; appearance: none; flex: 1; height: 6px; border-radius: 3px; outline: none;
-    background: linear-gradient(90deg, rgba(0,212,255,0.55) 0%, rgba(0,212,255,0.55) var(--pct,0%), rgba(255,255,255,0.10) var(--pct,0%), rgba(255,255,255,0.10) 100%);
-    cursor: pointer;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none; width: 15px; height: 15px; border-radius: 50%;
-    background: #00d4ff; border: 2px solid #04121f; box-shadow: 0 0 10px rgba(0,212,255,0.9); cursor: pointer;
-  }
-  .seg-marks { display: flex; gap: 4px; flex-shrink: 0; }
-  .seg-marks span { font-size: 10.5px; padding: 2px 7px; border-radius: 8px; color: #6b8aa8;
-    border: 1px solid rgba(0, 180, 255, 0.18); background: rgba(0, 50, 95, 0.3); white-space: nowrap; }
-  .seg-marks span.on { color: #04121f; background: #00d4ff; border-color: #00d4ff; font-weight: 700; }
+  .seg-marks { display: flex; gap: 8px; flex: 1; min-width: 0; }
+  .seg-marks span { flex: 1; text-align: center; font-size: 11.5px; padding: 3px 6px; border-radius: 8px;
+    color: #6b8aa8; border: 1px solid rgba(0, 180, 255, 0.18); background: rgba(0, 50, 95, 0.3);
+    white-space: nowrap; transition: color .25s, background .25s, border-color .25s, box-shadow .25s; }
+  .seg-marks span.on { color: #04121f; background: #00d4ff; border-color: #00d4ff; font-weight: 700;
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.55); }
   .seg-marks span.hit { color: #8ff0b0; border-color: rgba(34,197,94,0.6); background: rgba(34,197,94,0.16); }
 
   main { flex: 1; display: grid; gap: 10px; min-height: 0; }
@@ -334,8 +327,7 @@
   </header>
 
   <div class="timeline">
-    <span class="lab">监测时刻</span>
-    <input type="range" id="tSlider" min="0" max="60" step="0.1" value="0" />
+    <span class="lab">识别流程</span>
     <div class="seg-marks" id="marks">
       <span data-n="1">S1 0-9′</span>
       <span data-n="2">S2 9-17′</span>
@@ -397,7 +389,7 @@
 
   <footer class="pager">
     <a href="patent-s4.html" data-step="4">← 上一流程 S4</a>
-    <span class="mid">S5 / S5 · 置信度校验与管控预警 —— 拖动时间轴可定格查看任意时刻的取值</span>
+    <span class="mid">S5 / S5 · 置信度校验与管控预警 —— 进页自动按识别流程推进，各指标随监测时刻实时刷新</span>
     <a href="patent.html">返回方案总览 →</a>
   </footer>
 </div>
@@ -569,10 +561,8 @@
   var T = parseFloat(q.get('t'));
   if (!isFinite(T)) T = M.stageTime(PAGE_NO);
   T = Math.max(0, Math.min(M.TL.end, T));
-  var lastTs = 0, lastDraw = 0;
-  var holdUntil = 0;                      // 拖动滑块后的定格截止时刻（毫秒）
+  var lastTs = 0;
 
-  var elSlider = document.getElementById('tSlider');
   var elTick = document.getElementById('flowTick');
   var elStep = document.getElementById('stepTag');
 
@@ -600,42 +590,25 @@
     elTick.textContent = fmtT(T);
     elStep.textContent = st.stage.done ? 'S1-S5 全流程识别完成' : ('S' + st.stage.no + ' / S5 · 当前查看 S' + PAGE_NO);
     elStep.classList.toggle('done', st.stage.done);
-    if (elSlider && document.activeElement !== elSlider) elSlider.value = T;
-    if (elSlider) elSlider.style.setProperty('--pct', (T / M.TL.end * 100).toFixed(2) + '%');
     syncMarks(st.stage);
     syncLinks();
     if (typeof renderPage === 'function') renderPage(T, st);
   }
   window.__paint = paint;
 
-  /* ---------- 控件：进页即自动推进，拖动滑块时定格便于读数 ---------- */
-  if (elSlider) {
-    elSlider.addEventListener('input', function () {
-      T = Math.max(0, Math.min(M.TL.end, parseFloat(elSlider.value)));
-      lastDraw = 0;
-      holdUntil = performance.now() + 5000;   // 定格 5 秒后自动恢复推进
-      paint();
-    });
-  }
+  /* ---------- 控件：进页即自动推进，重置回到起点 ---------- */
   document.getElementById('btnReset').addEventListener('click', function () {
-    T = 0; lastTs = 0; lastDraw = 0; holdUntil = 0; onLoop(); paint();
+    T = 0; lastTs = 0; onLoop(); paint();
   });
 
   /* ---------- 主循环 ---------- */
   function tick(ts) {
-    if (ts >= holdUntil) {
-      if (!lastTs) lastTs = ts;
-      var dt = Math.min(0.12, (ts - lastTs) / 1000);
-      lastTs = ts;
-      T += dt * 1.15 * 3;                 // 推进速率：约 3 倍速，60 分钟约 17 秒一轮
-      if (T > M.TL.end) { T = 0; onLoop(); }
-      paint();
-    } else {
-      lastTs = 0;                          // 定格期间重置基准，恢复后不跳变
-      if (ts - lastDraw > 200) {
-        lastDraw = ts; paint();            // 定格时也刷新，保证 URL 切换回来能重绘
-      }
-    }
+    if (!lastTs) lastTs = ts;
+    var dt = Math.min(0.12, (ts - lastTs) / 1000);
+    lastTs = ts;
+    T += dt * 1.15 * 3;                   // 推进速率：约 3 倍速，60 分钟约 17 秒一轮
+    if (T > M.TL.end) { T = 0; onLoop(); }
+    paint();
     requestAnimationFrame(tick);
   }
   function onLoop() { if (typeof onReset === 'function') onReset(); }
