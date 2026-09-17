@@ -3,7 +3,7 @@
 <head data-page-node-id="PSwTPmNXirwwjslOBEYeBp">
   <meta charset="UTF-8" data-page-node-id="6CHEJ0qirJA4JoXs8W5203" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="EzN2eDCfFl0N2mJsmkAQil" />
-  <title>江西省烟花爆竹产业全链条监管服务平台 - 态势总览</title>
+  <title>省级烟花爆竹产业全链条监管服务平台 - 态势总览</title>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <script src="geo-data.js"></script>
   <style>
@@ -67,7 +67,7 @@
     }
     .brand h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; color: var(--title); text-shadow: 0 0 12px rgba(0, 212, 255, 0.5); }
     .brand p { font-size: 11px; color: var(--text-dim); letter-spacing: 4px; margin-top: 2px; }
-    .nav { display: flex; gap: 8px; }
+    .nav { display: flex; gap: 8px; margin: 0 auto; }
     .nav a {
       position: relative;
       padding: 8px 18px;
@@ -86,8 +86,6 @@
       content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, transparent, var(--accent), transparent);
     }
-    .header-right { display: flex; align-items: center; gap: 20px; color: var(--text-dim); font-size: 13px; }
-    .weather { display: flex; align-items: center; gap: 8px; }
     .time { font-family: "DIN Alternate", "Arial Black", sans-serif; font-size: 16px; color: var(--accent); letter-spacing: 1px; }
 
     /* Main */
@@ -457,7 +455,7 @@
     <div class="brand" data-page-node-id="KmYQkSMxG5AZznyBZrpMif">
       <div class="brand-icon" data-page-node-id="eQktKuG8FDOAuistUrB1Bz">赣</div>
       <div data-page-node-id="x4qzTka50lgefFAcjTaNaQ">
-        <h1 data-page-node-id="QrM2XU9fBMh7rghUThGKQN">江西省烟花爆竹产业全链条监管服务平台</h1>
+        <h1 data-page-node-id="QrM2XU9fBMh7rghUThGKQN">省级烟花爆竹产业全链条监管服务平台</h1>
       </div>
     </div>
     <nav class="nav" data-page-node-id="g0qegr70jLXX2KTzAo8GHC">
@@ -467,16 +465,12 @@
       <a href="warehouse.html" data-page-node-id="t9m9cGoUo6E3EHLasmFE3R">仓储态势</a>
       <a href="transport.html" data-page-node-id="WIxVwwAtlj7OG5d8RGXWpI">运输态势</a>
       <a href="export.html" data-page-node-id="itI6jswuSps6eggwKlEaJo">出口态势</a>
-      <a href="retail.html" data-page-node-id="IEywqKYPZPGBQZHvxDCSd7">零售态势</a>
+      <a href="retail.html" data-page-node-id="IEywqKYPZPGBQZHvxDCSd7">经营态势</a>
       <a href="firework.html" data-page-node-id="yvoZzQhDcoOco6hBscDpvr">燃放态势</a>
       <a href="enforcement.html">打非治违态势</a>
       <a href="monitor.html" data-page-node-id="QjnzF3rw68vkEf2vx1AJVy">智能监控中心</a>
       <a href="admin.html" data-page-node-id="7ZlceaDPby1GF82JAqQIhX">业务管理</a>
     </nav>
-    <div class="header-right" data-page-node-id="NPue44I0hQkYvZeHPD0sOp">
-      <div class="weather" data-page-node-id="dJ1mek6PvPTpIQiIMroQfP">🌤 南昌 多云 28°C</div>
-      <div class="time" id="clock" data-page-node-id="97JibbrOPPCSeE2izxHhqc">2026-08-26 16:08:27</div>
-    </div>
   </header>
 
   <main class="main" data-page-node-id="TjZMSzNSkPlNDqhg4B2v7o">
@@ -740,14 +734,6 @@
     window.addEventListener('resize', fitScreen);
     fitScreen();
 
-    // Clock
-    function updateClock() {
-      const now = new Date();
-      const pad = n => String(n).padStart(2, '0');
-      document.getElementById('clock').textContent = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
 
     // ===== 页面整体优化 =====
     // 顶部导航点击切换 active 状态（有真实 href 的菜单正常跳转）

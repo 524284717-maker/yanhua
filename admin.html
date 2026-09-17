@@ -3,7 +3,7 @@
 <head data-page-node-id="UNM8AYwNN3DEfVk4p5i7KZ">
 <meta charset="UTF-8" data-page-node-id="6NTIqlyXjVUwsZ78QdVN0l">
 <meta name="viewport" content="width=device-width,initial-scale=1" data-page-node-id="2o7bn2Imxy5LqAXCuTEDjN">
-<title>业务管理 · 江西省烟花爆竹产业全链条监管服务平台</title>
+<title>业务管理 · 省级烟花爆竹产业全链条监管服务平台</title>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
   :root {
@@ -71,7 +71,7 @@
     font-size: 20px; font-weight: bold; color: #fff;
   }
   .brand h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; color: var(--title); text-shadow: 0 0 12px rgba(0, 212, 255, 0.5); }
-  .nav { display: flex; gap: 8px; }
+  .nav { display: flex; gap: 8px; margin: 0 auto; }
   .nav a {
     position: relative; padding: 8px 18px;
     color: var(--text-dim); text-decoration: none; font-size: 14px;
@@ -88,8 +88,6 @@
     content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
   }
-  .header-right { display: flex; align-items: center; gap: 20px; color: var(--text-dim); font-size: 13px; }
-  .weather { display: flex; align-items: center; gap: 8px; }
   .time { font-family: "DIN Alternate", "Arial Black", sans-serif; font-size: 16px; color: var(--accent); letter-spacing: 1px; }
 
   /* ========== 后台主体：左菜单 + 右内容 ========== */
@@ -365,7 +363,7 @@
     <header class="header" data-page-node-id="N05TfP4n20BCSiAhsCu3AE">
       <div class="brand" data-page-node-id="m0vRAxNCrB5hZD0OkBm4yL">
         <div class="brand-icon" data-page-node-id="i7vFDXhyMDKarQ5uicjzdJ">烟</div>
-        <h1 data-page-node-id="IFE2KlmT1bd7cJ5Ns7QAZx">江西省烟花爆竹产业全链条监管服务平台</h1>
+        <h1 data-page-node-id="IFE2KlmT1bd7cJ5Ns7QAZx">省级烟花爆竹产业全链条监管服务平台</h1>
       </div>
       <nav class="nav" data-page-node-id="h8Aq8flfxb8tRvReYYxYXF">
         <a href="index.html" data-page-node-id="r1DjaAR3Ee7z0kpxdMDd0G">态势总览</a>
@@ -374,16 +372,12 @@
         <a href="warehouse.html" data-page-node-id="Ku7e3jDc9YyeC463bHpLjP">仓储态势</a>
         <a href="transport.html" data-page-node-id="UuxEyb3YCOUZrSIYDoAuf2">运输态势</a>
         <a href="export.html" data-page-node-id="Ubk6bbgl8TmOvoJeGyvCWr">出口态势</a>
-        <a href="retail.html" data-page-node-id="AmjCFbg8Oi7b1sFQ51elsN">零售态势</a>
+        <a href="retail.html" data-page-node-id="AmjCFbg8Oi7b1sFQ51elsN">经营态势</a>
         <a href="firework.html" data-page-node-id="fJ8Ao7FXds5cnK90xbpQGb">燃放态势</a>
         <a href="enforcement.html">打非治违态势</a>
         <a href="monitor.html" data-page-node-id="B10dYWQxmN4LIy6TkKAqcW">智能监控中心</a>
         <a class="active" href="admin.html" data-page-node-id="Ob7SVQ5vkKYkC6GQwm5yGX">业务管理</a>
       </nav>
-      <div class="header-right" data-page-node-id="t6Jl7sYIiVKJF4VcXivk2Q">
-        <div class="weather" data-page-node-id="e1qq4A74RCcCanSqJtuRq3">🌤 南昌 多云 28°C</div>
-        <div class="time" id="clock" data-page-node-id="YdSAzKpbgwNIeKRuBOX6lb">2026-09-03 09:18:00</div>
-      </div>
     </header>
 
     <!-- ===== 后台主体 ===== -->
@@ -830,7 +824,6 @@
     var d = new Date();
     var p = function (n) { return n < 10 ? '0' + n : '' + n; };
     var t = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
-    var c = document.getElementById('clock'); if (c) c.textContent = t;
     var f = document.getElementById('footTime'); if (f) f.textContent = t;
   }
   tick(); setInterval(tick, 1000);
