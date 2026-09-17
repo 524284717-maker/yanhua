@@ -58,7 +58,7 @@
       position: relative; z-index: 2; display: flex; align-items: center; gap: 12px;
     }
     .brand-icon {
-      width: 44px; height: 44px; flex-shrink: 0;
+      width: 50px; height: 44px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       filter: drop-shadow(0 3px 8px rgba(120, 45, 0, 0.35));
     }
@@ -446,6 +446,7 @@
 
     /* 选中文字颜色 */
     ::selection{ background: rgba(22, 119, 255, 0.35); }
+  .brand-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .brand-icon svg { width: 100%; height: 100%; display: block; }
 
     /* __COL_CLIP_FIX__ 列内面板可收缩，避免末面板被 .col 的 overflow:hidden 静默裁掉 */
@@ -463,7 +464,7 @@
   <div class="screen" data-page-node-id="zmaaAYwqfGKQpZNEWa2Fml">
   <header class="header" data-page-node-id="pHGmIJgfNjVbLm3KhhE4eC">
     <div class="brand" data-page-node-id="KmYQkSMxG5AZznyBZrpMif">
-      <div class="brand-icon" data-page-node-id="eQktKuG8FDOAuistUrB1Bz"><svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="yhBrandIcon" x1="0.15" y1="0" x2="0.7" y2="1"><stop offset="0" stop-color="#FFC24D"/><stop offset="1" stop-color="#F97316"/></linearGradient></defs><path d="M24 3.6 L41.4 10.2 V23.4 C41.4 33.6 33.3 41.4 24 44.6 C14.7 41.4 6.6 33.6 6.6 23.4 V10.2 Z" fill="url(#yhBrandIcon)"/><g stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"><path d="M24 15.4 V25.6"/><path d="M18.1 18.6 L21.4 24.1"/><path d="M29.9 18.6 L26.6 24.1"/><path d="M15.4 25.4 L20 27.5"/><path d="M32.6 25.4 L28 27.5"/></g><circle cx="24" cy="30.2" r="2.4" fill="#fff"/><path d="M3.4 30.4 C8 39.4 16.4 44.5 24 45.3" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.92"/><circle cx="4.6" cy="24" r="1.9" fill="#fff"/><circle cx="44" cy="33.4" r="2.1" fill="#fff"/></svg></div>
+      <div class="brand-icon" data-page-node-id="eQktKuG8FDOAuistUrB1Bz"><img class="brand-icon-img" alt="" src="data:image/png;base64,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"></div>
       <div data-page-node-id="x4qzTka50lgefFAcjTaNaQ">
         <h1 data-page-node-id="QrM2XU9fBMh7rghUThGKQN">烟花爆竹监管平台</h1>
       </div>
@@ -802,11 +803,11 @@
     // Trend chart
     const trendChart = echarts.init(document.getElementById('trendChart'));
     trendChart.setOption({
-      tooltip: { trigger: 'axis', backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#1f2d3d' } },
+      tooltip: { trigger: 'axis', backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#000000' } },
       legend: { data: ['生产企业', '批发企业', '零售企业'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
       grid: { left: 36, right: 12, top: 32, bottom: 22 },
-      xAxis: { type: 'category', data: ['1月','2月','3月','4月','5月','6月','7月','8月'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 10 } },
-      yAxis: { type: 'value', splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 10 } },
+      xAxis: { type: 'category', data: ['1月','2月','3月','4月','5月','6月','7月','8月'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#000000', fontSize: 10 } },
+      yAxis: { type: 'value', splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#000000', fontSize: 10 } },
       series: [
         { name: '生产企业', type: 'line', smooth: true, data: [178,180,181,182,183,184,185,186], lineStyle: { color: '#1677ff', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(22, 119, 255, 0.25)'},{offset:1,color:'rgba(22, 119, 255, 0.01)'}]) }, symbol: 'none' },
         { name: '批发企业', type: 'line', smooth: true, data: [300,303,305,307,308,310,311,312], lineStyle: { color: '#f5821f', width: 2 }, symbol: 'none' },
@@ -817,11 +818,11 @@
     // Type distribution pie
     const typeChart = echarts.init(document.getElementById('typeChart'));
     typeChart.setOption({
-      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#1f2d3d' } },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#000000' } },
       legend: { data: ['烟花出口箱数', '爆竹出口箱数'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
       grid: { left: 40, right: 14, top: 30, bottom: 24 },
-      xAxis: { type: 'category', data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 9, interval: 0 } },
-      yAxis: { type: 'value', name: '箱', nameTextStyle: { color: 'rgb(107, 124, 147)', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 10 } },
+      xAxis: { type: 'category', data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#000000', fontSize: 9, interval: 0 } },
+      yAxis: { type: 'value', name: '箱', nameTextStyle: { color: '#000000', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#000000', fontSize: 10 } },
       series: [
         { name: '烟花出口箱数', type: 'bar', barWidth: 8, itemStyle: { color: '#1677ff', borderRadius: [2, 2, 0, 0] }, data: [12.6, 9.8, 14.2, 16.5, 18.3, 17.1, 15.8, 14.9, 19.4, 21.7, 24.3, 26.8] },
         { name: '爆竹出口箱数', type: 'bar', barWidth: 8, itemStyle: { color: '#f5821f', borderRadius: [2, 2, 0, 0] }, data: [8.4, 6.5, 9.8, 11.2, 12.6, 11.8, 10.9, 10.3, 13.5, 15.1, 17.2, 19.1] }
@@ -831,13 +832,13 @@
     // Material procurement chart
     const materialChart = echarts.init(document.getElementById('materialChart'));
     materialChart.setOption({
-      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#1f2d3d' } },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#000000' } },
       legend: { data: ['本月采购量', '月末库存'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
       grid: { left: 40, right: 12, top: 30, bottom: 22 },
-      xAxis: { type: 'category', data: ['黑火药', '引线', '危化品'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 11 } },
-      yAxis: { type: 'value', name: '吨', nameTextStyle: { color: 'rgb(107, 124, 147)', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: 'rgb(107, 124, 147)', fontSize: 10 } },
+      xAxis: { type: 'category', data: ['黑火药', '引线', '危化品'], axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#000000', fontSize: 11 } },
+      yAxis: { type: 'value', name: '吨', nameTextStyle: { color: '#000000', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#000000', fontSize: 10 } },
       series: [
-        { name: '本月采购量', type: 'bar', barWidth: 16, data: [320, 185, 96], itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#1677ff'},{offset:1,color:'#3b82f6'}]) }, label: { show: true, position: 'top', color: '#1f2d3d', fontSize: 10 } },
+        { name: '本月采购量', type: 'bar', barWidth: 16, data: [320, 185, 96], itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#1677ff'},{offset:1,color:'#3b82f6'}]) }, label: { show: true, position: 'top', color: '#000000', fontSize: 10 } },
         { name: '月末库存', type: 'bar', barWidth: 16, data: [540, 260, 150], itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#f5821f'},{offset:1,color:'#c2410c'}]) } }
       ]
     });
@@ -1225,11 +1226,11 @@
         series.push({
           type: 'map', geoIndex: 0, data: regionData,
           label: {
-            show: true, color: '#3b4d63', fontSize: node.level === 0 ? 10 : 11,
+            show: true, color: '#000000', fontSize: node.level === 0 ? 10 : 11,
             lineHeight: 14,
             formatter: p => node.level === 0 ? `${p.name}\n在产${p.value}家` : `${p.name}\n${p.value}`
           },
-          emphasis: { label: { color: '#1f2d3d' } }
+          emphasis: { label: { color: '#000000' } }
         });
       }
       if (warnPoints.length) {
@@ -1237,7 +1238,7 @@
           name: '预警', type: 'effectScatter', coordinateSystem: 'geo', geoIndex: 0,
           symbolSize: v => 10 + v[2] * 1.1,
           rippleEffect: { brushType: 'stroke', scale: 3.5 },
-          label: { show: true, position: 'right', color: '#1f2d3d', fontSize: 10, formatter: p => '未处置' + p.value[2] + '起' },
+          label: { show: true, position: 'right', color: '#000000', fontSize: 10, formatter: p => '未处置' + p.value[2] + '起' },
           data: warnPoints
         });
       }
@@ -1249,7 +1250,7 @@
           symbolSize: v => (node.level === 3 ? 14 : 18),
           zlevel: 3,
           itemStyle: { borderColor: '#eef2f6', borderWidth: 1, shadowColor: 'rgba(22, 119, 255, 0.85)', shadowBlur: 8 },
-          label: { show: true, position: 'right', color: '#3b4d63', fontSize: 10, formatter: p => p.name.length > 8 ? p.name.slice(0, 8) + '…' : p.name },
+          label: { show: true, position: 'right', color: '#000000', fontSize: 10, formatter: p => p.name.length > 8 ? p.name.slice(0, 8) + '…' : p.name },
           data: markers
         });
       }
@@ -1275,7 +1276,7 @@
       mapChart.setOption({
         tooltip: {
           trigger: 'item',
-          backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#1f2d3d' },
+          backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#000000' },
           formatter: p => {
             if (p.data && p.data.v) {
               const v = p.data.v;
@@ -1307,7 +1308,7 @@
           min: 0, max: vmax, left: 10, bottom: 118,
           text: ['多', '少'], calculable: false,
           inRange: { color: ['#eaf3ff', '#1677ff', '#38bdf8', '#3b82f6'] },
-          textStyle: { color: 'rgb(107, 124, 147)', fontSize: 11 },
+          textStyle: { color: '#000000', fontSize: 11 },
           itemWidth: 12, itemHeight: 70
         } : null,
         geo: {

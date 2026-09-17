@@ -56,7 +56,7 @@
       position: relative; z-index: 2; display: flex; align-items: center; gap: 12px;
     }
     .brand-icon {
-      width: 44px; height: 44px; flex-shrink: 0;
+      width: 50px; height: 44px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       filter: drop-shadow(0 3px 8px rgba(120, 45, 0, 0.35));
     }
@@ -346,6 +346,7 @@
     .tv-ft{ display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: rgb(107, 124, 147); margin-top: auto; }
     .tv-route{ color: #1677ff; cursor: pointer; }
     .tv-route:hover{ text-decoration: underline; }
+  .brand-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .brand-icon svg { width: 100%; height: 100%; display: block; }
 
     /* __COL_CLIP_FIX__ 列内面板可收缩，避免末面板被 .col 的 overflow:hidden 静默裁掉 */
@@ -358,7 +359,7 @@
   <div class="screen">
   <header class="header">
     <div class="brand">
-      <div class="brand-icon"><svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="yhBrandIcon" x1="0.15" y1="0" x2="0.7" y2="1"><stop offset="0" stop-color="#FFC24D"/><stop offset="1" stop-color="#F97316"/></linearGradient></defs><path d="M24 3.6 L41.4 10.2 V23.4 C41.4 33.6 33.3 41.4 24 44.6 C14.7 41.4 6.6 33.6 6.6 23.4 V10.2 Z" fill="url(#yhBrandIcon)"/><g stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"><path d="M24 15.4 V25.6"/><path d="M18.1 18.6 L21.4 24.1"/><path d="M29.9 18.6 L26.6 24.1"/><path d="M15.4 25.4 L20 27.5"/><path d="M32.6 25.4 L28 27.5"/></g><circle cx="24" cy="30.2" r="2.4" fill="#fff"/><path d="M3.4 30.4 C8 39.4 16.4 44.5 24 45.3" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.92"/><circle cx="4.6" cy="24" r="1.9" fill="#fff"/><circle cx="44" cy="33.4" r="2.1" fill="#fff"/></svg></div>
+      <div class="brand-icon"><img class="brand-icon-img" alt="" src="data:image/png;base64,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"></div>
       <div>
         <h1>烟花爆竹监管平台</h1>
       </div>
@@ -549,7 +550,7 @@
 
     const textColor = '#000000';
     const axisColor = 'rgba(15, 35, 70, 0.04)';
-    const tipBase = { backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#1f2d3d' } };
+    const tipBase = { backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#000000' } };
 
     // 确定性伪随机（按名称生成稳定数据）
     function hash01(s) {
@@ -658,8 +659,8 @@
           text: '累计 ' + fmt(totalBar) + ' 趟 · ' + fmt(totalTons) + ' 吨（' + d.unit + '）',
           subtext: yoyTxt,
           left: 2, top: 0,
-          textStyle: { color: 'rgb(107, 124, 147)', fontSize: 11, fontWeight: 400 },
-          subtextStyle: { color: '#16a34a', fontSize: 11, fontWeight: 700 }
+          textStyle: { color: '#000000', fontSize: 11, fontWeight: 400 },
+          subtextStyle: { color: '#000000', fontSize: 11, fontWeight: 700 }
         },
         grid: { left: 46, right: 48, top: 48, bottom: 22 },
         xAxis: {
@@ -669,12 +670,12 @@
         },
         yAxis: [
           {
-            type: 'value', name: '趟次', nameTextStyle: { color: 'rgb(107, 124, 147)', fontSize: 10 },
+            type: 'value', name: '趟次', nameTextStyle: { color: '#000000', fontSize: 10 },
             axisLabel: { color: textColor, fontSize: 10 },
             splitLine: { lineStyle: { color: 'rgba(15, 35, 70, 0.02)' } }
           },
           {
-            type: 'value', name: '吨', nameTextStyle: { color: 'rgb(107, 124, 147)', fontSize: 10 },
+            type: 'value', name: '吨', nameTextStyle: { color: '#000000', fontSize: 10 },
             axisLabel: { color: textColor, fontSize: 10 }, splitLine: { show: false }
           }
         ],
@@ -990,9 +991,9 @@
     const mapChart = echarts.init(document.getElementById('mapChart'));
 
     const LABEL_RICH = {
-      nm: { fontSize: 11, fontWeight: 700, color: '#1f2d3d', lineHeight: 15, align: 'center' },
-      v: { fontSize: 10, color: '#3b4d63', lineHeight: 13, align: 'center' },
-      w: { fontSize: 10, color: '#d97706', lineHeight: 13, align: 'center' }
+      nm: { fontSize: 11, fontWeight: 700, color: '#000000', lineHeight: 15, align: 'center' },
+      v: { fontSize: 10, color: '#000000', lineHeight: 13, align: 'center' },
+      w: { fontSize: 10, color: '#000000', lineHeight: 13, align: 'center' }
     };
     const LABEL_BOX = {
       backgroundColor: 'rgba(255, 255, 255, 0.98)',
@@ -1159,7 +1160,7 @@
         visualMap: {
           show: true, type: 'continuous', min: 0, max: maxV, seriesIndex: 0,
           left: 8, bottom: 8, orient: 'horizontal', itemWidth: 92, itemHeight: 8,
-          text: ['高', '低'], textStyle: { color: 'rgb(107, 124, 147)', fontSize: 10 },
+          text: ['高', '低'], textStyle: { color: '#000000', fontSize: 10 },
           inRange: { color: ['#eef4ff', '#edf2f7', '#1272c8', '#3b82f6'] }
         },
         series: [{
@@ -1172,7 +1173,7 @@
           },
           emphasis: {
             itemStyle: { areaColor: '#e8f0fe', shadowBlur: 22, shadowColor: 'rgba(22, 119, 255, 0.85)' },
-            label: { show: true }
+            label: { show: true, color: '#000000' }
           },
           select: { disabled: true },
           label: Object.assign({
@@ -1284,7 +1285,7 @@
         },
         label: {
           show: true, position: 'top', distance: 6, formatter: node.name,
-          color: '#d97706', fontSize: 12, fontWeight: 700,
+          color: '#000000', fontSize: 12, fontWeight: 700,
           textShadowColor: 'rgba(15, 35, 70, 0.12)', textShadowBlur: 4
         },
         data: [{ name: '__town__', value: townPt }]
@@ -1323,7 +1324,7 @@
         itemStyle: { color: 'rgba(198, 115, 16, 0.7)', borderColor: 'rgba(255, 213, 145, 0.8)', borderWidth: 1 },
         label: {
           show: true, position: 'top', distance: 5, formatter: townNode.name,
-          color: '#c99a5e', fontSize: 11,
+          color: '#000000', fontSize: 11,
           textShadowColor: 'rgba(15, 35, 70, 0.12)', textShadowBlur: 4
         },
         data: [{ name: '__town__', value: townPt }]
