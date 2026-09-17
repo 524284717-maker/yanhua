@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>专利技术方案演示 - 烟花爆竹仓储隐蔽囤货与账面造假风险智能识别系统</title>
+<title>S1 库存饱和度计算 · 专利技术方案演示 - 烟花爆竹仓储隐蔽囤货与账面造假风险智能识别系统</title>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -279,95 +279,192 @@
   <header>
     <div style="flex-shrink:0;">
       <h1>烟花爆竹仓储隐蔽囤货与账面造假风险智能识别系统</h1>
-      <div class="sub"><b>专利技术方案演示</b> · 按专利权利要求书的 5 个流程步骤分页展示，点击下方任一流程卡片进入对应流程页面</div>
+      <div class="sub"><b>S1 库存饱和度计算</b> · 扫码出入库数据 + 设计容量 → 当前时刻库存饱和度</div>
     </div>
+    <nav class="step-nav">
+      <a class="home" href="patent.html">方案总览</a>
+      <a href="patent-s1.html" data-step="1"><b>S1</b>库存饱和度</a>
+      <a href="patent-s2.html" data-step="2"><b>S2</b>电子围栏</a>
+      <a href="patent-s3.html" data-step="3"><b>S3</b>滞留指数</a>
+      <a href="patent-s4.html" data-step="4"><b>S4</b>双风险判定</a>
+      <a href="patent-s5.html" data-step="5"><b>S5</b>管控预警</a>
+    </nav>
     <div class="ctrl">
-      <span class="tag-step">5 个流程 · 分页演示</span>
-      <a class="btn primary" href="patent-s1.html" style="text-decoration:none;">从 S1 开始演示</a>
+      <span class="tag-step" id="stepTag">S1 / S5</span>
+      <span class="tag-time" id="flowTick">T+00.0′</span>
+      <button class="btn primary" id="btnPlay">播放演示</button>
+      <button class="btn" id="btnReset">重置</button>
     </div>
   </header>
 
-  <div class="flow-cards">
-    <a class="flow-card" href="patent-s1.html">
-      <span class="no">S1</span>
-      <h4>库存饱和度计算</h4>
-      <div class="d">扫码出入库数据 + 设计容量 → 当前时刻库存饱和度</div>
-      <div class="claim"><b style="color:#6bc9ff;">专利要求：</b>实时获取目标仓储的扫码出入库数据，并结合目标仓储的设计容量，计算当前时刻的库存饱和度</div>
-      <div class="go">进入流程 →</div>
-    </a>
-    <a class="flow-card" href="patent-s2.html">
-      <span class="no">S2</span>
-      <h4>电子围栏与车辆轨迹</h4>
-      <div class="d">以仓储为中心构建地理电子围栏，实时获取围栏内车辆定位轨迹</div>
-      <div class="claim"><b style="color:#6bc9ff;">专利要求：</b>以目标仓储为中心构建地理电子围栏，并实时获取进入地理电子围栏内的烟花爆竹运输车辆的定位轨迹</div>
-      <div class="go">进入流程 →</div>
-    </a>
-    <a class="flow-card" href="patent-s3.html">
-      <span class="no">S3</span>
-      <h4>滞留车辆筛选与滞留指数</h4>
-      <div class="d">筛选「速度低于静止阈值 且 停留超过装卸容忍时间」车辆，计算异常滞留指数</div>
-      <div class="claim"><b style="color:#6bc9ff;">专利要求：</b>实时获取车辆在地理电子围栏内的停留时间与移动速度，筛选出移动速度低于静止阈值且停留时间超过装卸容忍时间阈值的滞留车辆集合，并计算当前时刻围栏内车辆异常滞留指数</div>
-      <div class="go">进入流程 →</div>
-    </a>
-    <a class="flow-card" href="patent-s4.html">
-      <span class="no">S4</span>
-      <h4>双风险判定</h4>
-      <div class="d">饱和度与滞留指数双超阈 → 隐蔽囤货风险；饱和度下降但无驶离轨迹 → 账面造假风险</div>
-      <div class="claim"><b style="color:#6bc9ff;">专利要求：</b>若当前时刻的库存饱和度大于满载阈值，且围栏车辆异常滞留指数大于滞留报警阈值，则判定存在隐蔽囤货风险；若当前时刻的库存饱和度在预设时间段内发生下降，但围栏内未监测到运输车辆驶离轨迹，则判定存在账面造假风险</div>
-      <div class="go">进入流程 →</div>
-    </a>
-    <a class="flow-card" href="patent-s5.html">
-      <span class="no">S5</span>
-      <h4>置信度校验与管控预警</h4>
-      <div class="d">多源数据一致性校验通过后确认风险，生成管控预警并在政务云 GIS 显示仓储及车辆坐标</div>
-      <div class="claim"><b style="color:#6bc9ff;">专利要求：</b>若存在隐蔽囤货风险或账面造假风险任意一项时，进行风险置信度校验，校验通过后确认风险成立，生成管控预警信息，并在政务云平台的 GIS 地图上显示目标仓储及对应的烟花爆竹运输车辆坐标</div>
-      <div class="go">进入流程 →</div>
-    </a>
+  <div class="timeline">
+    <span class="lab">演示时刻</span>
+    <input type="range" id="tSlider" min="0" max="60" step="0.1" value="0" />
+    <div class="seg-marks" id="marks">
+      <span data-n="1">S1 0-9′</span>
+      <span data-n="2">S2 9-17′</span>
+      <span data-n="3">S3 17-32′</span>
+      <span data-n="4">S4 32-41′</span>
+      <span data-n="5">S5 41-60′</span>
+    </div>
   </div>
 
-  <div class="ov-grid" style="flex: 0 0 auto;">
-    <div class="panel">
-      <div class="panel-title"><h3>风险判定公式</h3><span class="more">双条件与逻辑</span></div>
-      <div class="formula">
-        <div style="margin-bottom:7px;">
-          <b>判定式 A（隐蔽囤货风险）：</b><code>S(t) ≥ 85% ∧ I(t) ≥ 0.60 → Risk_Hidden</code><br/>
-          <span class="vs">库存饱和度大于满载阈值，且电子围栏车辆异常滞留指数大于滞留报警阈值 —— 以车代库、囤而不发。</span>
+  <main style="grid-template-columns: 420px 1fr 560px;">
+    <div class="col">
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3><i class="step-no">S1</i>库存饱和度 S(t)</h3><span class="more" id="satTag">—</span></div>
+        <div id="gaugeSat" style="height: 196px; flex-shrink: 0;"></div>
+        <div class="kv-grid" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="kv"><div class="k">设计容量 C</div><div class="v">800<small>吨</small></div></div>
+          <div class="kv"><div class="k">满载阈值</div><div class="v">85<small>%</small></div></div>
+          <div class="kv" id="kvStock"><div class="k">当前库存 Q(t)</div><div class="v">—</div></div>
+          <div class="kv" id="kvSat"><div class="k">饱和度 S(t)=Q(t)/C</div><div class="v">—</div></div>
         </div>
-        <div>
-          <b>判定式 B（账面造假风险）：</b><code>ΔS(Δt) ≤ −15% ∧ ¬Departure(Δt) → Risk_Phantom</code><br/>
-          <span class="vs">预设时间段内饱和度下降超 15%，但围栏内未监测到运输车辆驶离轨迹 —— 出库登记与实物流不一致。</span>
+      </div>
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>库存饱和度演进</h3><span class="more" id="peakTag">—</span></div>
+        <div id="satChart" style="flex: 1; min-height: 0;"></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>实时扫码出入库流水</h3><span class="more" id="scanSum">入库 0 · 出库 0</span></div>
+        <div class="scan-list" id="scanList"></div>
+      </div>
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3>扫码数据来源与口径</h3></div>
+        <div class="formula">
+          <div>· 数据源：仓储出入库扫码枪 / PDA 实时上报，含<b>品类、批次、数量、时间戳</b>；</div>
+          <div>· 饱和度按 <code>S(t) = Q(t) / C</code> 计算，<code>Q(t)</code> 由 T+0 初始库存逐笔累加扫码记录得到；</div>
+          <div>· 累计扫码 <b id="scanTotal">0</b> 笔（入库 <b id="scanIn">0</b> · 出库 <b id="scanOut">0</b>），当前在线设备 <b>12</b> 台。</div>
         </div>
       </div>
     </div>
 
-    <div class="panel">
-      <div class="panel-title"><h3>阈值参数与判定时刻</h3><span class="more">演示用可调参数</span></div>
-      <div class="kv-grid" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="kv"><div class="k">仓储设计容量 C</div><div class="v">800<small>吨</small></div></div>
-        <div class="kv"><div class="k">满载阈值</div><div class="v">85<small>%</small></div></div>
-        <div class="kv"><div class="k">围栏半径 R</div><div class="v">800<small>m</small></div></div>
-        <div class="kv"><div class="k">静止阈值</div><div class="v">2<small>km/h</small></div></div>
-        <div class="kv"><div class="k">装卸容忍时间</div><div class="v">15<small>min</small></div></div>
-        <div class="kv"><div class="k">滞留报警阈值</div><div class="v">0.60</div></div>
-      </div>
-      <div class="formula" style="margin-top:9px;">
-        <div>· 演示时间线：S1 <b>T+0~9′</b> → S2 <b>9~17′</b> → S3 <b>17~32′</b> → S4 <b>32~41′</b> → S5 <b>41~60′</b></div>
-        <div>· 示例判定结果：<em class="y">T+<span id="ovHide">32.0</span>′ 隐蔽囤货风险成立</em> · <em class="y">T+<span id="ovBook">40.6</span>′ 账面造假风险成立</em> · <em class="y">T+<span id="ovAlert">41.0</span>′ 管控预警下发</em></div>
+    <div class="col">
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>流程说明 · S1 库存饱和度计算</h3><span class="more">专利流程第 1 步</span></div>
+        <div class="spec" style="flex-shrink: 0;">
+          <span class="h">专利要求</span>实时获取目标仓储的扫码出入库数据，并结合目标仓储的设计容量，计算当前时刻的库存饱和度。
+        </div>
+        <div class="tbl-wrap" style="margin-top: 9px;">
+          <table class="tbl">
+            <thead><tr><th>时刻</th><th>扫码类型</th><th>品类</th><th class="num">数量(吨)</th><th class="num">累计库存</th><th>备注</th></tr></thead>
+            <tbody id="opTbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
+  </main>
 
   <footer class="pager">
     <a class="off">← 上一流程</a>
-    <span class="mid">数据模型：patent-model.js（5 个流程页共用，同一时刻 t 各页数值完全一致）</span>
-    <a href="patent-s1.html">进入 S1 库存饱和度计算 →</a>
+    <span class="mid">S1 / S5 · 库存饱和度计算 —— 拖动时间轴可查看本流程在任意时刻的取值</span>
+    <a href="patent-s2.html" data-step="2">下一流程 S2 →</a>
   </footer>
 </div>
 
 <script src="geo-data.js"></script>
 <script src="patent-model.js"></script>
 <script>
+
 (function () {
+  'use strict';
+  var M = window.PATENT;
+  var PAGE_NO = 1;
+
+  var gauge, satChart;
+  var opRows = M.OP;
+  function initPage() {
+    gauge = echarts.init(document.getElementById('gaugeSat'));
+    satChart = echarts.init(document.getElementById('satChart'));
+
+    document.getElementById('opTbody').innerHTML = opRows.map(function (o, i) {
+      var q = M.P.stock0;
+      for (var k = 0; k < opRows.length && k <= i; k++) {
+        q = opRows[k].act === 'in' ? q + opRows[k].qty : Math.max(0, q - opRows[k].qty);
+      }
+      return '<tr class="' + (o.phantom ? 'warn' : '') + '"><td>T+' + o.at.toFixed(1) + '′</td>' +
+        '<td>' + (o.act === 'in' ? '<span class="chip ok">扫码入库</span>' : '<span class="chip mid">扫码出库</span>') + '</td>' +
+        '<td>' + o.name + '</td>' +
+        '<td class="num">' + (o.act === 'in' ? '+' : '−') + o.qty.toFixed(1) + '</td>' +
+        '<td class="num">' + q.toFixed(1) + '</td>' +
+        '<td>' + (o.phantom ? '<span class="chip bad">无对应驶离轨迹</span>' : '—') + '</td></tr>';
+    }).join('');
+  }
+  function relayout() { if (gauge) gauge.resize(); if (satChart) satChart.resize(); }
+
+  function renderPage(t, st) {
+    var satPct = st.sat * 100;
+    var over = st.sat >= M.P.fullRatio;
+    document.getElementById('satTag').textContent = over ? '已超满载阈值 85%' : '未达满载阈值 85%';
+
+    gauge.setOption({
+      series: [{
+        type: 'gauge', min: 0, max: 120, startAngle: 210, endAngle: -30,
+        center: ['50%', '60%'], radius: '98%',
+        progress: { show: true, width: 14,
+          itemStyle: { color: over ? '#ff4d4f' : new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color: '#0e6fb8' }, { offset: 1, color: '#00d4ff' }]) } },
+        axisLine: { lineStyle: { width: 14, color: [[M.P.fullRatio * 100 / 120, 'rgba(255,255,255,0.10)'], [1, 'rgba(255,77,79,0.28)']] } },
+        axisTick: { distance: -14, length: 5, lineStyle: { color: 'rgba(255,255,255,0.25)', width: 1 } },
+        splitLine: { distance: -14, length: 12, lineStyle: { color: 'rgba(255,255,255,0.4)', width: 1.4 } },
+        axisLabel: { distance: -4, color: '#7f9ab3', fontSize: 10, formatter: function (v) { return v % 30 === 0 ? v : ''; } },
+        pointer: { width: 4, length: '62%', itemStyle: { color: over ? '#ff6b6d' : '#00d4ff' } },
+        anchor: { show: true, size: 10, itemStyle: { color: over ? '#ff6b6d' : '#00d4ff' } },
+        title: { show: true, offsetCenter: [0, '40%'], color: '#8aa4bf', fontSize: 11 },
+        detail: { valueAnimation: false, offsetCenter: [0, '6%'], formatter: function (v) { return v.toFixed(1) + '%'; },
+          color: over ? '#ff6b6d' : '#e0f7ff', fontSize: 27, fontWeight: 700, fontFamily: '"DIN Alternate","Arial Black",sans-serif' },
+        data: [{ value: satPct, name: '库存饱和度 S(t)' }]
+      }]
+    }, true);
+
+    document.getElementById('kvStock').className = 'kv' + (over ? ' hot' : '');
+    document.getElementById('kvStock').querySelector('.v').innerHTML = Math.round(st.stock) + '<small>吨</small>';
+    document.getElementById('kvSat').className = 'kv' + (over ? ' hot' : '');
+    document.getElementById('kvSat').querySelector('.v').innerHTML = satPct.toFixed(1) + '<small>%</small>';
+    document.getElementById('peakTag').textContent = '历史峰值 ' + st.peakS4Pct.toFixed(1) + '%';
+
+    // 饱和度演进曲线
+    var xs = [], ys = [];
+    for (var tt = 0; tt <= M.TL.end + 1e-9; tt += 0.5) {
+      xs.push(tt.toFixed(1)); ys.push(+(M.satAt(tt) * 100).toFixed(2));
+    }
+    satChart.setOption({
+      grid: { left: 42, right: 16, top: 24, bottom: 26 },
+      tooltip: Object.assign({ trigger: 'axis', formatter: function (p) { return 'T+' + p[0].axisValue + '′<br/>饱和度 <b>' + p[0].data + '%</b>'; } }, M.tipBase),
+      xAxis: { type: 'category', data: xs, axisLine: { lineStyle: { color: 'rgba(255,255,255,0.2)' } },
+        axisLabel: { color: '#7f9ab3', fontSize: 10, interval: 19 }, axisTick: { show: false } },
+      yAxis: { type: 'value', min: 50, max: 95, axisLabel: { color: '#7f9ab3', fontSize: 10, formatter: '{value}%' },
+        splitLine: { lineStyle: { color: 'rgba(255,255,255,0.07)' } } },
+      series: [{
+        type: 'line', data: ys, smooth: true, symbol: 'none',
+        lineStyle: { width: 2.4, color: '#00d4ff' },
+        areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(0,212,255,0.42)' }, { offset: 1, color: 'rgba(0,212,255,0.02)' }]) },
+        markLine: {
+          silent: true, symbol: 'none',
+          data: [
+            { yAxis: 85, lineStyle: { color: '#ff4d4f', type: 'dashed', width: 1.6 }, label: { formatter: '满载阈值 85%', color: '#ff9d9f', fontSize: 10.5, position: 'insideEndTop' } },
+            { xAxis: Math.round(t / 0.5), lineStyle: { color: '#ffd23f', width: 1.6 }, label: { formatter: 'T+' + t.toFixed(1) + '′', color: '#ffe08a', fontSize: 10.5 } }
+          ]
+        }
+      }]
+    }, true);
+
+    document.getElementById('scanSum').textContent = '入库 ' + st.scanCount.in + ' · 出库 ' + st.scanCount.out;
+    document.getElementById('scanIn').textContent = st.scanCount.in;
+    document.getElementById('scanOut').textContent = st.scanCount.out;
+    document.getElementById('scanTotal').textContent = st.scanCount.in + st.scanCount.out;
+    document.getElementById('scanList').innerHTML = st.scans.map(function (s) {
+      return '<div class="scan-item ' + s.act + '"><span class="t">T+' + s.at.toFixed(1) + '′</span>' +
+        '<span class="c">' + (s.act === 'in' ? '扫码入库' : '扫码出库') + ' · ' + s.name +
+        (s.phantom ? ' <span class="chip bad">无驶离</span>' : '') + '</span>' +
+        '<span class="q">' + (s.act === 'in' ? '+' : '−') + s.qty.toFixed(1) + '</span></div>';
+    }).join('') || '<div class="empty">暂无扫码记录</div>';
+  }
+
+
+  /* ---------- 自适应缩放 ---------- */
   function fitScreen() {
     var el = document.querySelector('.screen');
     var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
@@ -375,12 +472,92 @@
   }
   window.addEventListener('resize', fitScreen);
   fitScreen();
-  var D = window.PATENT.DERIVED;
-  var f = function (v) { return v === null ? '未触发' : (+v).toFixed(1); };
-  document.getElementById('ovHide').textContent = f(D.riskHideFrom);
-  document.getElementById('ovBook').textContent = f(D.bookFrom);
-  document.getElementById('ovAlert').textContent = f(D.alertFrom);
+
+  /* ---------- 演示时刻 T：地址栏 ?t= 优先，其次取本流程代表时刻 ---------- */
+  var q = new URLSearchParams(location.search);
+  var T = parseFloat(q.get('t'));
+  if (!isFinite(T)) T = M.stageTime(PAGE_NO);
+  T = Math.max(0, Math.min(M.TL.end, T));
+  var playing = false, lastTs = 0, lastDraw = 0;
+
+  var elSlider = document.getElementById('tSlider');
+  var elTick = document.getElementById('flowTick');
+  var elStep = document.getElementById('stepTag');
+  var elPlay = document.getElementById('btnPlay');
+
+  function fmtT(t) { return 'T+' + t.toFixed(1) + '′'; }
+
+  function syncLinks() {
+    var t = T.toFixed(1);
+    document.querySelectorAll('a[data-step]').forEach(function (a) {
+      a.setAttribute('href', 'patent-s' + a.getAttribute('data-step') + '.html?t=' + t);
+    });
+    var navs = document.querySelectorAll('.step-nav a[data-step]');
+    navs.forEach(function (a) { a.classList.toggle('active', +a.getAttribute('data-step') === PAGE_NO); });
+  }
+
+  function syncMarks(stage) {
+    document.querySelectorAll('#marks span').forEach(function (s) {
+      var n = +s.getAttribute('data-n');
+      s.classList.toggle('on', n === stage.no);
+      s.classList.toggle('hit', n < stage.no || (stage.done && n <= 5));
+    });
+  }
+
+  function paint() {
+    var st = M.stateAt(T);
+    elTick.textContent = fmtT(T);
+    elStep.textContent = st.stage.done ? 'S1-S5 全流程演示完成' : ('S' + st.stage.no + ' / S5 · 当前查看 S' + PAGE_NO);
+    elStep.classList.toggle('done', st.stage.done);
+    if (elSlider && document.activeElement !== elSlider) elSlider.value = T;
+    if (elSlider) elSlider.style.setProperty('--pct', (T / M.TL.end * 100).toFixed(2) + '%');
+    syncMarks(st.stage);
+    syncLinks();
+    if (typeof renderPage === 'function') renderPage(T, st);
+  }
+  window.__paint = paint;
+
+  /* ---------- 控件 ---------- */
+  if (elSlider) {
+    elSlider.addEventListener('input', function () {
+      playing = false; setPlayBtn();
+      T = parseFloat(elSlider.value); lastDraw = 0; paint();
+    });
+  }
+  function setPlayBtn() {
+    elPlay.textContent = playing ? '暂停演示' : '播放演示';
+    elPlay.classList.toggle('primary', playing);
+  }
+  elPlay.addEventListener('click', function () { playing = !playing; lastTs = 0; setPlayBtn(); });
+  document.getElementById('btnReset').addEventListener('click', function () {
+    T = 0; playing = false; setPlayBtn(); lastDraw = 0; paint();
+  });
+  setPlayBtn();
+
+  /* ---------- 主循环 ---------- */
+  function tick(ts) {
+    if (playing) {
+      if (!lastTs) lastTs = ts;
+      var dt = Math.min(0.12, (ts - lastTs) / 1000);
+      lastTs = ts;
+      T += dt * 1.15 * 3;                 // 演示速率：约 3 倍速，60 分钟约 17 秒一轮
+      if (T > M.TL.end) { T = 0; onLoop(); }
+      paint();
+    } else if (ts - lastDraw > 200) {
+      lastDraw = ts; paint();             // 暂停时也刷新，保证 URL 切换回来能重绘
+    }
+    requestAnimationFrame(tick);
+  }
+  function onLoop() { if (typeof onReset === 'function') onReset(); }
+
+  /* ---------- 启动 ---------- */
+  M.registerMaps();
+  if (typeof initPage === 'function') initPage();
+  paint();
+  window.addEventListener('resize', function () { setTimeout(function () { if (typeof relayout === 'function') relayout(); }, 60); });
+  requestAnimationFrame(tick);
 })();
+
 </script>
 </body>
 </html>
