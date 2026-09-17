@@ -452,6 +452,11 @@
     .warning-list, .top5-list{ flex: 1 1 auto; min-height: 0; }
     .col > .panel:has(.warning-list), .col > .panel:has(.top5-list){ min-height: 0; flex: 1.7 1 0% !important; }
     .col > .panel .chart{ min-height: 118px; }
+
+    /* __TOP5_SCROLL__ Top5 企业列表：条目保持自身高度不被压扁，容器纵向滚动 */
+    .top5-list{ overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+    .top5-list > .top5-item{ flex: 0 0 auto; }
+    .col > .panel:has(.top5-list){ flex: 2.1 1 0% !important; }
 </style>
 </head>
 <body data-page-node-id="a1aBtEtLIkXEkhaZBeY5IC">
@@ -791,7 +796,7 @@
     })();
 
     // ECharts common dark theme options
-    const textColor = '#eef2f6';
+    const textColor = '#000000';
     const axisColor = 'rgba(15, 35, 70, 0.04)';
 
     // Trend chart
