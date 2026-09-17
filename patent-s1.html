@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>S1 库存饱和度计算 · 专利技术方案演示 - 烟花爆竹仓储隐蔽囤货与账面造假风险智能识别系统</title>
+<title>S1 库存饱和度计算 · 烟花爆竹仓储隐蔽囤货与账面造假风险智能识别系统</title>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -263,7 +263,44 @@
     border-radius: 8px; padding: 3px 10px; align-self: flex-start; letter-spacing: 1px;
   }
   .flow-card h4 { font-size: 15px; color: #fff; line-height: 1.4; }
-  .flow-card .d { font-size: 11.5px; color: #9fc4dd; line-height: 1.7; flex: 1; }
+  .flow-card .d { font-size: 11.5px; color: #9fc4dd; line-height: 1.7; flex: 0 0 auto; }
+  /* ------- 流程图标：中部视觉主体 ------- */
+  .flow-card .ic-wrap {
+    flex: 1; min-height: 0; position: relative;
+    display: flex; align-items: center; justify-content: center; margin: 2px 0 4px;
+  }
+  .flow-card .ic-wrap::before {
+    content: ''; position: absolute; left: 50%; top: 50%; width: 384px; height: 384px;
+    margin: -192px 0 0 -192px; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, rgba(0, 150, 235, 0.16) 0%, rgba(0, 110, 200, 0.07) 42%, rgba(0, 60, 130, 0) 70%);
+  }
+  .ic-ring {
+    position: relative; flex: 0 0 auto; width: 200px; height: 200px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ic-ring::before {
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    border: 1px dashed rgba(0, 212, 255, 0.42);
+    animation: icSpin 26s linear infinite;
+  }
+  .ic-ring::after {
+    content: ''; position: absolute; inset: 25px; border-radius: 50%;
+    border: 1px dashed rgba(0, 212, 255, 0.2);
+    background: radial-gradient(circle at 50% 46%, rgba(0, 212, 255, 0.17) 0%, rgba(0, 130, 210, 0.07) 48%, rgba(0, 60, 120, 0) 76%);
+    box-shadow: inset 0 0 26px rgba(0, 170, 255, 0.2);
+    animation: icSpinRev 38s linear infinite;
+  }
+  .ic-ring .ic {
+    position: relative; z-index: 1; width: 86px; height: 86px;
+    fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.85)); transition: all .25s;
+  }
+  .ic-ring .ic .fill { fill: var(--accent); stroke: none; }
+  @keyframes icSpin { to { transform: rotate(360deg); } }
+  @keyframes icSpinRev { to { transform: rotate(-360deg); } }
+  .flow-card:hover .ic-ring::before { animation-duration: 9s; border-color: rgba(0, 212, 255, 0.8); }
+  .flow-card:hover .ic-ring::after { border-color: rgba(0, 212, 255, 0.42); box-shadow: inset 0 0 32px rgba(0, 200, 255, 0.34); }
+  .flow-card:hover .ic-ring .ic { stroke: #8feaff; filter: drop-shadow(0 0 13px rgba(0, 220, 255, 1)); }
   .flow-card .claim {
     font-size: 11px; color: #7fb4d6; line-height: 1.65; background: rgba(0, 60, 110, 0.3);
     border-left: 2px solid rgba(0, 212, 255, 0.45); border-radius: 0 6px 6px 0; padding: 6px 9px;
@@ -292,13 +329,12 @@
     <div class="ctrl">
       <span class="tag-step" id="stepTag">S1 / S5</span>
       <span class="tag-time" id="flowTick">T+00.0′</span>
-      <button class="btn primary" id="btnPlay">播放演示</button>
       <button class="btn" id="btnReset">重置</button>
     </div>
   </header>
 
   <div class="timeline">
-    <span class="lab">演示时刻</span>
+    <span class="lab">监测时刻</span>
     <input type="range" id="tSlider" min="0" max="60" step="0.1" value="0" />
     <div class="seg-marks" id="marks">
       <span data-n="1">S1 0-9′</span>
@@ -344,9 +380,9 @@
 
     <div class="col">
       <div class="panel" style="flex: 1; min-height: 0;">
-        <div class="panel-title"><h3>流程说明 · S1 库存饱和度计算</h3><span class="more">专利流程第 1 步</span></div>
+        <div class="panel-title"><h3>功能说明 · S1 库存饱和度计算</h3><span class="more">功能流程第 1 步</span></div>
         <div class="spec" style="flex-shrink: 0;">
-          <span class="h">专利要求</span>实时获取目标仓储的扫码出入库数据，并结合目标仓储的设计容量，计算当前时刻的库存饱和度。
+          <span class="h">功能说明</span>实时获取目标仓储的扫码出入库数据，并结合目标仓储的设计容量，计算当前时刻的库存饱和度。
         </div>
         <div class="tbl-wrap" style="margin-top: 9px;">
           <table class="tbl">
@@ -360,7 +396,7 @@
 
   <footer class="pager">
     <a class="off">← 上一流程</a>
-    <span class="mid">S1 / S5 · 库存饱和度计算 —— 拖动时间轴可查看本流程在任意时刻的取值</span>
+    <span class="mid">S1 / S5 · 库存饱和度计算 —— 拖动时间轴可定格查看任意时刻的取值</span>
     <a href="patent-s2.html" data-step="2">下一流程 S2 →</a>
   </footer>
 </div>
@@ -473,17 +509,17 @@
   window.addEventListener('resize', fitScreen);
   fitScreen();
 
-  /* ---------- 演示时刻 T：地址栏 ?t= 优先，其次取本流程代表时刻 ---------- */
+  /* ---------- 监测时刻 T：地址栏 ?t= 优先，其次取本流程代表时刻 ---------- */
   var q = new URLSearchParams(location.search);
   var T = parseFloat(q.get('t'));
   if (!isFinite(T)) T = M.stageTime(PAGE_NO);
   T = Math.max(0, Math.min(M.TL.end, T));
-  var playing = false, lastTs = 0, lastDraw = 0;
+  var lastTs = 0, lastDraw = 0;
+  var holdUntil = 0;                      // 拖动滑块后的定格截止时刻（毫秒）
 
   var elSlider = document.getElementById('tSlider');
   var elTick = document.getElementById('flowTick');
   var elStep = document.getElementById('stepTag');
-  var elPlay = document.getElementById('btnPlay');
 
   function fmtT(t) { return 'T+' + t.toFixed(1) + '′'; }
 
@@ -507,7 +543,7 @@
   function paint() {
     var st = M.stateAt(T);
     elTick.textContent = fmtT(T);
-    elStep.textContent = st.stage.done ? 'S1-S5 全流程演示完成' : ('S' + st.stage.no + ' / S5 · 当前查看 S' + PAGE_NO);
+    elStep.textContent = st.stage.done ? 'S1-S5 全流程识别完成' : ('S' + st.stage.no + ' / S5 · 当前查看 S' + PAGE_NO);
     elStep.classList.toggle('done', st.stage.done);
     if (elSlider && document.activeElement !== elSlider) elSlider.value = T;
     if (elSlider) elSlider.style.setProperty('--pct', (T / M.TL.end * 100).toFixed(2) + '%');
@@ -517,34 +553,33 @@
   }
   window.__paint = paint;
 
-  /* ---------- 控件 ---------- */
+  /* ---------- 控件：进页即自动推进，拖动滑块时定格便于读数 ---------- */
   if (elSlider) {
     elSlider.addEventListener('input', function () {
-      playing = false; setPlayBtn();
-      T = parseFloat(elSlider.value); lastDraw = 0; paint();
+      T = Math.max(0, Math.min(M.TL.end, parseFloat(elSlider.value)));
+      lastDraw = 0;
+      holdUntil = performance.now() + 5000;   // 定格 5 秒后自动恢复推进
+      paint();
     });
   }
-  function setPlayBtn() {
-    elPlay.textContent = playing ? '暂停演示' : '播放演示';
-    elPlay.classList.toggle('primary', playing);
-  }
-  elPlay.addEventListener('click', function () { playing = !playing; lastTs = 0; setPlayBtn(); });
   document.getElementById('btnReset').addEventListener('click', function () {
-    T = 0; playing = false; setPlayBtn(); lastDraw = 0; paint();
+    T = 0; lastTs = 0; lastDraw = 0; holdUntil = 0; onLoop(); paint();
   });
-  setPlayBtn();
 
   /* ---------- 主循环 ---------- */
   function tick(ts) {
-    if (playing) {
+    if (ts >= holdUntil) {
       if (!lastTs) lastTs = ts;
       var dt = Math.min(0.12, (ts - lastTs) / 1000);
       lastTs = ts;
-      T += dt * 1.15 * 3;                 // 演示速率：约 3 倍速，60 分钟约 17 秒一轮
+      T += dt * 1.15 * 3;                 // 推进速率：约 3 倍速，60 分钟约 17 秒一轮
       if (T > M.TL.end) { T = 0; onLoop(); }
       paint();
-    } else if (ts - lastDraw > 200) {
-      lastDraw = ts; paint();             // 暂停时也刷新，保证 URL 切换回来能重绘
+    } else {
+      lastTs = 0;                          // 定格期间重置基准，恢复后不跳变
+      if (ts - lastDraw > 200) {
+        lastDraw = ts; paint();            // 定格时也刷新，保证 URL 切换回来能重绘
+      }
     }
     requestAnimationFrame(tick);
   }
