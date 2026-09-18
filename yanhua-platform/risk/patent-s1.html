@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>S1 库存饱和度计算 · 烟花爆竹全链条数字化预警监管平台</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #050b14;
+    --panel: rgba(10, 30, 60, 0.55);
+    --panel-border: rgba(0, 180, 255, 0.35);
+    --accent: #00d4ff;
+    --warn: #ff9f2e;
+    --danger: #ff4d4f;
+    --ok: #22c55e;
+    --text: #e0f7ff;
+    --text-dim: #8aa4bf;
+    --title: #ffffff;
+  }
+  html, body { width: 100%; height: 100%; background: #02060d; overflow: hidden; }
+  body { font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; color: var(--text); }
+  .screen {
+    position: absolute; left: 50%; top: 50%;
+    width: 1920px; height: 1080px; transform-origin: center center;
+    background:
+      radial-gradient(1200px 600px at 20% 0%, rgba(0, 90, 170, 0.28), transparent 70%),
+      radial-gradient(1000px 700px at 85% 100%, rgba(0, 130, 200, 0.2), transparent 70%),
+      linear-gradient(180deg, #04101f 0%, #02070f 100%);
+    padding: 12px 18px 14px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .screen::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .35;
+    background-image:
+      linear-gradient(rgba(0, 180, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 180, 255, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  header {
+    position: relative; display: flex; align-items: center; gap: 16px; flex-wrap: nowrap;
+    padding-bottom: 8px; border-bottom: 1px solid rgba(0, 180, 255, 0.22);
+  }
+  header h1 { font-size: 22px; color: var(--title); letter-spacing: 1.5px; font-weight: 700;
+    text-shadow: 0 0 18px rgba(0, 212, 255, 0.55); white-space: nowrap; }
+  header .sub { font-size: 12px; color: var(--text-dim); line-height: 1.45; flex: 1; min-width: 0; }
+  header .sub b { color: #6bc9ff; font-weight: 600; }
+  header .ctrl { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .btn {
+    font-size: 12px; padding: 5px 12px; border-radius: 14px; cursor: pointer;
+    border: 1px solid rgba(0, 180, 255, 0.4); color: #bfe6ff; background: rgba(0, 90, 160, 0.25);
+    user-select: none; transition: all .2s; white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--accent); color: #fff; background: rgba(0, 140, 220, 0.35); }
+  .btn.primary { background: var(--accent); color: #04121f; border-color: var(--accent); font-weight: 700; }
+  .tag-step {
+    font-size: 12px; padding: 4px 12px; border-radius: 12px; font-weight: 700;
+    background: rgba(0, 212, 255, 0.14); border: 1px solid rgba(0, 212, 255, 0.5); color: #9fe8ff;
+    white-space: nowrap;
+  }
+  .tag-step.done { background: rgba(34, 197, 94, 0.18); border-color: rgba(34, 197, 94, 0.6); color: #8ff0b0; }
+  .tag-time {
+    font-size: 13px; padding: 3px 10px; border-radius: 12px; font-weight: 700;
+    font-family: "DIN Alternate", "Arial Black", sans-serif;
+    background: rgba(0, 90, 160, 0.35); border: 1px solid rgba(0, 180, 255, 0.35); color: #bfe6ff;
+    white-space: nowrap;
+  }
+
+  /* ------- 流程导航 ------- */
+  .step-nav { display: flex; gap: 6px; flex-shrink: 0; }
+  .step-nav a {
+    display: flex; align-items: center; gap: 5px; text-decoration: none;
+    font-size: 12px; padding: 5px 10px; border-radius: 6px; color: #9fc4dd;
+    border: 1px solid rgba(0, 180, 255, 0.25); background: rgba(0, 60, 110, 0.25);
+    transition: all .2s; white-space: nowrap;
+  }
+  .step-nav a b { font-size: 11px; font-weight: 700; opacity: .85; }
+  .step-nav a:hover { border-color: var(--accent); color: #fff; background: rgba(0, 140, 220, 0.3); }
+  .step-nav a.active { background: rgba(0, 212, 255, 0.9); color: #04121f; border-color: var(--accent); font-weight: 700; }
+  .step-nav a.active b { opacity: 1; }
+  .step-nav a.home { color: #b8dcff; }
+
+  main { flex: 1; display: grid; gap: 10px; min-height: 0; }
+  .col { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+  .panel {
+    position: relative; background: var(--panel); border: 1px solid var(--panel-border);
+    border-radius: 10px; padding: 10px 13px; backdrop-filter: blur(8px);
+    display: flex; flex-direction: column; min-height: 0;
+    box-shadow: inset 0 0 30px rgba(0, 120, 220, 0.08);
+  }
+  .panel-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; flex-shrink: 0; }
+  .panel-title h3 { font-size: 14px; color: var(--title); font-weight: 600; display: flex; align-items: center; gap: 7px; }
+  .panel-title h3::before { content: ""; width: 3px; height: 13px; background: var(--accent); border-radius: 2px; }
+  .panel-title .more { font-size: 11.5px; color: var(--text-dim); }
+  .step-no {
+    font-style: normal; font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: 6px;
+    background: rgba(0, 212, 255, 0.16); border: 1px solid rgba(0, 212, 255, 0.45); color: #9fe8ff;
+  }
+
+  /* ------- 指标 ------- */
+  .kv-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; flex-shrink: 0; }
+  .kv {
+    background: rgba(0, 60, 110, 0.28); border: 1px solid rgba(0, 180, 255, 0.2);
+    border-radius: 7px; padding: 6px 9px;
+  }
+  .kv .k { font-size: 11px; color: var(--text-dim); }
+  .kv .v { font-size: 17px; font-weight: 700; color: #dff3ff; font-family: "DIN Alternate", "Arial Black", sans-serif; margin-top: 1px; }
+  .kv .v small { font-size: 11px; font-weight: 400; color: var(--text-dim); margin-left: 2px; }
+  .kv.hot { border-color: rgba(255, 77, 79, 0.55); background: rgba(255, 77, 79, 0.10); }
+  .kv.hot .v { color: #ff8b8d; }
+  .kv.ok { border-color: rgba(34, 197, 94, 0.45); background: rgba(34, 197, 94, 0.10); }
+  .kv.ok .v { color: #8ff0b0; }
+
+  /* ------- 表格 ------- */
+  .tbl-wrap { flex: 1; min-height: 0; overflow: auto; }
+  .tbl-wrap::-webkit-scrollbar, .scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+  .tbl-wrap::-webkit-scrollbar-thumb, .scroll::-webkit-scrollbar-thumb { background: rgba(0, 180, 255, 0.35); border-radius: 2px; }
+  table.tbl { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  table.tbl th {
+    position: sticky; top: 0; z-index: 2; text-align: left; font-weight: 600; color: #9fc4dd;
+    background: rgba(6, 30, 58, 0.97); padding: 6px 7px; border-bottom: 1px solid rgba(0, 180, 255, 0.3);
+    white-space: nowrap;
+  }
+  table.tbl td { padding: 6px 7px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #cfe9ff; white-space: nowrap; }
+  table.tbl td.num, table.tbl th.num { text-align: right; font-family: "DIN Alternate", "Arial Black", sans-serif; }
+  table.tbl tr.hit td { background: rgba(255, 77, 79, 0.10); }
+  table.tbl tr.warn td { background: rgba(255, 159, 46, 0.08); }
+  .empty { color: #6b8aa8; text-align: center; padding: 16px; font-size: 12px; }
+
+  .chip { display: inline-block; font-size: 10.5px; padding: 1px 6px; border-radius: 8px; white-space: nowrap; }
+  .chip.bad { background: rgba(255, 77, 79, 0.18); border: 1px solid rgba(255, 77, 79, 0.55); color: #ff9d9f; }
+  .chip.mid { background: rgba(255, 159, 46, 0.16); border: 1px solid rgba(255, 159, 46, 0.5); color: #ffc078; }
+  .chip.ok  { background: rgba(34, 197, 94, 0.16); border: 1px solid rgba(34, 197, 94, 0.5); color: #8ff0b0; }
+  .chip.gray { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.16); color: #9fb6cc; }
+
+  /* ------- 扫码流水 ------- */
+  .scan-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+  .scan-item {
+    display: flex; align-items: center; gap: 8px; font-size: 11.5px; padding: 5px 8px;
+    border-radius: 6px; background: rgba(0, 60, 110, 0.22); border-left: 3px solid #22c55e;
+  }
+  .scan-item.out { border-left-color: #ff9f2e; }
+  .scan-item .t { color: #6b8aa8; font-size: 10.5px; flex-shrink: 0; width: 54px; }
+  .scan-item .c { flex: 1; color: #cfe9ff; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .scan-item .q { font-weight: 700; flex-shrink: 0; }
+  .scan-item.in .q { color: #7fe3a0; }
+  .scan-item.out .q { color: #ffc078; }
+
+  /* ------- 地图 ------- */
+  .map-panel { padding: 8px 10px 10px; }
+  .map-box { flex: 1; min-height: 0; position: relative; }
+  .map-tag {
+    position: absolute; left: 10px; top: 8px; z-index: 5; font-size: 11px; color: #9fe8ff;
+    background: rgba(4, 22, 44, 0.85); border: 1px solid rgba(0, 180, 255, 0.4);
+    border-radius: 6px; padding: 3px 8px; pointer-events: none;
+  }
+  .legend-mini { display: flex; gap: 12px; font-size: 11px; color: var(--text-dim); flex-wrap: wrap; flex-shrink: 0; margin-top: 6px; }
+  .legend-mini i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+
+  /* ------- 风险卡 ------- */
+  .risk-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .risk-card {
+    border-radius: 10px; padding: 13px 15px; border: 1px solid rgba(0, 180, 255, 0.28);
+    background: rgba(0, 60, 110, 0.25); transition: all .35s;
+  }
+  .risk-card .lab { font-size: 13.5px; color: #9fc4dd; font-weight: 600; }
+  .risk-card .st {
+    font-size: 30px; font-weight: 700; margin: 6px 0 4px; color: #7f9ab3;
+    font-family: "DIN Alternate", "Arial Black", sans-serif; letter-spacing: 1px;
+  }
+  .risk-card .cond { font-size: 11.5px; color: var(--text-dim); line-height: 1.65; }
+  .risk-card.hit { border-color: rgba(255, 77, 79, 0.85); background: rgba(255, 77, 79, 0.12);
+    box-shadow: 0 0 26px rgba(255, 77, 79, 0.32), inset 0 0 26px rgba(255, 77, 79, 0.10); }
+  .risk-card.hit .st { color: #ff6b6d; }
+  .risk-card.hit .lab { color: #ffb0b2; }
+  .risk-card.pend { border-color: rgba(255, 159, 46, 0.6); background: rgba(255, 159, 46, 0.08); }
+  .risk-card.pend .st { color: #ffc078; font-size: 24px; }
+
+  .formula { font-size: 11.5px; color: #bcd8ef; line-height: 1.9; }
+  .formula code {
+    font-family: "SF Mono", Consolas, monospace; font-size: 11px; color: #8fe3ff;
+    background: rgba(0, 90, 160, 0.28); padding: 1px 6px; border-radius: 5px;
+  }
+  .formula .vs { color: var(--text-dim); }
+  .formula em { font-style: normal; font-weight: 700; }
+  .formula em.y { color: #ff8b8d; }
+  .formula em.n { color: #8ff0b0; }
+
+  /* ------- 置信度 ------- */
+  .conf-line { display: flex; align-items: center; gap: 8px; font-size: 11.5px; padding: 4px 0; }
+  .conf-line .nm { width: 108px; flex-shrink: 0; color: #bcd8ef; }
+  .conf-line .bar { flex: 1; height: 7px; border-radius: 4px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+  .conf-line .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #0e6fb8, #00d4ff); transition: width .4s; }
+  .conf-line b { width: 44px; text-align: right; flex-shrink: 0; font-family: "DIN Alternate", "Arial Black", sans-serif; color: #dff3ff; }
+  .conf-total { display: flex; align-items: baseline; gap: 8px; justify-content: center; margin: 4px 0 2px; }
+  .conf-total b { font-size: 32px; color: #7fe3a0; font-family: "DIN Alternate", "Arial Black", sans-serif; }
+  .conf-total span { font-size: 11.5px; color: var(--text-dim); }
+
+  /* ------- 预警 ------- */
+  .alert-box {
+    border-radius: 8px; padding: 10px 12px; font-size: 11.5px; line-height: 1.7;
+    background: rgba(255, 77, 79, 0.1); border: 1px solid rgba(255, 77, 79, 0.45); color: #ffd0d1;
+  }
+  .alert-box.off { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.14); color: #8aa4bf; }
+  .alert-box b { color: #fff; }
+  .alert-box .ttl { font-size: 13px; font-weight: 700; color: #ff9d9f; margin-bottom: 5px; }
+  .alert-box.off .ttl { color: #9fb6cc; }
+  .push-line { margin-top: 6px; color: #ffb0b2; font-size: 11px; }
+  .alert-box.off .push-line { color: #7f9ab3; }
+
+  /* ------- 流程说明书 ------- */
+  .spec {
+    font-size: 11.5px; line-height: 1.75; color: #bcd8ef; background: rgba(0, 60, 110, 0.22);
+    border-left: 3px solid rgba(0, 212, 255, 0.6); border-radius: 0 7px 7px 0; padding: 8px 11px;
+    flex-shrink: 0;
+  }
+  .spec .h { color: #8fe3ff; font-weight: 700; display: block; margin-bottom: 3px; }
+
+  /* ------- 底部分页 ------- */
+  .pager {
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    padding-top: 8px; border-top: 1px solid rgba(0, 180, 255, 0.18);
+  }
+  .pager a {
+    text-decoration: none; font-size: 12.5px; color: #9fd8ff; padding: 5px 14px; border-radius: 14px;
+    border: 1px solid rgba(0, 180, 255, 0.35); background: rgba(0, 70, 130, 0.25); transition: all .2s;
+    white-space: nowrap;
+  }
+  .pager a:hover { border-color: var(--accent); color: #fff; background: rgba(0, 140, 220, 0.35); }
+  .pager a.off { visibility: hidden; }
+  .pager .mid { font-size: 11.5px; color: var(--text-dim); }
+
+  /* ------- 总览页 ------- */
+  .flow-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; flex: 1; min-height: 0; }
+  .flow-card {
+    display: flex; flex-direction: column; gap: 8px;
+    background: var(--panel); border: 1px solid var(--panel-border); border-radius: 12px;
+    padding: 14px 15px; text-decoration: none; color: var(--text); transition: all .25s;
+    box-shadow: inset 0 0 30px rgba(0, 120, 220, 0.08); position: relative; overflow: hidden;
+  }
+  .flow-card:hover { border-color: var(--accent); box-shadow: 0 0 28px rgba(0, 180, 255, 0.35), inset 0 0 30px rgba(0, 150, 240, 0.14); transform: translateY(-3px); }
+  .flow-card .no {
+    font-size: 12px; font-weight: 700; color: #04121f; background: var(--accent);
+    border-radius: 8px; padding: 3px 10px; align-self: flex-start; letter-spacing: 1px;
+  }
+  .flow-card h4 { font-size: 15px; color: #fff; line-height: 1.4; }
+  .flow-card .d { font-size: 11.5px; color: #9fc4dd; line-height: 1.7; flex: 0 0 auto; }
+  /* ------- 流程图标：中部视觉主体 ------- */
+  .flow-card .ic-wrap {
+    flex: 1; min-height: 0; position: relative;
+    display: flex; align-items: center; justify-content: center; margin: 2px 0 4px;
+  }
+  .flow-card .ic-wrap::before {
+    content: ''; position: absolute; left: 50%; top: 50%; width: 384px; height: 384px;
+    margin: -192px 0 0 -192px; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, rgba(0, 150, 235, 0.16) 0%, rgba(0, 110, 200, 0.07) 42%, rgba(0, 60, 130, 0) 70%);
+  }
+  .ic-ring {
+    position: relative; flex: 0 0 auto; width: 200px; height: 200px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ic-ring::before {
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    border: 1px dashed rgba(0, 212, 255, 0.42);
+    animation: icSpin 26s linear infinite;
+  }
+  .ic-ring::after {
+    content: ''; position: absolute; inset: 25px; border-radius: 50%;
+    border: 1px dashed rgba(0, 212, 255, 0.2);
+    background: radial-gradient(circle at 50% 46%, rgba(0, 212, 255, 0.17) 0%, rgba(0, 130, 210, 0.07) 48%, rgba(0, 60, 120, 0) 76%);
+    box-shadow: inset 0 0 26px rgba(0, 170, 255, 0.2);
+    animation: icSpinRev 38s linear infinite;
+  }
+  .ic-ring .ic {
+    position: relative; z-index: 1; width: 86px; height: 86px;
+    fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.85)); transition: all .25s;
+  }
+  .ic-ring .ic .fill { fill: var(--accent); stroke: none; }
+  @keyframes icSpin { to { transform: rotate(360deg); } }
+  @keyframes icSpinRev { to { transform: rotate(-360deg); } }
+  .flow-card:hover .ic-ring::before { animation-duration: 9s; border-color: rgba(0, 212, 255, 0.8); }
+  .flow-card:hover .ic-ring::after { border-color: rgba(0, 212, 255, 0.42); box-shadow: inset 0 0 32px rgba(0, 200, 255, 0.34); }
+  .flow-card:hover .ic-ring .ic { stroke: #8feaff; filter: drop-shadow(0 0 13px rgba(0, 220, 255, 1)); }
+  .flow-card .claim {
+    font-size: 11px; color: #7fb4d6; line-height: 1.65; background: rgba(0, 60, 110, 0.3);
+    border-left: 2px solid rgba(0, 212, 255, 0.45); border-radius: 0 6px 6px 0; padding: 6px 9px;
+    max-height: 132px; overflow: hidden;
+  }
+  .flow-card .go { font-size: 12px; color: #6bc9ff; font-weight: 600; }
+  .flow-card:hover .go { color: #fff; }
+  .ov-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 12px; min-height: 0; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <header>
+    <div style="flex-shrink:0;">
+      <h1>烟花爆竹全链条数字化预警监管平台</h1>
+      <div class="sub"><b>S1 库存饱和度计算</b> · 扫码出入库数据 + 设计容量 → 当前时刻库存饱和度</div>
+    </div>
+    <nav class="step-nav">
+      <a class="home" href="patent.html">方案总览</a>
+      <a href="patent-s1.html" data-step="1"><b>S1</b>库存饱和度</a>
+      <a href="patent-s2.html" data-step="2"><b>S2</b>电子围栏</a>
+      <a href="patent-s3.html" data-step="3"><b>S3</b>滞留指数</a>
+      <a href="patent-s4.html" data-step="4"><b>S4</b>双风险判定</a>
+      <a href="patent-s5.html" data-step="5"><b>S5</b>管控预警</a>
+    </nav>
+    <div class="ctrl">
+      <span class="tag-step" id="stepTag">S1 / S5</span>
+      <span class="tag-time" id="flowTick">T+00.0′</span>
+      <button class="btn" id="btnReset">重置</button>
+    </div>
+  </header>
+
+  <main style="grid-template-columns: 420px 1fr 560px;">
+    <div class="col">
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3><i class="step-no">S1</i>库存饱和度 S(t)</h3><span class="more" id="satTag">—</span></div>
+        <div id="gaugeSat" style="height: 196px; flex-shrink: 0;"></div>
+        <div class="kv-grid" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="kv"><div class="k">设计容量 C</div><div class="v">800<small>吨</small></div></div>
+          <div class="kv"><div class="k">满载阈值</div><div class="v">85<small>%</small></div></div>
+          <div class="kv" id="kvStock"><div class="k">当前库存 Q(t)</div><div class="v">—</div></div>
+          <div class="kv" id="kvSat"><div class="k">饱和度 S(t)=Q(t)/C</div><div class="v">—</div></div>
+        </div>
+      </div>
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>库存饱和度演进</h3><span class="more" id="peakTag">—</span></div>
+        <div id="satChart" style="flex: 1; min-height: 0;"></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>实时扫码出入库流水</h3><span class="more" id="scanSum">入库 0 · 出库 0</span></div>
+        <div class="scan-list" id="scanList"></div>
+      </div>
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3>扫码数据来源与口径</h3></div>
+        <div class="formula">
+          <div>· 数据源：仓储出入库扫码枪 / PDA 实时上报，含<b>品类、批次、数量、时间戳</b>；</div>
+          <div>· 饱和度按 <code>S(t) = Q(t) / C</code> 计算，<code>Q(t)</code> 由 T+0 初始库存逐笔累加扫码记录得到；</div>
+          <div>· 累计扫码 <b id="scanTotal">0</b> 笔（入库 <b id="scanIn">0</b> · 出库 <b id="scanOut">0</b>），当前在线设备 <b>12</b> 台。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>功能说明 · S1 库存饱和度计算</h3><span class="more">功能流程第 1 步</span></div>
+        <div class="spec" style="flex-shrink: 0;">
+          <span class="h">功能说明</span>实时获取目标仓储的扫码出入库数据，并结合目标仓储的设计容量，计算当前时刻的库存饱和度。
+        </div>
+        <div class="tbl-wrap" style="margin-top: 9px;">
+          <table class="tbl">
+            <thead><tr><th>时刻</th><th>扫码类型</th><th>品类</th><th class="num">数量(吨)</th><th class="num">累计库存</th><th>备注</th></tr></thead>
+            <tbody id="opTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="pager">
+    <a class="off">← 上一流程</a>
+    <span class="mid">S1 / S5 · 库存饱和度计算 —— 进页自 T+0 起按功能时序自动推进，各指标随监测时刻实时刷新</span>
+    <a href="patent-s2.html" data-step="2">下一流程 S2 →</a>
+  </footer>
+</div>
+
+<script src="../shared/geo-data.js"></script>
+<script src="../shared/patent-model.js"></script>
+<script>
+
+(function () {
+  'use strict';
+  var M = window.PATENT;
+  var PAGE_NO = 1;
+
+  var gauge, satChart;
+  var opRows = M.OP;
+  function initPage() {
+    gauge = echarts.init(document.getElementById('gaugeSat'));
+    satChart = echarts.init(document.getElementById('satChart'));
+
+    document.getElementById('opTbody').innerHTML = opRows.map(function (o, i) {
+      var q = M.P.stock0;
+      for (var k = 0; k < opRows.length && k <= i; k++) {
+        q = opRows[k].act === 'in' ? q + opRows[k].qty : Math.max(0, q - opRows[k].qty);
+      }
+      return '<tr class="' + (o.phantom ? 'warn' : '') + '"><td>T+' + o.at.toFixed(1) + '′</td>' +
+        '<td>' + (o.act === 'in' ? '<span class="chip ok">扫码入库</span>' : '<span class="chip mid">扫码出库</span>') + '</td>' +
+        '<td>' + o.name + '</td>' +
+        '<td class="num">' + (o.act === 'in' ? '+' : '−') + o.qty.toFixed(1) + '</td>' +
+        '<td class="num">' + q.toFixed(1) + '</td>' +
+        '<td>' + (o.phantom ? '<span class="chip bad">无对应驶离轨迹</span>' : '—') + '</td></tr>';
+    }).join('');
+  }
+  function relayout() { if (gauge) gauge.resize(); if (satChart) satChart.resize(); }
+
+  function renderPage(t, st) {
+    var satPct = st.sat * 100;
+    var over = st.sat >= M.P.fullRatio;
+    document.getElementById('satTag').textContent = over ? '已超满载阈值 85%' : '未达满载阈值 85%';
+
+    gauge.setOption({
+      series: [{
+        type: 'gauge', min: 0, max: 120, startAngle: 210, endAngle: -30,
+        center: ['50%', '60%'], radius: '98%',
+        progress: { show: true, width: 14,
+          itemStyle: { color: over ? '#ff4d4f' : new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color: '#0e6fb8' }, { offset: 1, color: '#00d4ff' }]) } },
+        axisLine: { lineStyle: { width: 14, color: [[M.P.fullRatio * 100 / 120, 'rgba(255,255,255,0.10)'], [1, 'rgba(255,77,79,0.28)']] } },
+        axisTick: { distance: -14, length: 5, lineStyle: { color: 'rgba(255,255,255,0.25)', width: 1 } },
+        splitLine: { distance: -14, length: 12, lineStyle: { color: 'rgba(255,255,255,0.4)', width: 1.4 } },
+        axisLabel: { distance: -4, color: '#7f9ab3', fontSize: 10, formatter: function (v) { return v % 30 === 0 ? v : ''; } },
+        pointer: { width: 4, length: '62%', itemStyle: { color: over ? '#ff6b6d' : '#00d4ff' } },
+        anchor: { show: true, size: 10, itemStyle: { color: over ? '#ff6b6d' : '#00d4ff' } },
+        title: { show: true, offsetCenter: [0, '40%'], color: '#8aa4bf', fontSize: 11 },
+        detail: { valueAnimation: false, offsetCenter: [0, '6%'], formatter: function (v) { return v.toFixed(1) + '%'; },
+          color: over ? '#ff6b6d' : '#e0f7ff', fontSize: 27, fontWeight: 700, fontFamily: '"DIN Alternate","Arial Black",sans-serif' },
+        data: [{ value: satPct, name: '库存饱和度 S(t)' }]
+      }]
+    }, true);
+
+    document.getElementById('kvStock').className = 'kv' + (over ? ' hot' : '');
+    document.getElementById('kvStock').querySelector('.v').innerHTML = Math.round(st.stock) + '<small>吨</small>';
+    document.getElementById('kvSat').className = 'kv' + (over ? ' hot' : '');
+    document.getElementById('kvSat').querySelector('.v').innerHTML = satPct.toFixed(1) + '<small>%</small>';
+    document.getElementById('peakTag').textContent = '历史峰值 ' + st.peakS4Pct.toFixed(1) + '%';
+
+    // 饱和度演进曲线
+    var xs = [], ys = [];
+    for (var tt = 0; tt <= M.TL.end + 1e-9; tt += 0.5) {
+      xs.push(tt.toFixed(1)); ys.push(+(M.satAt(tt) * 100).toFixed(2));
+    }
+    satChart.setOption({
+      grid: { left: 42, right: 16, top: 24, bottom: 26 },
+      tooltip: Object.assign({ trigger: 'axis', formatter: function (p) { return 'T+' + p[0].axisValue + '′<br/>饱和度 <b>' + p[0].data + '%</b>'; } }, M.tipBase),
+      xAxis: { type: 'category', data: xs, axisLine: { lineStyle: { color: 'rgba(255,255,255,0.2)' } },
+        axisLabel: { color: '#7f9ab3', fontSize: 10, interval: 19 }, axisTick: { show: false } },
+      yAxis: { type: 'value', min: 50, max: 95, axisLabel: { color: '#7f9ab3', fontSize: 10, formatter: '{value}%' },
+        splitLine: { lineStyle: { color: 'rgba(255,255,255,0.07)' } } },
+      series: [{
+        type: 'line', data: ys, smooth: true, symbol: 'none',
+        lineStyle: { width: 2.4, color: '#00d4ff' },
+        areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(0,212,255,0.42)' }, { offset: 1, color: 'rgba(0,212,255,0.02)' }]) },
+        markLine: {
+          silent: true, symbol: 'none',
+          data: [
+            { yAxis: 85, lineStyle: { color: '#ff4d4f', type: 'dashed', width: 1.6 }, label: { formatter: '满载阈值 85%', color: '#ff9d9f', fontSize: 10.5, position: 'insideEndTop' } },
+            { xAxis: Math.round(t / 0.5), lineStyle: { color: '#ffd23f', width: 1.6 }, label: { formatter: 'T+' + t.toFixed(1) + '′', color: '#ffe08a', fontSize: 10.5 } }
+          ]
+        }
+      }]
+    }, true);
+
+    document.getElementById('scanSum').textContent = '入库 ' + st.scanCount.in + ' · 出库 ' + st.scanCount.out;
+    document.getElementById('scanIn').textContent = st.scanCount.in;
+    document.getElementById('scanOut').textContent = st.scanCount.out;
+    document.getElementById('scanTotal').textContent = st.scanCount.in + st.scanCount.out;
+    document.getElementById('scanList').innerHTML = st.scans.map(function (s) {
+      return '<div class="scan-item ' + s.act + '"><span class="t">T+' + s.at.toFixed(1) + '′</span>' +
+        '<span class="c">' + (s.act === 'in' ? '扫码入库' : '扫码出库') + ' · ' + s.name +
+        (s.phantom ? ' <span class="chip bad">无驶离</span>' : '') + '</span>' +
+        '<span class="q">' + (s.act === 'in' ? '+' : '−') + s.qty.toFixed(1) + '</span></div>';
+    }).join('') || '<div class="empty">暂无扫码记录</div>';
+  }
+
+
+  /* ---------- 自适应缩放 ---------- */
+  function fitScreen() {
+    var el = document.querySelector('.screen');
+    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    el.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitScreen);
+  fitScreen();
+
+  /* ---------- 监测时刻 T：各页进页统一从 T+0（S1 0-9′ 段起点）开始播放 ---------- */
+  var T = 0;
+  var lastTs = 0;
+
+  var elTick = document.getElementById('flowTick');
+  var elStep = document.getElementById('stepTag');
+
+  function fmtT(t) { return 'T+' + t.toFixed(1) + '′'; }
+
+  function syncLinks() {
+    document.querySelectorAll('a[data-step]').forEach(function (a) {
+      a.setAttribute('href', 'patent-s' + a.getAttribute('data-step') + '.html');
+    });
+    var navs = document.querySelectorAll('.step-nav a[data-step]');
+    navs.forEach(function (a) { a.classList.toggle('active', +a.getAttribute('data-step') === PAGE_NO); });
+  }
+
+  function paint() {
+    var st = M.stateAt(T);
+    elTick.textContent = fmtT(T);
+    elStep.textContent = st.stage.done ? 'S1-S5 全流程已完成' : ('S' + st.stage.no + ' / S5 · 当前查看 S' + PAGE_NO);
+    elStep.classList.toggle('done', st.stage.done);
+    syncLinks();
+    if (typeof renderPage === 'function') renderPage(T, st);
+  }
+  window.__paint = paint;
+
+  /* ---------- 控件：进页即自动推进，重置回到起点 ---------- */
+  document.getElementById('btnReset').addEventListener('click', function () {
+    T = 0; lastTs = 0; onLoop(); paint();
+  });
+
+  /* ---------- 主循环 ---------- */
+  function tick(ts) {
+    if (!lastTs) lastTs = ts;
+    var dt = Math.min(0.12, (ts - lastTs) / 1000);
+    lastTs = ts;
+    T += dt * 1.15 * 3;                   // 推进速率：约 3 倍速，60 分钟约 17 秒一轮
+    if (T > M.TL.end) { T = 0; onLoop(); }
+    paint();
+    requestAnimationFrame(tick);
+  }
+  function onLoop() { if (typeof onReset === 'function') onReset(); }
+
+  /* ---------- 启动 ---------- */
+  M.registerMaps();
+  if (typeof initPage === 'function') initPage();
+  paint();
+  window.addEventListener('resize', function () { setTimeout(function () { if (typeof relayout === 'function') relayout(); }, 60); });
+  /* 首次布局稳定后再对齐一次画布尺寸，避免图表底边超出容器 */
+  setTimeout(function () { if (typeof relayout === 'function') relayout(); }, 220);
+  requestAnimationFrame(tick);
+})();
+
+</script>
+</body>
+</html>

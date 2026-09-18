@@ -1,0 +1,38 @@
+{
+  // Chrome 调试配置。三条配置都会先执行 preLaunchTask 启动本地预览服务
+  // （端口 5180），因此无需手动开服务器，按 F5 即可直接调试。
+  // 停止调试后，服务会留在「终端 → 启动本地预览服务」面板中，可手动终止。
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "调试 · 工程门户",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5180/index.html",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "启动本地预览服务",
+      "sourceMaps": false,
+      "userDataDir": false
+    },
+    {
+      "name": "调试 · 监管服务平台（态势总览）",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5180/platform/index.html",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "启动本地预览服务",
+      "sourceMaps": false,
+      "userDataDir": false
+    },
+    {
+      "name": "调试 · 风险识别系统（功能总览）",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5180/risk/patent.html",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "启动本地预览服务",
+      "sourceMaps": false,
+      "userDataDir": false
+    }
+  ]
+}

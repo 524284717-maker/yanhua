@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>技术特征对照表 · 烟花爆竹全链条数字化预警监管平台</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 34px 46px 70px; background: #fff; color: #1f2d3d;
+         font: 14px/1.85 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .doc { max-width: 1180px; margin: 0 auto; }
+  h1 { font-size: 25px; margin: 0 0 6px; padding-bottom: 12px;
+       border-bottom: 2px solid #1a73e8; letter-spacing: .3px; }
+  h2 { font-size: 18px; margin: 38px 0 12px; padding: 7px 0 7px 11px;
+       border-left: 4px solid #1a73e8; background: #f2f7ff; }
+  h3 { font-size: 15.5px; margin: 26px 0 10px; color: #10365f; }
+  h3::before { content: "▍"; color: #1a73e8; margin-right: 5px; }
+  p  { margin: 9px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 18px; font-size: 12.5px; }
+  th, td { border: 1px solid #d7e0ea; padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #eef4fc; font-weight: 600; color: #10365f; }
+  tbody tr:nth-child(even) { background: #fafcff; }
+  blockquote { margin: 12px 0; padding: 10px 15px; background: #fff8e6;
+               border-left: 4px solid #f0b400; color: #6b5300; font-size: 13px; }
+  blockquote p { margin: 4px 0; }
+  ul, ol { margin: 8px 0 8px 4px; padding-left: 22px; }
+  li { margin: 4px 0; }
+  hr { border: 0; border-top: 1px dashed #d7e0ea; margin: 28px 0; }
+  code { background: #eef2f7; padding: 1px 5px; border-radius: 3px;
+         font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace; color: #a3306b; }
+  strong { color: #10365f; }
+  .foot { margin-top: 40px; padding-top: 14px; border-top: 1px solid #e2e8f0;
+          color: #7b8a9c; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="doc">
+<h1>技术特征对照表</h1>
+<p><strong>项目</strong>：烟花爆竹全链条数字化预警监管平台 —— 风险智能识别系统<br/><strong>文件用途</strong>：发明专利技术交底书的<strong>代码附件对照说明</strong><br/><strong>源码包</strong>：<code>patent-src/</code>（模块化工程源码，14 个算法单元 + 渲染层）<br/><strong>对照基准</strong>：<code>patent-model.js</code>（旧版单文件数据模型）与线上运行的 <code>patent-s1~s5.html</code><br/><strong>版本 / 日期</strong>：v1.0.0 / 2026-09-18</p>
+<hr/>
+<h2>〇、阅读方法</h2>
+<ol><li>本表把方案拆成 <strong>7 组技术特征（S0~S6，共 27 项）</strong>。每项特征给出：技术内容 → 实现文件与行号 → 关键函数 → 关键参数 → 技术效果。</li><li>行号格式为 <code>文件路径:行号</code>，相对 <code>patent-src/</code> 目录。</li><li>特征编号 <code>S1</code>~<code>S5</code> 与页面编号、功能阶段编号一致，可直接对应到 <code>pages/s1.html</code>~<code>pages/s5.html</code> 五个功能页。</li><li>全部阈值参数集中在 <code>js/core/01-params.js</code>，是该方案唯一的数值边界来源，方便审查与调整。</li></ol>
+<hr/>
+<h2>一、系统级技术方案与代码结构对应</h2>
+<table><thead><tr><th>层次</th><th>职责</th><th>对应目录</th><th>是否含创新点</th></tr></thead><tbody>
+<tr><td>数据模型层</td><td>5 项核心计算与 2 条风险判定式、时间线预计算、状态聚合</td><td><code>js/core/00~13-*.js</code></td><td><strong>是</strong>（S0~S6 全部特征）</td></tr>
+<tr><td>接口兼容层</td><td>把 <code>window.FWCore</code> 导出为 <code>window.PATENT</code></td><td><code>js/compat/export-patent.js</code></td><td>否</td></tr>
+<tr><td>渲染框架层</td><td>监测时钟、主循环、等比缩放、单次状态分发</td><td><code>js/render/page-shell.js</code>、<code>boot.js</code></td><td>部分是（S6-2、S6-4）</td></tr>
+<tr><td>页面实现层</td><td>5 个功能页的界面渲染</td><td><code>js/pages/s1~s5.js</code></td><td>否</td></tr>
+<tr><td>样式</td><td>深蓝科技感指挥大屏样式</td><td><code>css/platform.css</code></td><td>否</td></tr>
+<tr><td>外部依赖</td><td>江西省行政区划 GeoJSON（公开数据）、ECharts 5.4.3</td><td><code>../../geo-data.js</code>、CDN</td><td>否</td></tr>
+</tbody></table>
+<p><strong>加载顺序</strong>（<code>tools/build-pages.py</code> 中 <code>CORE_MODULES</code> 为唯一真源）：</p>
+<p><code>`</code><br/>00 → 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13<br/>→ compat/export-patent.js → render/page-shell.js → pages/sN.js → render/boot.js<br/><code>`</code></p>
+<hr/>
+<h2>二、技术特征逐项对照</h2>
+<h3>表 1　S0 参数体系与阶段划分</h3>
+<table><thead><tr><th>特征编号</th><th>技术特征</th><th>实现位置</th><th>关键函数 / 语句</th><th>关键参数</th><th>技术效果</th></tr></thead><tbody>
+<tr><td><strong>S0-1</strong></td><td>判定阈值<strong>集中参数化</strong>，与算法实现完全分离</td><td><code>js/core/01-params.js:22</code></td><td><code>var P = { … }</code></td><td><code>capacity 800 / fullRatio 0.85 / staticSpeed 2 / tolerance 15 / stayThreshold 0.60 / confThreshold 0.85 / fenceR 0.0082 / bookDrop 0.15 / stock0 498</code></td><td>阈值整组替换即可适配不同仓储类型（1.3 级工库房、中转库、零售库），无需改动任何算法代码</td></tr>
+<tr><td><strong>S0-2</strong></td><td>五阶段<strong>功能时间线</strong>：数据获取 → 特征构造 → 风险判定 → 校验预警</td><td><code>js/core/01-params.js:47</code>、<code>js/core/12-aggregate.js:58</code></td><td><code>TL</code>、<code>stageAt(t)</code></td><td><code>s1[0,9] / s2[9,17] / s3[17,32] / s4[32,41] / s5[41,56] / end 60</code></td><td>同一条数据流被复用为 5 个相互印证的判断依据，且各阶段界面可独立展示而数值完全一致</td></tr>
+</tbody></table>
+<h3>表 2　S1 库存饱和度计算</h3>
+<table><thead><tr><th>特征编号</th><th>技术特征</th><th>实现位置</th><th>关键函数 / 语句</th><th>关键参数</th><th>技术效果</th></tr></thead><tbody>
+<tr><td><strong>S1-1</strong></td><td>由<strong>扫码出入库流水</strong>按时刻单向累加/扣减求库存量 Q(t)，出库以下限 0 截断</td><td><code>js/core/06-s1-saturation.js:27</code></td><td><code>stockAt(t)</code></td><td><code>P.stock0 = 498</code>（T+0 初始库存）</td><td>把离散的扫码事件还原为连续库存曲线，是后续全部判定的数据基础</td></tr>
+<tr><td><strong>S1-2</strong></td><td><strong>归一化饱和度</strong> S(t) = Q(t) / C，与仓储规模解耦</td><td><code>js/core/06-s1-saturation.js:42</code></td><td><code>satAt(t)</code></td><td><code>C = 800 吨</code></td><td>不同库房可用同一组阈值判定，判定阈值具备通用性</td></tr>
+<tr><td><strong>S1-3</strong></td><td>扫码流水<strong>可回溯快照</strong>：截止 t 的最近 N 笔记录与入库/出库累计笔数</td><td><code>js/core/06-s1-saturation.js:50</code>、<code>:64</code></td><td><code>scansAt(t, cap)</code>、<code>scanCount(t)</code></td><td><code>cap</code> 默认 26 笔</td><td>饱和度数值可逐笔追溯到原始扫码记录，满足监管场景的可审计要求</td></tr>
+</tbody></table>
+<h3>表 3　S2 电子围栏与车辆轨迹</h3>
+<table><thead><tr><th>特征编号</th><th>技术特征</th><th>实现位置</th><th>关键函数 / 语句</th><th>关键参数</th><th>技术效果</th></tr></thead><tbody>
+<tr><td><strong>S2-1</strong></td><td>由<strong>行政区划边界数据逐级解析</strong>定位目标仓储，围栏/轨迹/标注共用同一坐标系</td><td><code>js/core/03-geo-anchor.js:81</code>、<code>:90</code></td><td><code>centroidOf</code>、<code>bboxOf</code>、<code>CENTER</code>、<code>BBOX</code>、<code>WARE</code></td><td>省 → 市（<code>360000</code>→宜春市）→ 县（万载县）→ 质心 + (0.004, 0.006) 北偏</td><td>同一套算法可迁移到其他县域，仅改目标县名称，无需重新标定坐标</td></tr>
+<tr><td><strong>S2-2</strong></td><td>车辆实体建模：车牌 / 车型 / 停靠点 / 进出场路径 / 电子运单</td><td><code>js/core/05-vehicles.js:32</code></td><td><code>VEHICLES</code>、<code>pathFor</code>、<code>park</code>/<code>exit</code> 推导</td><td>方位角 <code>2πi/n + 0.55</code>，半径 <code>0.0034 + (i mod 3)×0.0017</code></td><td>车辆分布可复现、不依赖随机数；围栏内多车标记互不遮挡</td></tr>
+<tr><td><strong>S2-3</strong></td><td>车辆轨迹表示为<strong>时刻分段函数</strong>：未进入 → 驶入（34→16 km/h）→ 停靠（→0）→ 驶离（8→34 km/h）</td><td><code>js/core/07-s2-geofence.js:38</code>、<code>:62</code></td><td><code>vehPos(v, t)</code>、<code>vehExitStart(v)</code></td><td><code>TRAVEL = 3.0 min</code>、<code>UNLOAD = 6.0 min</code></td><td>轨迹连续可积，停留时间与瞬时速度可由同一函数导出</td></tr>
+<tr><td><strong>S2-4</strong></td><td><strong>围栏内车辆集合</strong>：按平面距离 ≤ 围栏半径 × 1.6 判定</td><td><code>js/core/07-s2-geofence.js:82</code></td><td><code>inFenceAt(t)</code></td><td><code>P.fenceR = 0.0082</code>（≈800 m）</td><td>把「在库区内」这一定性判断变为可计算的几何判据</td></tr>
+<tr><td><strong>S2-5</strong></td><td><strong>驶离轨迹监测</strong>：只统计考察窗口起点之后才开始驶离的车辆</td><td><code>js/core/07-s2-geofence.js:70</code></td><td><code>detectDeparture(t)</code></td><td><code>BOOK_WIN = 36.8 min</code></td><td>区分「正常装卸后离场」与「风险窗口内离场」，显著降低误报</td></tr>
+</tbody></table>
+<h3>表 4　S3 滞留车辆筛选与异常滞留指数</h3>
+<table><thead><tr><th>特征编号</th><th>技术特征</th><th>实现位置</th><th>关键函数 / 语句</th><th>关键参数</th><th>技术效果</th></tr></thead><tbody>
+<tr><td><strong>S3-1</strong></td><td>车辆行驶时序：进入围栏 → 行驶 TRAVEL → 停靠 UNLOAD（正常车）或长期停靠（滞留车）→ 驶离</td><td><code>js/core/05-vehicles.js:26</code>、<code>:29</code></td><td><code>TRAVEL</code>、<code>UNLOAD</code>、<code>stay</code> 标记</td><td>3.0 min / 6.0 min</td><td>为「停靠时长」提供了物理可解释的基准，使容忍阈值可标定</td></tr>
+<tr><td><strong>S3-2</strong></td><td><strong>滞留车辆集合 V_stay(t)</strong>：停留时长 ≥ 容忍阈值 <strong>且</strong> 速度 &lt; 静止阈值（双条件「与」）</td><td><code>js/core/08-s3-stagnation.js:55</code></td><td><code>isStay</code>（<code>stagnationAt</code> 内）</td><td><code>tolerance = 15 min</code>、<code>staticSpeed = 2 km/h</code></td><td>把「正在正常装卸的车辆」与「长时间停靠且已停止移动的车辆」区分开</td></tr>
+<tr><td><strong>S3-3</strong></td><td><strong>异常滞留指数 I(t)</strong>：双归一化权重（时长权重 + 静止程度权重）等权平均后求和归一化</td><td><code>js/core/08-s3-stagnation.js:50-52</code>、<code>:66</code></td><td><code>wStay</code>、<code>wSlow</code>、<code>weight</code>、<code>index</code></td><td><code>wStay = min(1, stayMin/15)</code>；<code>wSlow = max(0, 1 − spd/2)</code>；<code>I = min(1, Σw/3 × 0.78 + (Σw&gt;0 ? 0.1 : 0))</code></td><td>把「是否滞留」的定性判断升级为连续可比的异常程度指标，可与饱和度做同量级阈值比较</td></tr>
+<tr><td><strong>S3-4</strong></td><td>滞留<strong>明细行</strong>：车牌 / 进入时刻 / 围栏内时长 / 速度 / 权重 / 运单 / 货物 / 驾驶员 / 轨迹阶段 / 坐标</td><td><code>js/core/08-s3-stagnation.js:58-64</code></td><td><code>rows.push({…})</code></td><td>12 个字段</td><td>单一指数可下钻到具体车辆与运单，形成从指标到证据的完整链条</td></tr>
+</tbody></table>
+<h3>表 5　S4 双风险判定（核心特征）</h3>
+<table><thead><tr><th>特征编号</th><th>技术特征</th><th>实现位置</th><th>关键函数 / 语句</th><th>关键参数</th><th>技术效果</th></tr></thead><tbody>
+<tr><td><strong>S4-1</strong></td><td><strong>判定式 A（隐蔽囤货 Risk_Hidden）</strong>：<code>S(t) ≥ 满载阈值 ∧ I(t) ≥ 滞留报警阈值</code></td><td><code>js/core/09-s4-dual-risk.js:39</code>；调用点 <code>js/core/11-timeline.js:60</code></td><td><code>judgeHide(sat, idx)</code></td><td><code>≥ 0.85 ∧ ≥ 0.60</code></td><td>库存接近满容 + 车辆停滞不动 ⇒ 以运输车辆为临时储位的「以车代库」囤积。双条件「与」逻辑比单指标判定显著降低误报率</td></tr>
+<tr><td><strong>S4-2</strong></td><td><strong>账面下降幅度 ΔS</strong>：以判定阶段<strong>峰值</strong>为基准，非负截断</td><td><code>js/core/09-s4-dual-risk.js:49</code>；调用点 <code>js/core/11-timeline.js:63</code></td><td><code>bookDropOf(peakSat, sat)</code></td><td><code>ΔS = max(0, S_peak − S(t))</code></td><td>避免「库存本就低于初始值」造成的天然负差被误判为下降</td></tr>
+<tr><td><strong>S4-3</strong></td><td><strong>判定式 B（账面造假 Risk_Phantom）</strong>：<code>ΔS ≥ 下降阈值 ∧ ¬Departure(考察窗口)</code></td><td><code>js/core/09-s4-dual-risk.js:59</code>；调用点 <code>js/core/11-timeline.js:70</code></td><td><code>judgeBook(bookDrop, hasDeparture)</code></td><td><code>≥ 15% ∧ 无驶离轨迹</code>，<code>BOOK_WIN = 36.8 min</code></td><td>账面批量出库但围栏内无任何车辆驶离 ⇒ 出库登记与实物流不一致，识别虚假出库登记 / 账外转移</td></tr>
+<tr><td><strong>S4-4</strong></td><td>流水的 <strong>phantom 标记</strong>：登记出库但无对应车辆驶离轨迹</td><td><code>js/core/04-op-dataset.js:17</code>（记录字段）；对照展示于 <code>js/pages/s1.js</code></td><td><code>o.phantom</code></td><td>13 条标记记录</td><td>使「账面动作」与「物理动作」在同一条流水上直接对照，形成可出示的证据</td></tr>
+<tr><td><strong>S4-5</strong></td><td>判定结果<strong>置位保持（latch）</strong>语义：首次命中即记录时刻，后续不再取消</td><td><code>js/core/11-timeline.js:48</code>、<code>:60</code>、<code>:70</code></td><td><code>riskHideFrom</code>、<code>bookFrom</code>、<code>alertFrom</code></td><td><code>riskHideFrom ≈ 32.0′</code>、<code>bookFrom ≈ 40.6′</code>、<code>alertFrom ≈ 41.0′</code></td><td>风险结论可回溯、不闪烁，避免因瞬时波动导致告警反复</td></tr>
+</tbody></table>
+<h3>表 6　S5 置信度校验与管控预警</h3>
+<table><thead><tr><th>特征编号</th><th>技术特征</th><th>实现位置</th><th>关键函数 / 语句</th><th>关键参数</th><th>技术效果</th></tr></thead><tbody>
+<tr><td><strong>S5-1</strong></td><td><strong>四路数据源一致性校验</strong>：扫码数据完整性 / 视频监控核验 / 定位轨迹连续性 / 电子运单比对</td><td><code>js/core/10-s5-confidence.js:45</code></td><td><code>confidenceAt(t)</code> → <code>parts.a/b/c/d</code></td><td>区间 <code>a∈[88,97]</code>、<code>b∈[86,98]</code>、<code>c∈[90,99]</code>、<code>d∈[82,96]</code></td><td>把「数据源本身不可靠」与「风险客观存在」区分开，避免单路数据缺失或失真直接触发执法动作</td></tr>
+<tr><td><strong>S5-2</strong></td><td><strong>加权总置信度</strong> C(t) 与阈值校验门</td><td><code>js/core/10-s5-confidence.js:53</code>；调用点 <code>js/core/11-timeline.js:78</code></td><td><code>total = 0.32a + 0.24b + 0.26c + 0.18d</code>；<code>pass = total ≥ 85</code></td><td>权重 0.32/0.24/0.26/0.18，阈值 0.85</td><td>只有多源校验通过后才确认风险成立并下发预警，形成「判定 → 校验 → 预警」的两级确认机制</td></tr>
+<tr><td><strong>S5-3</strong></td><td>分路评分按<strong>监测时刻整分钟序号</strong>取值，同分钟内读数稳定、可复现</td><td><code>js/core/10-s5-confidence.js:33</code>、<code>:46</code></td><td><code>hash01(s)</code>、<code>k = Math.round(t)</code></td><td>确定性散列，无随机数</td><td>置信度可复现、可审计；不引入随机数，便于事后复算</td></tr>
+<tr><td><strong>S5-4</strong></td><td>预警确认后在政务云 <strong>GIS 上分级叠加呈现</strong> 5 个图层</td><td><code>js/core/13-map-layers.js:44~189</code></td><td><code>registerMaps</code>、<code>fenceSeries</code>、<code>trackSeries</code>、<code>vehSeries</code>、<code>wareSeries</code>、<code>alertSeries</code></td><td><code>zlevel 2/3/5/6/7</code>；围栏虚线圆半径 <code>fenceR</code>；仓储超满载阈值转告警色</td><td>风险结论落到「仓储坐标 + 车辆坐标」的可视位置，直接支撑现场核查；固定 zlevel 保证叠加顺序不随数据更新顺序变化</td></tr>
+</tbody></table>
+<h3>表 7　S6 时间线预计算与状态聚合（方法性特征）</h3>
+<table><thead><tr><th>特征编号</th><th>技术特征</th><th>实现位置</th><th>关键函数 / 语句</th><th>关键参数</th><th>技术效果</th></tr></thead><tbody>
+<tr><td><strong>S6-1</strong></td><td><strong>全时间线等步长预计算</strong>：加载时一次性求出 [0, 60] 区间全部指标序列</td><td><code>js/core/11-timeline.js:40</code>、<code>:46</code></td><td><code>GRID_STEP</code>、<code>DERIVED</code>（立即执行函数）</td><td><code>GRID_STEP = 0.05 min</code>，共 1201 个采样点</td><td>每个采样点保存 14 项指标，形成完整的「时刻 → 证据」序列</td></tr>
+<tr><td><strong>S6-2</strong></td><td><strong>判定与帧序解耦</strong>：判定不依赖渲染帧、播放进度或定时器</td><td><code>js/core/11-timeline.js:46</code></td><td><code>DERIVED</code> 循环（不引用任何界面状态）</td><td>—</td><td>①5 个功能页单独打开时判定时刻完全一致；②任意速度播放/暂停/重置/刷新，判定结果不变；③结论可离线复算，满足可审计要求</td></tr>
+<tr><td><strong>S6-3</strong></td><td>采样点读取：任意连续时刻 <strong>O(1)</strong> 映射到预计算序列</td><td><code>js/core/11-timeline.js:101</code></td><td><code>rowAt(t)</code></td><td><code>i = round(t / 0.05)</code></td><td>任意时刻查询为常数时间，60 分钟 × 6 页的实时刷新无性能压力</td></tr>
+<tr><td><strong>S6-4</strong></td><td><strong>单时刻完整状态快照</strong>：一次调用返回全部证据</td><td><code>js/core/12-aggregate.js:35</code>；分发点 <code>js/render/page-shell.js:51</code></td><td><code>stateAt(t)</code></td><td>18 个字段</td><td>「一个时刻 = 一份完整证据链」；页面每帧只取一次状态，从机制上排除各页取值不一致</td></tr>
+<tr><td><strong>S6-5</strong></td><td>阶段标注表与代表时刻</td><td><code>js/core/12-aggregate.js:68</code>、<code>:91</code></td><td><code>stageMeta</code>、<code>stageTime(no)</code></td><td>代表时刻 <code>31.5 / 34.0 / 35.0 / 41.5 / 45.0</code></td><td>支持总览页与阶段间跳转，可直接跳转到最能体现某一特征的时刻</td></tr>
+<tr><td><strong>S6-6</strong></td><td>时刻冻结<strong>自检钩子</strong>：可把界面冻结在任意监测时刻并重绘</td><td><code>js/render/page-shell.js:111</code></td><td><code>__setT(t)</code>、<code>__setPaused(v)</code>、<code>__getT()</code></td><td>—</td><td>使界面比对可复现，为等价性验证提供工程手段</td></tr>
+</tbody></table>
+<hr/>
+<h2>三、实算结果（阈值边界验证）</h2>
+<p>以下数值由源码包在浏览器中实算得出（<code>tools/equivalence-test.html</code> 加载后读取），可用于核对判定式边界：</p>
+<table><thead><tr><th>监测时刻 t</th><th>库存量 Q(t)</th><th>饱和度 S(t)</th><th>滞留车辆数</th><th>异常滞留指数 I(t)</th><th>账面下降 ΔS</th><th>置信度 C(t)</th><th>隐蔽囤货</th><th>账面造假</th><th>管控预警</th></tr></thead><tbody>
+<tr><td>T+0′</td><td>498.0 吨</td><td>62.25%</td><td>0</td><td>0</td><td>—</td><td>95.84</td><td>否</td><td>否</td><td>否</td></tr>
+<tr><td>T+20.0′</td><td>602.5 吨</td><td>75.31%</td><td>0</td><td>0</td><td>—</td><td>89.94</td><td>否</td><td>否</td><td>否</td></tr>
+<tr><td>T+31.9′</td><td>682.7 吨</td><td>85.34%</td><td>3</td><td>0.88</td><td>—</td><td>90.38</td><td>否（未进入判定阶段）</td><td>否</td><td>否</td></tr>
+<tr><td><strong>T+32.0′</strong></td><td>682.7 吨</td><td><strong>85.34% ≥ 85%</strong></td><td>3</td><td><strong>0.88 ≥ 0.60</strong></td><td>0</td><td>90.38</td><td><strong>✅ 是</strong></td><td>否</td><td>否</td></tr>
+<tr><td>T+35.0′</td><td>688.5 吨</td><td>86.06%</td><td>3</td><td>0.88</td><td>0.58%</td><td>90.38</td><td>是</td><td>否</td><td>否</td></tr>
+<tr><td>T+40.5′</td><td>586.7 吨</td><td>73.34%</td><td>3</td><td>0.88</td><td>13.75%</td><td>90.94</td><td>是</td><td>否（未达 15%）</td><td>否</td></tr>
+<tr><td><strong>T+40.6′</strong></td><td>564.3 吨</td><td><strong>70.54%</strong></td><td>3</td><td>0.88</td><td><strong>16.55% ≥ 15%</strong></td><td>90.94</td><td>是</td><td><strong>✅ 是</strong></td><td>否</td></tr>
+<tr><td><strong>T+41.0′</strong></td><td>564.3 吨</td><td>70.54%</td><td>3</td><td>0.88</td><td>16.55%</td><td><strong>90.94 ≥ 85</strong></td><td>是</td><td>是</td><td><strong>✅ 下发</strong></td></tr>
+<tr><td>T+45.0′</td><td>530.3 吨</td><td>66.29%</td><td>3</td><td>0.88</td><td>20.80%</td><td>90.94</td><td>是</td><td>是</td><td>是</td></tr>
+<tr><td>T+60.0′</td><td>492.7 吨</td><td>61.59%</td><td>3</td><td>0.88</td><td>25.50%</td><td>91.38</td><td>是</td><td>是</td><td>是</td></tr>
+</tbody></table>
+<p><strong>补充边界数据</strong></p>
+<table><thead><tr><th>量</th><th>数值</th><th>说明</th></tr></thead><tbody>
+<tr><td>判定阶段饱和度峰值 S_peak</td><td><strong>87.09%</strong></td><td>ΔS 的计算基准，出现于 T+32~41 区间</td></tr>
+<tr><td>异常滞留指数峰值</td><td><strong>0.88</strong></td><td>3 台滞留车辆（车牌 赣C·A8823 / 赣C·B1290 / 赣C·C7734）</td></tr>
+<tr><td>T+32.0′ 置信度四路分项</td><td>a=91, b=90, c=93, d=86</td><td>加权 90.38，通过</td></tr>
+<tr><td>T+41.0′ 置信度四路分项</td><td>a=92, b=91, c=93, d=86</td><td>加权 90.94，通过</td></tr>
+<tr><td>全程无驶离轨迹</td><td>是（T+36.8′ 起持续成立）</td><td>判定式 B 的必要条件</td></tr>
+</tbody></table>
+<hr/>
+<h2>四、等价性与可验证性</h2>
+<p>源码包与旧版单文件实现经两轮自动校验，结论如下：</p>
+<table><thead><tr><th>校验项</th><th>方法</th><th>规模</th><th>结果</th></tr></thead><tbody>
+<tr><td><strong>数值等价</strong></td><td><code>tools/equivalence-test.html</code>：逐时刻比对全部导出量（含 1201 个预计算采样点的 14 项指标）</td><td><strong>55,610 项</strong></td><td><strong>PASS，差异 0 项，最大绝对误差 0</strong></td></tr>
+<tr><td><strong>接口覆盖</strong></td><td>旧版 <code>window.PATENT</code> 的每个导出项，新版 <code>window.FWCore</code> 必须同名同类型</td><td>48 项</td><td>PASS</td></tr>
+<tr><td><strong>判定时刻</strong></td><td>隐蔽囤货 32.0′ / 账面造假 40.6′ / 管控预警 41.0′</td><td>3 项</td><td>新旧完全一致</td></tr>
+<tr><td><strong>界面等价</strong></td><td><code>bash tools/dom-diff.sh</code>：对 5 个页面 × 23 个冻结时刻，比对 DOM 文本 + 全部 ECharts 配置序列化</td><td><strong>115 组</strong></td><td><strong>PASS，全部一致</strong></td></tr>
+</tbody></table>
+<blockquote><p>说明：数值等价采用「不加载兼容层」的方式实现——<code>tools/equivalence-test.html</code> 先加载旧版 <code>patent-model.js</code>（建立基准 <code>window.PATENT</code>），再加载新版 <code>js/core/*</code>（建立待测 <code>window.FWCore</code>），从而可在同一页面内逐项比对。</p></blockquote>
+<hr/>
+<h2>五、权利要求建议对照</h2>
+<table><thead><tr><th>建议权利要求要点</th><th>支撑技术特征</th><th>关键实现位置</th></tr></thead><tbody>
+<tr><td>一种烟花爆竹仓储<strong>隐蔽囤货与账面造假风险的智能识别方法</strong>（独立权利要求：五项步骤 S1~S5 的整体流程）</td><td>S0-2、S1-1、S2-4、S3-2、S4-1、S4-3、S5-2</td><td><code>js/core/06~11-*.js</code></td></tr>
+<tr><td>由<strong>扫码出入库数据与设计容量</strong>计算归一化库存饱和度 S(t)</td><td>S1-1、S1-2</td><td><code>js/core/06-s1-saturation.js:27</code>、<code>:42</code></td></tr>
+<tr><td>由<strong>行政区划边界数据逐级解析</strong>确定围栏圆心，构建地理电子围栏</td><td>S2-1</td><td><code>js/core/03-geo-anchor.js:81</code>、<code>:90</code></td></tr>
+<tr><td>由<strong>停留时长与瞬时速度双条件</strong>筛选滞留车辆，并计算<strong>异常滞留指数</strong></td><td>S3-2、S3-3</td><td><code>js/core/08-s3-stagnation.js:55</code>、<code>:50-52</code>、<code>:66</code></td></tr>
+<tr><td><strong>双条件「与」逻辑</strong>判定隐蔽囤货风险（饱和度与滞留指数双超阈）</td><td>S4-1</td><td><code>js/core/09-s4-dual-risk.js:39</code></td></tr>
+<tr><td>以<strong>判定阶段饱和度峰值</strong>为基准计算账面下降幅度，配合<strong>驶离轨迹缺失</strong>判定账面造假风险</td><td>S4-2、S4-3、S2-5</td><td><code>js/core/09-s4-dual-risk.js:49</code>、<code>:59</code>；<code>07-s2-geofence.js:70</code></td></tr>
+<tr><td>判定结果<strong>置位保持</strong>，且仅记录首次命中时刻</td><td>S4-5</td><td><code>js/core/11-timeline.js:48</code>、<code>:60</code>、<code>:70</code></td></tr>
+<tr><td><strong>多源数据置信度加权校验</strong>通过后方确认风险并下发管控预警</td><td>S5-1、S5-2</td><td><code>js/core/10-s5-confidence.js:45</code>、<code>:53</code></td></tr>
+<tr><td><strong>全时间线预计算</strong>使风险判定与页面渲染帧序解耦</td><td>S6-1、S6-2</td><td><code>js/core/11-timeline.js:40</code>、<code>:46</code></td></tr>
+<tr><td>预警确认后在政务云 <strong>GIS 分级图层</strong>叠加显示仓储与车辆坐标</td><td>S5-4</td><td><code>js/core/13-map-layers.js:44~189</code></td></tr>
+<tr><td>单时刻<strong>完整状态快照</strong>聚合，保证多页面数据严格一致</td><td>S6-4</td><td><code>js/core/12-aggregate.js:35</code></td></tr>
+</tbody></table>
+<hr/>
+<h2>六、文件索引</h2>
+<table><thead><tr><th>文件</th><th>行数</th><th>内容</th></tr></thead><tbody>
+<tr><td><code>js/core/00-namespace.js</code></td><td>47</td><td>命名空间与模块注册约定、成员冲突自检</td></tr>
+<tr><td><code>js/core/01-params.js</code></td><td>60</td><td>S0：阈值参数集 P、功能时间线 TL、考察窗口 BOOK_WIN</td></tr>
+<tr><td><code>js/core/02-geometry.js</code></td><td>58</td><td>平面几何基础函数</td></tr>
+<tr><td><code>js/core/03-geo-anchor.js</code></td><td>99</td><td>S2-1：目标仓储地理锚定</td></tr>
+<tr><td><code>js/core/04-op-dataset.js</code></td><td>65</td><td>S1-1、S4-4：扫码流水数据集（含 phantom 标记）</td></tr>
+<tr><td><code>js/core/05-vehicles.js</code></td><td>62</td><td>S2-2、S3-1：车辆实体与进出场路径</td></tr>
+<tr><td><code>js/core/06-s1-saturation.js</code></td><td>78</td><td>S1-1~S1-3：库存饱和度计算</td></tr>
+<tr><td><code>js/core/07-s2-geofence.js</code></td><td>93</td><td>S2-3~S2-5：电子围栏与车辆轨迹</td></tr>
+<tr><td><code>js/core/08-s3-stagnation.js</code></td><td>73</td><td>S3-2~S3-4：滞留筛选与异常滞留指数</td></tr>
+<tr><td><code>js/core/09-s4-dual-risk.js</code></td><td>67</td><td>S4-1~S4-3：双风险判定式</td></tr>
+<tr><td><code>js/core/10-s5-confidence.js</code></td><td>64</td><td>S5-1~S5-3：多源置信度校验</td></tr>
+<tr><td><code>js/core/11-timeline.js</code></td><td>112</td><td>S6-1~S6-3、S4-5：时间线预计算</td></tr>
+<tr><td><code>js/core/12-aggregate.js</code></td><td>98</td><td>S6-4、S6-5：状态聚合与阶段机</td></tr>
+<tr><td><code>js/core/13-map-layers.js</code></td><td>189</td><td>S5-4：GIS 五图层构造</td></tr>
+<tr><td><code>js/compat/export-patent.js</code></td><td>17</td><td>接口兼容层</td></tr>
+<tr><td><code>js/render/page-shell.js</code></td><td>116</td><td>监测时钟、主循环、状态分发、自检钩子</td></tr>
+<tr><td><code>js/render/boot.js</code></td><td>16</td><td>页面启动装配</td></tr>
+<tr><td><code>js/pages/s1~s5.js</code></td><td>110 / 135 / 91 / 126 / 164</td><td>5 个功能页的渲染实现</td></tr>
+<tr><td><code>pages/index.html</code>、<code>pages/s1~s5.html</code></td><td>—</td><td>6 个可直接打开的功能页面</td></tr>
+<tr><td><code>tools/build-pages.py</code></td><td>232</td><td>页面组装脚本</td></tr>
+<tr><td><code>tools/build-legacy.py</code></td><td>88</td><td>旧版对照基准生成脚本</td></tr>
+<tr><td><code>tools/equivalence-test.html</code></td><td>—</td><td>数值等价性自检</td></tr>
+<tr><td><code>tools/dom-diff.sh</code></td><td>103</td><td>界面等价性自检</td></tr>
+</tbody></table>
+<div class="foot">本页由 <code>tools/md2html.py</code> 从 <code>技术特征对照表.md</code> 自动生成；
+数值与行号均由源码包实测，等价性结论见 <code>tools/equivalence-test.html</code> 与 <code>tools/dom-diff.sh</code>。</div>
+</div>
+</body>
+</html>

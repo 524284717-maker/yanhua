@@ -3,3 +3,6 @@
 
 # macOS
 .DS_Store
+
+# 工程打包产物（由 yanhua-platform/tools/make-zip.sh 生成，可随时重建）
+yanhua-platform.zip

@@ -1,0 +1,20 @@
+{
+  // 双击本文件即可用 VS Code 打开整个工程（等效于「File → Open Folder」）。
+  // 详细的目录结构、运行方式与页面清单见 README.md。
+  "folders": [
+    {
+      "name": "烟花爆竹全链条监管平台",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "window.title": "烟花爆竹全链条监管平台 — ${activeEditorShort}"
+  },
+  "extensions": {
+    "recommendations": [
+      "ritwickdey.LiveServer",
+      "ms-ceintl.vscode-language-pack-zh-hans",
+      "ms-vscode.live-server"
+    ]
+  }
+}

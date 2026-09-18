@@ -1,0 +1,73 @@
+{
+  // 江西省烟花爆竹产业全链条监管服务平台 · 工程配置
+  // 说明：本工程全部产物为「可直接双击打开的离线单文件 HTML」，
+  //       下方配置的作用是让 VS Code 里的编码、缩进、搜索与预览行为与之匹配。
+
+  // ---------- 文件与编码 ----------
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": false,
+  "files.insertFinalNewline": false,
+  "files.autoGuessEncoding": false,
+
+  // ---------- 编辑器 ----------
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.rulers": [
+    110
+  ],
+  "editor.renderWhitespace": "selection",
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": true,
+      "strings": true
+    }
+  },
+  "[json]": {
+    "editor.wordWrap": "on"
+  },
+
+  // 页面为单文件 HTML（样式与脚本内联），版式靠精确缩进维持，
+  // 关闭自动格式化以免大屏结构被重排
+  "[html]": {
+    "editor.formatOnSave": false
+  },
+  "html.format.enable": false,
+  "html.format.wrapLineLength": 0,
+
+  // ---------- 搜索与监视排除 ----------
+  // geo-data.js 为 900KB 单行真实边界数据，纳入全文搜索会显著拖慢；
+  // legacy/ 为等价性自检的自动生成基准页，无需人工检索
+  "search.exclude": {
+    "**/shared/geo-data.js": true,
+    "**/risk-src/tools/legacy": true,
+    "**/*.code-workspace": true,
+    "**/*.zip": true,
+    "**/node_modules": true
+  },
+  "files.watcherExclude": {
+    "**/shared/geo-data.js": true,
+    "**/risk-src/tools/legacy/**": true,
+    "**/node_modules/**": true
+  },
+  "search.useIgnoreFiles": true,
+
+  // ---------- Live Server（推荐扩展，非必需）----------
+  // 也可以用零依赖命令自带的服务器：npm run dev
+  "liveServer.settings.port": 5180,
+  "liveServer.settings.root": "/",
+  "liveServer.settings.host": "127.0.0.1",
+  "liveServer.settings.ignoreFiles": [
+    ".vscode/**",
+    "**/*.zip",
+    "**/*.py"
+  ],
+
+  // ---------- 其它 ----------
+  "explorer.compactFolders": false,
+  "explorer.fileNesting.enabled": false,
+  "eslint.enable": false
+}

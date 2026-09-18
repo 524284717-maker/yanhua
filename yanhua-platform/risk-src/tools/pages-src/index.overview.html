@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>__TITLE__ · 功能总览</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>__CSS__</style>
+</head>
+<body>
+<div class="screen">
+  <header>
+    <div style="flex-shrink:0;">
+      <h1>__TITLE__</h1>
+      <div class="sub"><b>系统功能总览</b> · 五大核心功能模块分页展示，点击下方任一功能卡片进入对应功能页面</div>
+    </div>
+    <div class="ctrl">
+      <span class="tag-step">5 大功能模块</span>
+      <a class="btn primary" href="patent-s1.html" style="text-decoration:none;">从 S1 开始</a>
+    </div>
+  </header>
+
+  <div class="flow-cards">
+__CARDS__
+  </div>
+
+  <div class="ov-grid" style="flex: 0 0 auto;">
+    <div class="panel">
+      <div class="panel-title"><h3>风险判定公式</h3><span class="more">双条件与逻辑</span></div>
+      <div class="formula">
+        <div style="margin-bottom:7px;">
+          <b>判定式 A（隐蔽囤货风险）：</b><code>S(t) ≥ 85% ∧ I(t) ≥ 0.60 → Risk_Hidden</code><br/>
+          <span class="vs">库存饱和度大于满载阈值，且电子围栏车辆异常滞留指数大于滞留报警阈值 —— 以车代库、囤而不发。</span>
+        </div>
+        <div>
+          <b>判定式 B（账面造假风险）：</b><code>ΔS(Δt) ≤ −15% ∧ ¬Departure(Δt) → Risk_Phantom</code><br/>
+          <span class="vs">预设时间段内饱和度下降超 15%，但围栏内未监测到运输车辆驶离轨迹 —— 出库登记与实物流不一致。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><h3>阈值参数与判定时刻</h3><span class="more">系统可配置参数</span></div>
+      <div class="kv-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="kv"><div class="k">仓储设计容量 C</div><div class="v">800<small>吨</small></div></div>
+        <div class="kv"><div class="k">满载阈值</div><div class="v">85<small>%</small></div></div>
+        <div class="kv"><div class="k">围栏半径 R</div><div class="v">800<small>m</small></div></div>
+        <div class="kv"><div class="k">静止阈值</div><div class="v">2<small>km/h</small></div></div>
+        <div class="kv"><div class="k">装卸容忍时间</div><div class="v">15<small>min</small></div></div>
+        <div class="kv"><div class="k">滞留报警阈值</div><div class="v">0.60</div></div>
+      </div>
+      <div class="formula" style="margin-top:9px;">
+        <div>· 功能时序：S1 <b>T+0~9′</b> → S2 <b>9~17′</b> → S3 <b>17~32′</b> → S4 <b>32~41′</b> → S5 <b>41~60′</b></div>
+        <div>· 示例判定结果：<em class="y">T+<span id="ovHide">32.0</span>′ 隐蔽囤货风险成立</em> · <em class="y">T+<span id="ovBook">40.6</span>′ 账面造假风险成立</em> · <em class="y">T+<span id="ovAlert">41.0</span>′ 管控预警下发</em></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="pager">
+    <a class="off">← 上一流程</a>
+    <span class="mid">统一数据模型 · 5 个功能页共用，同一时刻 t 各页数值完全一致</span>
+    <a href="patent-s1.html">进入 S1 库存饱和度计算 →</a>
+  </footer>
+</div>
+
+<script src="geo-data.js"></script>
+<script src="patent-model.js"></script>
+<script>
+(function () {
+  function fitScreen() {
+    var el = document.querySelector('.screen');
+    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    el.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitScreen);
+  fitScreen();
+  var D = window.PATENT.DERIVED;
+  var f = function (v) { return v === null ? '未触发' : (+v).toFixed(1); };
+  document.getElementById('ovHide').textContent = f(D.riskHideFrom);
+  document.getElementById('ovBook').textContent = f(D.bookFrom);
+  document.getElementById('ovAlert').textContent = f(D.alertFrom);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>工程门户 · 江西省烟花爆竹产业全链条监管服务平台</title>
+<style>
+  :root {
+    --bg: #04152c;
+    --bg-2: #071f3d;
+    --panel: rgba(12, 44, 80, 0.55);
+    --panel-2: rgba(9, 34, 64, 0.75);
+    --line: rgba(0, 212, 255, 0.22);
+    --line-2: rgba(0, 212, 255, 0.45);
+    --cyan: #00d4ff;
+    --cyan-dim: #4fd4f0;
+    --text: #e8f4fb;
+    --text-2: #9fc0d8;
+    --text-3: #6d90ad;
+    --amber: #ffb84d;
+    --green: #7fe3a0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(0, 120, 200, 0.28), transparent 60%),
+      radial-gradient(900px 500px at 95% 5%, rgba(0, 200, 255, 0.14), transparent 55%),
+      linear-gradient(170deg, var(--bg) 0%, var(--bg-2) 55%, #04162c 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    padding: 48px 32px 72px;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  /* ── 页头 ── */
+  header { margin-bottom: 44px; }
+
+  .brand {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
+  }
+  .brand .mark {
+    width: 46px; height: 46px; flex: 0 0 46px;
+    border: 1.5px solid var(--line-2); border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(150deg, rgba(0, 212, 255, 0.16), rgba(0, 212, 255, 0.02));
+    box-shadow: 0 0 22px rgba(0, 212, 255, 0.18) inset;
+  }
+  .brand .mark svg { width: 26px; height: 26px; }
+
+  .brand .sys { font-size: 13px; letter-spacing: 3px; color: var(--cyan-dim); margin-bottom: 6px; }
+  .brand h1 { font-size: 27px; font-weight: 600; letter-spacing: 0.5px; line-height: 1.3; }
+
+  .lede {
+    color: var(--text-2); font-size: 14.5px; line-height: 1.95; max-width: 880px;
+    padding-left: 4px; border-left: 2px solid var(--line);
+    padding: 2px 0 2px 18px;
+  }
+  .lede b { color: var(--text); font-weight: 600; }
+  .lede .sep { color: var(--text-3); margin: 0 8px; }
+
+  /* ── 区块标题 ── */
+  .sec-title {
+    display: flex; align-items: center; gap: 12px;
+    margin: 46px 0 20px; font-size: 15px; font-weight: 600; letter-spacing: 1px;
+  }
+  .sec-title::after {
+    content: ""; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--line), transparent);
+  }
+  .sec-title .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--cyan); box-shadow: 0 0 10px var(--cyan);
+  }
+  .sec-title .hint { font-size: 12px; font-weight: 400; color: var(--text-3); letter-spacing: 0; }
+
+  /* ── 系统入口卡片 ── */
+  .entries { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .entry {
+    display: block; text-decoration: none; color: inherit;
+    position: relative; overflow: hidden;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px 26px 24px;
+    transition: border-color 0.22s, transform 0.22s, box-shadow 0.22s;
+  }
+  .entry::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.6;
+  }
+  .entry:hover {
+    border-color: var(--line-2);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 212, 255, 0.12);
+  }
+  .entry .no {
+    font-size: 11.5px; letter-spacing: 2px; color: var(--cyan); margin-bottom: 12px;
+  }
+  .entry h3 { font-size: 18.5px; font-weight: 600; margin-bottom: 10px; letter-spacing: 0.3px; }
+  .entry p { font-size: 13px; line-height: 1.85; color: var(--text-2); }
+  .entry .meta {
+    margin-top: 18px; padding-top: 14px; border-top: 1px dashed rgba(0, 212, 255, 0.16);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; color: var(--text-3);
+  }
+  .entry .go { color: var(--cyan); font-weight: 600; }
+  .entry .go::after { content: " →"; }
+
+  /* ── 页面索引 ── */
+  .pages {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+    gap: 10px;
+  }
+  .pg {
+    display: flex; align-items: baseline; gap: 12px;
+    text-decoration: none; color: inherit;
+    background: var(--panel-2);
+    border: 1px solid rgba(0, 212, 255, 0.12);
+    border-left: 2px solid rgba(0, 212, 255, 0.35);
+    border-radius: 8px; padding: 12px 15px;
+    transition: background 0.18s, border-color 0.18s;
+  }
+  .pg:hover { background: rgba(16, 58, 102, 0.8); border-left-color: var(--cyan); }
+  .pg .tag {
+    font-size: 10.5px; letter-spacing: 0.5px; color: var(--cyan);
+    border: 1px solid rgba(0, 212, 255, 0.35); border-radius: 4px;
+    padding: 1px 6px; flex: 0 0 auto; margin-top: 1px;
+  }
+  .pg .nm { font-size: 13.5px; line-height: 1.55; }
+  .pg .fn { font-size: 11.5px; color: var(--text-3); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  /* ── 工程结构 ── */
+  .tree {
+    background: rgba(3, 18, 36, 0.75);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px 26px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12.8px; line-height: 2.05; color: var(--text-2);
+    overflow-x: auto; white-space: pre;
+  }
+  .tree b { color: var(--cyan-dim); font-weight: 600; }
+  .tree i { color: var(--text-3); font-style: normal; }
+  .tree em { color: var(--amber); font-style: normal; }
+
+  /* ── 快速开始 ── */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+  .step {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 11px; padding: 18px 20px;
+  }
+  .step .n {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(0, 212, 255, 0.14); border: 1px solid var(--line-2);
+    color: var(--cyan); font-size: 12px; font-weight: 600; margin-bottom: 12px;
+  }
+  .step h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .step p { font-size: 12.5px; line-height: 1.85; color: var(--text-2); }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px; color: var(--amber);
+    background: rgba(255, 184, 77, 0.09);
+    border: 1px solid rgba(255, 184, 77, 0.2);
+    border-radius: 4px; padding: 1px 6px;
+  }
+
+  footer {
+    margin-top: 56px; padding-top: 22px;
+    border-top: 1px solid rgba(0, 212, 255, 0.14);
+    font-size: 12px; color: var(--text-3); line-height: 2;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  footer .ok { color: var(--green); }
+
+  @media (max-width: 860px) {
+    body { padding: 30px 18px 56px; }
+    .entries { grid-template-columns: 1fr; }
+    .brand h1 { font-size: 21px; }
+    .lede { font-size: 13.5px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2.6v3.2" />
+          <path d="M12 5.8a6.6 6.6 0 0 1 6.6 6.6v3.5l1.9 3.1H3.5l1.9-3.1v-3.5A6.6 6.6 0 0 1 12 5.8z" />
+          <path d="M9.6 19a2.4 2.4 0 0 0 4.8 0" />
+          <circle cx="12" cy="2.2" r="1" fill="#00d4ff" stroke="none" />
+        </svg>
+      </span>
+      <div>
+        <div class="sys">YANHUA · PLATFORM</div>
+        <h1>江西省烟花爆竹产业全链条监管服务平台</h1>
+      </div>
+    </div>
+    <p class="lede">
+      本工程包含两个可独立运行的数字化系统：<b>全链条监管服务平台</b>（11 个态势页面，覆盖采购、生产、仓储、运输、出口、经营、燃放、打非治违等环节，支持省—市—县—乡镇—企业五级下钻）
+      <span class="sep">·</span>
+      <b>烟花爆竹全链条数字化预警监管平台</b>（风险识别系统，6 个页面，实现库存饱和度、电子围栏与车辆轨迹、异常滞留指数、双风险判定、置信度校验与管控预警）。<br />
+      全部页面为<b>离线单文件 HTML</b>，双击即可打开，无需联网安装依赖；工程另附模块化算法源码、技术特征对照表与自动化校验脚本。
+    </p>
+  </header>
+
+  <div class="sec-title"><span class="dot"></span>系统入口<span class="hint">点击进入对应系统首页</span></div>
+  <div class="entries">
+    <a class="entry" href="platform/index.html">
+      <div class="no">SYSTEM 01</div>
+      <h3>全链条监管服务平台</h3>
+      <p>省级态势总览与各环节专项态势。基于真实省市县边界的 GeoJSON 地图，支持逐级下钻至企业与点位，实时呈现储量、产能、流向、预警与执法数据。</p>
+      <div class="meta"><span>11 个页面 · 五级下钻 · ECharts 地图</span><span class="go">进入态势总览</span></div>
+    </a>
+    <a class="entry" href="risk/patent.html">
+      <div class="no">SYSTEM 02</div>
+      <h3>烟花爆竹全链条数字化预警监管平台</h3>
+      <p>面向仓储隐蔽囤货与账面造假的风险智能识别。以实时数据驱动监测时钟，依次完成饱和度计算、围栏轨迹获取、滞留车辆筛选、双风险判定与置信度校验，并输出管控预警。</p>
+      <div class="meta"><span>6 个页面 · 5 项核心功能 · 自动播放</span><span class="go">进入功能总览</span></div>
+    </a>
+  </div>
+
+  <div class="sec-title"><span class="dot"></span>监管服务平台 页面索引<span class="hint">platform/</span></div>
+  <div class="pages">
+    <a class="pg" href="platform/index.html"><span class="tag">首页</span><span><span class="nm">态势总览</span><br /><span class="fn">index.html</span></span></a>
+    <a class="pg" href="platform/purchase.html"><span class="tag">采购</span><span><span class="nm">采购态势</span><br /><span class="fn">purchase.html</span></span></a>
+    <a class="pg" href="platform/production.html"><span class="tag">生产</span><span><span class="nm">生产态势</span><br /><span class="fn">production.html</span></span></a>
+    <a class="pg" href="platform/warehouse.html"><span class="tag">仓储</span><span><span class="nm">仓储态势</span><br /><span class="fn">warehouse.html</span></span></a>
+    <a class="pg" href="platform/transport.html"><span class="tag">运输</span><span><span class="nm">运输态势</span><br /><span class="fn">transport.html</span></span></a>
+    <a class="pg" href="platform/export.html"><span class="tag">出口</span><span><span class="nm">出口态势</span><br /><span class="fn">export.html</span></span></a>
+    <a class="pg" href="platform/retail.html"><span class="tag">经营</span><span><span class="nm">经营态势</span><br /><span class="fn">retail.html</span></span></a>
+    <a class="pg" href="platform/firework.html"><span class="tag">燃放</span><span><span class="nm">燃放态势</span><br /><span class="fn">firework.html</span></span></a>
+    <a class="pg" href="platform/enforcement.html"><span class="tag">执法</span><span><span class="nm">打非治违</span><br /><span class="fn">enforcement.html</span></span></a>
+    <a class="pg" href="platform/monitor.html"><span class="tag">监控</span><span><span class="nm">智能监控中心</span><br /><span class="fn">monitor.html</span></span></a>
+    <a class="pg" href="platform/admin.html"><span class="tag">管理</span><span><span class="nm">业务管理</span><br /><span class="fn">admin.html</span></span></a>
+  </div>
+
+  <div class="sec-title"><span class="dot"></span>风险识别系统 页面索引<span class="hint">risk/ · risk-src/pages/</span></div>
+  <div class="pages">
+    <a class="pg" href="risk/patent.html"><span class="tag">总览</span><span><span class="nm">功能总览</span><br /><span class="fn">patent.html</span></span></a>
+    <a class="pg" href="risk/patent-s1.html"><span class="tag">S1</span><span><span class="nm">库存饱和度计算</span><br /><span class="fn">patent-s1.html</span></span></a>
+    <a class="pg" href="risk/patent-s2.html"><span class="tag">S2</span><span><span class="nm">电子围栏与车辆轨迹</span><br /><span class="fn">patent-s2.html</span></span></a>
+    <a class="pg" href="risk/patent-s3.html"><span class="tag">S3</span><span><span class="nm">滞留车辆筛选与滞留指数</span><br /><span class="fn">patent-s3.html</span></span></a>
+    <a class="pg" href="risk/patent-s4.html"><span class="tag">S4</span><span><span class="nm">双风险判定</span><br /><span class="fn">patent-s4.html</span></span></a>
+    <a class="pg" href="risk/patent-s5.html"><span class="tag">S5</span><span><span class="nm">置信度校验与管控预警</span><br /><span class="fn">patent-s5.html</span></span></a>
+    <a class="pg" href="risk-src/pages/index.html"><span class="tag">源码版</span><span><span class="nm">模块化源码包总览</span><br /><span class="fn">risk-src/pages/index.html</span></span></a>
+  </div>
+
+  <div class="sec-title"><span class="dot"></span>工程结构</div>
+  <div class="tree"><b>yanhua-platform/</b>
+├── <b>index.html</b>                 <i>工程门户（本页）</i>
+├── <b>platform/</b>                  <i>① 监管服务平台 · 11 个页面</i>
+│     <i>index / purchase / production / warehouse / transport / export</i>
+│     <i>retail / firework / enforcement / monitor / admin .html</i>
+├── <b>risk/</b>                      <i>② 风险识别系统 · 6 个运行版页面</i>
+│     <i>patent.html（总览）+ patent-s1 ~ s5.html</i>
+├── <b>risk-src/</b>                  <i>② 风险识别系统 · 模块化源码版</i>
+│     ├── js/core/       <i>00 ~ 13 共 14 个算法单元（S0~S6 技术特征）</i>
+│     ├── js/compat/     <i>兼容导出层（FWCore → PATENT）</i>
+│     ├── js/render/     <i>页面外壳：时钟 / 主循环 / 时刻冻结钩子</i>
+│     ├── js/pages/      <i>s1 ~ s5 页面渲染实现</i>
+│     ├── pages/         <i>组装产物（由 tools/build-pages.py 生成）</i>
+│     ├── css/           <i>共享样式</i>
+│     └── tools/         <i>组装 / 基准生成 / 等价性自检</i>
+├── <b>shared/</b>                    <i>共享资源</i>
+│     ├── geo-data.js    <i>省市县真实边界 GeoJSON（约 900 KB）</i>
+│     └── patent-model.js <i>风险识别数据模型（单文件版）</i>
+├── <b>assets/</b>                    <i>品牌图标 + 6 张监控抓拍图</i>
+├── <b>docs/</b>                      <i>技术特征对照表（.md / .html）等文档</i>
+├── <b>tools/</b>                     <i>本地预览服务与校验脚本</i>
+│     ├── serve.js       <i>零依赖静态服务器</i>
+│     ├── check-syntax.js <i>语法闸门（只编译不执行）</i>
+│     ├── check-links.js <i>引用完整性校验</i>
+│     └── make-zip.sh    <i>打包 ZIP</i>
+├── <b>.vscode/</b>                  <i>编辑器配置 · 任务 · 调试 · 扩展推荐</i>
+├── package.json        <i>npm 脚本（零第三方依赖）</i>
+└── yanhua-platform.code-workspace <i>双击即可在 VS Code 打开</i></div>
+
+  <div class="sec-title"><span class="dot"></span>快速开始</div>
+  <div class="steps">
+    <div class="step">
+      <div class="n">1</div>
+      <h4>打开工程</h4>
+      <p>双击 <code>yanhua-platform.code-workspace</code>，或在 VS Code 中选择「文件 → 打开文件夹」指向本目录。</p>
+    </div>
+    <div class="step">
+      <div class="n">2</div>
+      <h4>启动预览服务</h4>
+      <p>终端执行 <code>npm run dev</code>；或按 <code>F5</code> 直接调试（会自动拉起服务）。默认地址 <code>127.0.0.1:5180</code>。</p>
+    </div>
+    <div class="step">
+      <div class="n">3</div>
+      <h4>运行校验</h4>
+      <p>按 <code>⇧⌘B</code> 运行「全量校验」，或执行 <code>npm run check</code>，检查语法与引用完整性。</p>
+    </div>
+    <div class="step">
+      <div class="n">4</div>
+      <h4>直接打开也能看</h4>
+      <p>页面均为离线单文件，双击 <code>platform/index.html</code> 或 <code>risk/patent.html</code> 即可，无需任何服务。</p>
+    </div>
+  </div>
+
+  <footer>
+    <span>江西省烟花爆竹产业全链条监管服务平台 · 工程门户</span>
+    <span class="ok">✓ 全部页面离线可运行 · 零第三方依赖 · 已通过语法与引用完整性校验</span>
+  </footer>
+
+</div>
+</body>
+</html>

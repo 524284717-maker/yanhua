@@ -1,0 +1,49 @@
+  <main style="grid-template-columns: 1fr 1.25fr;">
+    <div class="col">
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3><i class="step-no">S5</i>风险置信度校验</h3><span class="more" id="confState">—</span></div>
+        <div class="conf-line"><span class="nm">扫码出入库数据</span><span class="bar"><i id="cf1"></i></span><b id="cv1">--</b></div>
+        <div class="conf-line"><span class="nm">视频监控核验</span><span class="bar"><i id="cf2"></i></span><b id="cv2">--</b></div>
+        <div class="conf-line"><span class="nm">车辆定位轨迹</span><span class="bar"><i id="cf3"></i></span><b id="cv3">--</b></div>
+        <div class="conf-line"><span class="nm">电子运单比对</span><span class="bar"><i id="cf4"></i></span><b id="cv4">--</b></div>
+        <div class="conf-total"><b id="confTotal">--</b><span>综合置信度（阈值 85%）</span></div>
+        <div class="formula" style="font-size: 11px; color: #8aa4bf;">
+          加权：扫码数据 32% · 视频核验 24% · 定位轨迹 26% · 电子运单 18%
+        </div>
+      </div>
+
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3>管控预警信息</h3><span class="more" id="alertTag">—</span></div>
+        <div class="alert-box off" id="alertBox">
+          <div class="ttl" id="alertTitle">暂无风险，未生成管控预警</div>
+          <div id="alertBody">当前时刻未同时满足隐蔽囤货风险与账面造假风险的判定条件，或置信度校验尚未通过。</div>
+          <div class="push-line" id="pushLine">—</div>
+        </div>
+      </div>
+
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>预警推送与处置跟踪</h3><span class="more" id="pushTag">—</span></div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>推送对象</th><th>推送渠道</th><th>下发时间</th><th>回执状态</th></tr></thead>
+            <tbody id="pushTbody"></tbody>
+          </table>
+        </div>
+        <div class="spec" style="margin-top: 8px;">
+          <span class="h">功能说明</span>若存在隐蔽囤货风险或账面造假风险任意一项时，进行风险置信度校验；
+          置信度校验通过后确认风险成立，生成管控预警信息，并在政务云平台的 GIS 地图上显示目标仓储及对应的烟花爆竹运输车辆坐标。
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="panel map-panel" style="flex: 1.25; min-height: 0;">
+        <div class="panel-title"><h3>政务云平台 GIS 地图 · 县域总览</h3><span class="more" id="gisInfo">—</span></div>
+        <div class="map-box"><div class="map-tag">目标仓储及运输车辆坐标已上图</div><div id="mapS5ov" style="width:100%;height:100%;"></div></div>
+      </div>
+      <div class="panel map-panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>政务云平台 GIS 地图 · 围栏预警细节</h3><span class="more" id="gisDetail">—</span></div>
+        <div class="map-box"><div class="map-tag" id="coordTag">—</div><div id="mapS5dt" style="width:100%;height:100%;"></div></div>
+      </div>
+    </div>
+  </main>

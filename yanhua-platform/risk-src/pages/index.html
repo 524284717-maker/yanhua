@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>烟花爆竹全链条数字化预警监管平台 · 功能总览</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<link rel="stylesheet" href="../css/platform.css" />
+</head>
+<body>
+<div class="screen">
+  <header>
+    <div style="flex-shrink:0;">
+      <h1>烟花爆竹全链条数字化预警监管平台</h1>
+      <div class="sub"><b>系统功能总览</b> · 五大核心功能模块分页展示，点击下方任一功能卡片进入对应功能页面</div>
+    </div>
+    <div class="ctrl">
+      <span class="tag-step">5 大功能模块</span>
+      <a class="btn primary" href="s1.html" style="text-decoration:none;">从 S1 开始</a>
+    </div>
+  </header>
+
+  <div class="flow-cards">
+    <a class="flow-card" href="s1.html">
+      <span class="no">S1</span>
+      <h4>库存饱和度计算</h4>
+      <div class="ic-wrap"><span class="ic-ring"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 42V21L24 8l18 13v21"/><path d="M3 42h42"/><path d="M16 34a8 8 0 0 1 16 0"/><path d="M24 34l5.2-5.2"/><circle class="fill" cx="24" cy="34" r="1.4"/></svg></span></div>
+      <div class="d">扫码出入库数据 + 设计容量 → 当前时刻库存饱和度</div>
+      <div class="claim"><b>功能说明：</b>实时获取目标仓储的扫码出入库数据，并结合目标仓储的设计容量，计算当前时刻的库存饱和度</div>
+      <div class="go">进入流程 →</div>
+    </a>
+    <a class="flow-card" href="s2.html">
+      <span class="no">S2</span>
+      <h4>电子围栏与车辆轨迹</h4>
+      <div class="ic-wrap"><span class="ic-ring"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17" stroke-dasharray="5 3.6"/><path d="M11.5 31.5l6.5-8.5 5.5 4.5 8-11"/><circle class="fill" cx="11.5" cy="31.5" r="1.9"/><circle class="fill" cx="31.5" cy="16.5" r="1.9"/></svg></span></div>
+      <div class="d">以仓储为中心构建地理电子围栏，实时获取围栏内车辆定位轨迹</div>
+      <div class="claim"><b>功能说明：</b>以目标仓储为中心构建地理电子围栏，并实时获取进入地理电子围栏内的烟花爆竹运输车辆的定位轨迹</div>
+      <div class="go">进入流程 →</div>
+    </a>
+    <a class="flow-card" href="s3.html">
+      <span class="no">S3</span>
+      <h4>滞留车辆筛选与滞留指数</h4>
+      <div class="ic-wrap"><span class="ic-ring"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M5 33V20h16v13"/><path d="M21 24.5h6.5L33 30.5V33"/><path d="M2.5 33h37"/><circle cx="9.5" cy="36" r="3"/><circle cx="29.5" cy="36" r="3"/><circle cx="36.5" cy="12" r="7.5"/><path d="M36.5 7.8V12l4.6 2.9"/></svg></span></div>
+      <div class="d">筛选「速度低于静止阈值 且 停留超过装卸容忍时间」车辆，计算异常滞留指数</div>
+      <div class="claim"><b>功能说明：</b>实时获取车辆在地理电子围栏内的停留时间与移动速度，筛选出移动速度低于静止阈值且停留时间超过装卸容忍时间阈值的滞留车辆集合，并计算当前时刻围栏内车辆异常滞留指数</div>
+      <div class="go">进入流程 →</div>
+    </a>
+    <a class="flow-card" href="s4.html">
+      <span class="no">S4</span>
+      <h4>双风险判定</h4>
+      <div class="ic-wrap"><span class="ic-ring"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6.5v6.5"/><path d="M9 13h30"/><path d="M24 13v27"/><path d="M16.5 40h15"/><path d="M10.5 13L6.5 23"/><path d="M10.5 13l4 10"/><path d="M6.5 23a4 4 0 0 0 8 0"/><path d="M37.5 13l-4 10"/><path d="M37.5 13l4 10"/><path d="M33.5 23a4 4 0 0 0 8 0"/></svg></span></div>
+      <div class="d">饱和度与滞留指数双超阈 → 隐蔽囤货风险；饱和度下降但无驶离轨迹 → 账面造假风险</div>
+      <div class="claim"><b>功能说明：</b>若当前时刻的库存饱和度大于满载阈值，且围栏车辆异常滞留指数大于滞留报警阈值，则判定存在隐蔽囤货风险；若当前时刻的库存饱和度在预设时间段内发生下降，但围栏内未监测到运输车辆驶离轨迹，则判定存在账面造假风险</div>
+      <div class="go">进入流程 →</div>
+    </a>
+    <a class="flow-card" href="s5.html">
+      <span class="no">S5</span>
+      <h4>置信度校验与管控预警</h4>
+      <div class="ic-wrap"><span class="ic-ring"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="6" r="2"/><path d="M24 8v2.5"/><path d="M24 10.5a11.5 11.5 0 0 1 11.5 11.5v8L39 35.5H9l3.5-5.5v-8A11.5 11.5 0 0 1 24 10.5z"/><path d="M19.5 38a5 5 0 0 0 9 0"/></svg></span></div>
+      <div class="d">多源数据一致性校验通过后确认风险，生成管控预警并在政务云 GIS 显示仓储及车辆坐标</div>
+      <div class="claim"><b>功能说明：</b>若存在隐蔽囤货风险或账面造假风险任意一项时，进行风险置信度校验，校验通过后确认风险成立，生成管控预警信息，并在政务云平台的 GIS 地图上显示目标仓储及对应的烟花爆竹运输车辆坐标</div>
+      <div class="go">进入流程 →</div>
+    </a>
+  </div>
+
+  <div class="ov-grid" style="flex: 0 0 auto;">
+    <div class="panel">
+      <div class="panel-title"><h3>风险判定公式</h3><span class="more">双条件与逻辑</span></div>
+      <div class="formula">
+        <div style="margin-bottom:7px;">
+          <b>判定式 A（隐蔽囤货风险）：</b><code>S(t) ≥ 85% ∧ I(t) ≥ 0.60 → Risk_Hidden</code><br/>
+          <span class="vs">库存饱和度大于满载阈值，且电子围栏车辆异常滞留指数大于滞留报警阈值 —— 以车代库、囤而不发。</span>
+        </div>
+        <div>
+          <b>判定式 B（账面造假风险）：</b><code>ΔS(Δt) ≤ −15% ∧ ¬Departure(Δt) → Risk_Phantom</code><br/>
+          <span class="vs">预设时间段内饱和度下降超 15%，但围栏内未监测到运输车辆驶离轨迹 —— 出库登记与实物流不一致。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><h3>阈值参数与判定时刻</h3><span class="more">系统可配置参数</span></div>
+      <div class="kv-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="kv"><div class="k">仓储设计容量 C</div><div class="v">800<small>吨</small></div></div>
+        <div class="kv"><div class="k">满载阈值</div><div class="v">85<small>%</small></div></div>
+        <div class="kv"><div class="k">围栏半径 R</div><div class="v">800<small>m</small></div></div>
+        <div class="kv"><div class="k">静止阈值</div><div class="v">2<small>km/h</small></div></div>
+        <div class="kv"><div class="k">装卸容忍时间</div><div class="v">15<small>min</small></div></div>
+        <div class="kv"><div class="k">滞留报警阈值</div><div class="v">0.60</div></div>
+      </div>
+      <div class="formula" style="margin-top:9px;">
+        <div>· 功能时序：S1 <b>T+0~9′</b> → S2 <b>9~17′</b> → S3 <b>17~32′</b> → S4 <b>32~41′</b> → S5 <b>41~60′</b></div>
+        <div>· 示例判定结果：<em class="y">T+<span id="ovHide">32.0</span>′ 隐蔽囤货风险成立</em> · <em class="y">T+<span id="ovBook">40.6</span>′ 账面造假风险成立</em> · <em class="y">T+<span id="ovAlert">41.0</span>′ 管控预警下发</em></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="pager">
+    <a class="off">← 上一流程</a>
+    <span class="mid">统一数据模型 · 5 个功能页共用，同一时刻 t 各页数值完全一致</span>
+    <a href="s1.html">进入 S1 库存饱和度计算 →</a>
+  </footer>
+</div>
+
+<script src="../../shared/geo-data.js"></script>
+<script src="../js/core/00-namespace.js"></script>
+<script src="../js/core/01-params.js"></script>
+<script src="../js/core/02-geometry.js"></script>
+<script src="../js/core/03-geo-anchor.js"></script>
+<script src="../js/core/04-op-dataset.js"></script>
+<script src="../js/core/05-vehicles.js"></script>
+<script src="../js/core/06-s1-saturation.js"></script>
+<script src="../js/core/07-s2-geofence.js"></script>
+<script src="../js/core/08-s3-stagnation.js"></script>
+<script src="../js/core/09-s4-dual-risk.js"></script>
+<script src="../js/core/10-s5-confidence.js"></script>
+<script src="../js/core/11-timeline.js"></script>
+<script src="../js/core/12-aggregate.js"></script>
+<script src="../js/core/13-map-layers.js"></script>
+<script src="../js/compat/export-patent.js"></script>
+<script>
+(function () {
+  function fitScreen() {
+    var el = document.querySelector('.screen');
+    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    el.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitScreen);
+  fitScreen();
+  var D = window.PATENT.DERIVED;
+  var f = function (v) { return v === null ? '未触发' : (+v).toFixed(1); };
+  document.getElementById('ovHide').textContent = f(D.riskHideFrom);
+  document.getElementById('ovBook').textContent = f(D.bookFrom);
+  document.getElementById('ovAlert').textContent = f(D.alertFrom);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "yanhua-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "江西省烟花爆竹产业全链条监管服务平台 + 烟花爆竹全链条数字化预警监管平台（风险识别系统）",
+  "keywords": [
+    "烟花爆竹",
+    "监管平台",
+    "态势感知",
+    "大屏可视化",
+    "ECharts"
+  ],
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=14"
+  },
+  "scripts": {
+    "dev": "node tools/serve.js",
+    "start": "node tools/serve.js",
+    "check": "node tools/check-syntax.js && node tools/check-links.js",
+    "check:syntax": "node tools/check-syntax.js",
+    "check:links": "node tools/check-links.js",
+    "check:equivalence": "bash risk-src/tools/dom-diff.sh",
+    "build:risk": "python3 risk-src/tools/build-pages.py",
+    "build:legacy": "python3 risk-src/tools/build-legacy.py",
+    "zip": "bash tools/make-zip.sh"
+  }
+}

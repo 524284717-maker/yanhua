@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="1h7QLdkJCR3WdAMnhXbNx0">
+<head data-page-node-id="H59hnpwJsfCCAKzwmytTJs">
+  <meta charset="UTF-8" data-page-node-id="BoJCxxGMOMFkOy3realfVr" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="evsUThG1bA2NsFRgCxeFmJ" />
+  <title>烟花爆竹监管平台 - 仓储态势</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    *{ margin: 0; padding: 0; box-sizing: border-box; }
+    :root{
+      --bg: #eef2f8;
+      --panel: rgba(255, 255, 255, 0.96);
+      --panel-border: rgba(22, 119, 255, 0.16);
+      --accent: #1677ff;
+      --accent-dim: rgba(22, 119, 255, 0.10);
+      --warn: #f5821f;
+      --danger: #e5484d;
+      --text: #243447;
+      --text-dim: #6b7c93;
+      --title: #12263f;
+    }
+    html, body{ width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; }
+    body{
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 50% 0%, rgba(22, 119, 255, 0.25), transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(15, 35, 70, 0.03), transparent 50%),
+        linear-gradient(180deg, #eef2f8 0%, #ffffff 100%);
+    }
+    .screen{ position: relative; flex-shrink: 0; width: 1920px; height: 1080px; transform-origin: center center; }
+    body::before{
+      content: "";
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(22, 119, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(22, 119, 255, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .header {
+      position: relative; z-index: 10;
+      height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px;
+      background: linear-gradient(90deg, #1263d2 0%, #1b79e6 48%, #3e9cf3 100%);
+      box-shadow: 0 2px 14px rgba(14, 76, 158, 0.28);
+      overflow: hidden;
+    }
+    .header::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background:
+        linear-gradient(105deg, rgba(255,255,255,0) 15%, rgba(255,255,255,0.10) 34%, rgba(255,255,255,0.02) 48%, rgba(255,255,255,0.13) 66%, rgba(255,255,255,0) 88%),
+        linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0) 62%);
+    }
+    .brand {
+      position: relative; z-index: 2; display: flex; align-items: center; gap: 12px;
+    }
+    .brand-icon {
+      width: 50px; height: 44px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      filter: drop-shadow(0 3px 8px rgba(120, 45, 0, 0.35));
+    }
+    .brand h1 {
+      font-size: 22px; font-weight: 700; letter-spacing: 2px; color: #fff;
+      text-shadow: 0 2px 8px rgba(9, 55, 120, 0.35); white-space: nowrap;
+    }
+    .nav {
+      position: relative; z-index: 2; display: flex; gap: 6px; margin: 0 auto;
+    }
+    .nav a {
+      position: relative; padding: 8px 16px; color: rgba(255,255,255,0.9);
+      text-decoration: none; font-size: 14px; border-radius: 6px;
+      border: 1px solid transparent; transition: all .2s; white-space: nowrap;
+      background: transparent;
+    }
+    .nav a:hover {
+      color: #fff; background: rgba(255,255,255,0.18);
+    }
+    .nav a.active {
+      color: #1263d2; background: #fff; border-color: #fff; font-weight: 600;
+      box-shadow: 0 2px 10px rgba(9, 55, 120, 0.2);
+    }
+    .nav a.active::before {
+      content: none;
+    }
+    .time{ font-family: "DIN Alternate", "Arial Black", sans-serif; font-size: 16px; color: var(--accent); letter-spacing: 1px; }
+
+    .main{
+      position: relative; z-index: 5;
+      height: calc(100% - 72px);
+      padding: 16px 20px 20px;
+      display: grid;
+      grid-template-columns: 23% 1fr 23%;
+      gap: 18px;
+    }
+    .col{ display: flex; flex-direction: column; gap: 16px; height: 100%; overflow: hidden; }
+    .col-center{ gap: 14px; }
+
+    .panel{
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 14px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 20px rgba(15, 35, 70, 0.18) inset;
+      display: flex; flex-direction: column;
+    }
+    .panel::before, .panel::after{
+      content: ""; position: absolute; width: 10px; height: 10px;
+      border: 2px solid var(--accent); transition: all 0.3s;
+    }
+    .panel::before{ top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .panel::after{ bottom: -1px; right: -1px; border-left: none; border-top: none; }
+    .panel-title{
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .panel-title h3{
+      font-size: 15px; font-weight: 600; color: var(--title);
+      display: flex; align-items: center; gap: 8px;
+      text-shadow: 0 0 8px rgba(22, 119, 255, 0.17);
+    }
+    .panel-title h3::before{
+      content: ""; display: inline-block; width: 4px; height: 14px;
+      background: linear-gradient(180deg, var(--accent), #2563eb);
+      border-radius: 2px;
+    }
+    .panel-title .more{ font-size: 12px; color: var(--text-dim); cursor: pointer; }
+    .panel-title .more:hover{ color: var(--accent); }
+
+    .chart{ flex: 1; min-height: 130px; }
+
+    .center-top{
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    }
+    .summary-card{
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(22, 119, 255, 0.26);
+      border-radius: 8px;
+      padding: 10px 6px;
+      text-align: center;
+      position: relative; overflow: hidden;
+      transition: all 0.25s;
+    }
+    .summary-card:hover{ border-color: rgba(22, 119, 255, 0.34); box-shadow: 0 0 16px rgba(22, 119, 255, 0.11); transform: translateY(-2px); }
+    .summary-card::before{
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .summary-card:nth-child(2)::before{ background: linear-gradient(90deg, transparent, #7c3aed, transparent); }
+    .summary-card:nth-child(3)::before{ background: linear-gradient(90deg, transparent, #16a34a, transparent); }
+    .summary-card:nth-child(4)::before{ background: linear-gradient(90deg, transparent, #d48806, transparent); }
+    .summary-card:nth-child(5)::before{ background: linear-gradient(90deg, transparent, #3b82f6, transparent); }
+    .summary-card:nth-child(6)::before{ background: linear-gradient(90deg, transparent, #1677ff, transparent); }
+    .summary-card:nth-child(7)::before{ background: linear-gradient(90deg, transparent, #e5484d, transparent); }
+    .summary-card:nth-child(8)::before{ background: linear-gradient(90deg, transparent, #f5821f, transparent); }
+    .summary-label{ font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
+    .summary-value{ font-size: 24px; font-weight: 800; color: #1f2d3d; font-family: "DIN Alternate", "Arial Black", sans-serif; text-shadow: 0 0 10px rgba(15, 35, 70, 0.09); }
+    .summary-unit{ font-size: 12px; color: var(--text-dim); margin-left: 2px; }
+    .summary-sub{ font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+    .drill-panel{ padding: 12px 14px; }
+    .drill-bar{ display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .drill-label{ font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+    .drill-label i{ font-style: normal; width: 18px; height: 18px; border-radius: 3px; background: rgba(22, 119, 255, 0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--accent); }
+    .crumb-item{
+      font-size: 13px; color: var(--text-dim); cursor: pointer;
+      padding: 4px 12px; border-radius: 14px;
+      border: 1px solid transparent; transition: all .2s;
+    }
+    .crumb-item:hover{ color: var(--accent); border-color: rgba(22, 119, 255, 0.22); }
+    .crumb-item.cur{
+      color: #1f2d3d; font-weight: 600;
+      background: rgba(22, 119, 255, 0.18);
+      border-color: rgba(22, 119, 255, 0.34);
+      box-shadow: 0 0 10px rgba(22, 119, 255, 0.11);
+    }
+    .crumb-sep{ color: rgba(22, 119, 255, 0.8); font-size: 12px; }
+    .drill-back{
+      margin-left: auto;
+      font-size: 12px; color: var(--accent); cursor: pointer;
+      padding: 4px 14px; border-radius: 14px;
+      border: 1px solid rgba(22, 119, 255, 0.3);
+      background: rgba(22, 119, 255, 0.1);
+      transition: all .2s;
+    }
+    .drill-back:hover{ background: rgba(22, 119, 255, 0.22); box-shadow: 0 0 10px rgba(22, 119, 255, 0.14); }
+    .drill-back.disabled{ opacity: .35; pointer-events: none; }
+    .level-tag{ font-size: 11px; color: #3b82f6; border: 1px solid rgba(22, 119, 255, 0.3); border-radius: 3px; padding: 1px 6px; margin-left: 6px; }
+
+    .drill-content{ flex: 1; display: grid; grid-template-columns: 1.42fr 1fr; gap: 14px; min-height: 0; }
+    .drill-box{ display: flex; flex-direction: column; min-height: 0; position: relative; }
+    .drill-box h5{ font-size: 13px; color: var(--text-dim); font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .drill-box h5::before{ content: ""; width: 3px; height: 11px; background: var(--accent); border-radius: 2px; }
+    .map-box{
+      border: 1px solid rgba(22, 119, 255, 0.12);
+      border-radius: 6px;
+      background: radial-gradient(circle at 50% 45%, rgba(22, 119, 255, 0.16), rgba(15, 35, 70, 0.04) 72%);
+      overflow: hidden;
+    }
+    #mapChart{ flex: 1; min-height: 0; width: 100%; }
+    .map-badge{ position: absolute; left: 10px; top: 8px; z-index: 3; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+    .map-badge .mb-name{ font-size: 13px; font-weight: 700; color: #1f2d3d; text-shadow: 0 0 8px rgba(22, 119, 255, 0.28); }
+    .map-badge .mb-lv{ font-size: 11px; color: #3b82f6; border: 1px solid rgba(22, 119, 255, 0.34); background: rgba(15, 35, 70, 0.07); border-radius: 3px; padding: 1px 7px; }
+    .map-hint{ position: absolute; right: 10px; top: 9px; z-index: 3; font-size: 11px; color: var(--text-dim); pointer-events: none; }
+    .map-legend{ position: absolute; left: 10px; bottom: 8px; z-index: 3; display: flex; align-items: center; gap: 12px; font-size: 11px; color: var(--text-dim); pointer-events: none; }
+    .map-legend i{ font-style: normal; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+    .map-empty{ position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; color: var(--text-dim); font-size: 13px; }
+    .empty-state{
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      height: 100%; min-height: 90px;
+      color: #16a34a; font-size: 12px;
+      border: 1px dashed rgba(81, 207, 102, 0.35); border-radius: 6px;
+      background: rgba(81, 207, 102, 0.05);
+    }
+
+    /* Region table */
+    .rtable-wrap{ flex: 1; overflow-y: auto; min-height: 0; }
+    .rtable{ width: 100%; border-collapse: collapse; font-size: 12px; }
+    .rtable th{
+      position: sticky; top: 0; z-index: 2;
+      background: rgba(255, 255, 255, 0.98);
+      color: var(--text-dim); font-weight: 500;
+      padding: 8px 8px; text-align: left;
+      border-bottom: 1px solid rgba(22, 119, 255, 0.19);
+      white-space: nowrap;
+    }
+    .rtable td{ padding: 8px; border-bottom: 1px solid rgba(15, 35, 70, 0.06); color: var(--text); white-space: nowrap; }
+    .rtable tbody tr{ cursor: pointer; transition: background .2s; }
+    .rtable tbody tr:hover{ background: rgba(22, 119, 255, 0.1); }
+    .rtable .num{ font-family: "DIN Alternate", "Arial Black", sans-serif; color: var(--accent); }
+    .rtable .warn-num{ font-family: "DIN Alternate", "Arial Black", sans-serif; color: var(--danger); font-weight: 700; }
+    .rtable .ok-num{ font-family: "DIN Alternate", "Arial Black", sans-serif; color: #16a34a; }
+    .drill-link{ color: var(--accent); font-size: 11px; border: 1px solid rgba(22, 119, 255, 0.26); padding: 2px 8px; border-radius: 10px; }
+    .rtable tbody tr:hover .drill-link{ background: rgba(22, 119, 255, 0.2); }
+
+    /* Enterprise detail (leaf level) */
+    .ent-detail{ flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; min-height: 0; }
+    .ent-head{
+      background: linear-gradient(135deg, rgba(22, 119, 255, 0.2), rgba(15, 35, 70, 0.03));
+      border: 1px solid rgba(22, 119, 255, 0.22); border-radius: 8px; padding: 8px 12px;
+    }
+    .ent-head h4{ font-size: 15px; color: #1f2d3d; margin-bottom: 2px; }
+    .ent-head p{ font-size: 11px; color: var(--text-dim); line-height: 1.45; }
+    .ent-kpis{ display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+    .ent-kpi{ background: rgba(15, 35, 70, 0.09); border: 1px solid rgba(22, 119, 255, 0.12); border-radius: 8px; padding: 8px 4px; text-align: center; }
+    .ent-kpi .lab{ font-size: 10px; color: var(--text-dim); }
+    .ent-kpi .val{ font-size: 16px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate", "Arial Black", sans-serif; margin-top: 3px; }
+    .ent-kpi .val.warn{ color: var(--danger); }
+    .ent-status{ display: inline-block; margin-top: 4px; font-size: 11px; padding: 2px 10px; border-radius: 10px; }
+    .ent-status.ok{ color: #16a34a; border: 1px solid rgba(81,207,102,0.5); background: rgba(81,207,102,0.1); }
+    .ent-status.warn{ color: var(--danger); border: 1px solid rgba(255,77,79,0.5); background: rgba(255,77,79,0.1); }
+    .ent-mat-title{ font-size: 13px; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .ent-mat-title::before{ content: ""; width: 3px; height: 11px; background: var(--accent); border-radius: 2px; }
+    .ent-mat{ width: 100%; border-collapse: collapse; font-size: 12px; }
+    .ent-mat thead th{
+      color: var(--text-dim); font-weight: 500; text-align: left; padding: 5px 10px;
+      background: rgba(22, 119, 255, 0.08); border-bottom: 1px solid rgba(22, 119, 255, 0.26);
+      white-space: nowrap;
+    }
+    .ent-mat thead th.num, .ent-mat td.num{ text-align: right; }
+    .ent-mat tbody td{ padding: 4.5px 10px; color: var(--text); border-bottom: 1px solid rgba(22, 119, 255, 0.12); white-space: nowrap; }
+    .ent-mat tbody tr:last-child td{ border-bottom: none; }
+    .ent-mat tbody tr:nth-child(odd){ background: rgba(15, 35, 70, 0.06); }
+    .ent-mat td.num{ font-family: "DIN Alternate", "Arial Black", sans-serif; color: #3b4d63; }
+
+
+    .warning-list{ display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
+    .warning-item{
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255, 79, 79, 0.06);
+      border-left: 3px solid var(--danger);
+      border-radius: 4px;
+      padding: 7px 10px;
+      font-size: 12px;
+      transition: box-shadow .2s;
+    }
+    .warning-item.warn{ border-left-color: var(--warn); background: rgba(255, 159, 46, 0.06); }
+    .warning-item.info{ border-left-color: #38c8f5; background: rgba(22, 119, 255, 0.06); }
+    .warning-item:hover{ box-shadow: 0 0 10px rgba(22, 119, 255, 0.08); }
+    .warning-info{ display: flex; flex-direction: column; gap: 3px; }
+    .warning-title{ color: #1f2d3d; font-weight: 500; }
+    .warning-meta{ color: var(--text-dim); font-size: 11px; }
+    .warning-level{ font-size: 11px; padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
+    .warning-level.high{ background: rgba(255, 77, 79, 0.2); color: #e5484d; }
+    .warning-level.mid{ background: rgba(255, 159, 46, 0.2); color: #d97706; }
+
+    .mini-stats{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .mini-stat{
+      background: rgba(15, 35, 70, 0.09); border: 1px solid rgba(22, 119, 255, 0.12);
+      border-radius: 8px; padding: 10px; text-align: center;
+    }
+    .mini-stat .lab{ font-size: 11px; color: var(--text-dim); }
+    .mini-stat .val{ font-size: 22px; font-weight: 700; color: var(--accent); font-family: "DIN Alternate", "Arial Black", sans-serif; margin-top: 4px; }
+    .mini-stat .val.warn{ color: var(--danger); }
+
+    ::-webkit-scrollbar{ width: 4px; }
+    ::-webkit-scrollbar-thumb{ background: rgba(22, 119, 255, 0.3); border-radius: 2px; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    .col .panel, .col-center .panel, .col-center .center-top{ animation: fadeUp .55s ease both; }
+    .col .panel:nth-child(2), .col-center .panel:nth-child(2){ animation-delay: .08s; }
+    .col .panel:nth-child(3), .col-center .panel:nth-child(3){ animation-delay: .16s; }
+    .col .panel:nth-child(4), .col-center .panel:nth-child(4){ animation-delay: .24s; }
+
+
+    ::selection{ background: rgba(22, 119, 255, 0.35); }
+  .brand-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .brand-icon svg { width: 100%; height: 100%; display: block; }
+
+    /* __COL_CLIP_FIX__ 列内面板可收缩，避免末面板被 .col 的 overflow:hidden 静默裁掉 */
+    .warning-list, .top5-list{ flex: 1 1 auto; min-height: 0; }
+    .col > .panel:has(.warning-list), .col > .panel:has(.top5-list){ min-height: 0; flex: 1.7 1 0% !important; }
+    .col > .panel .chart{ min-height: 118px; }
+</style>
+</head>
+<body data-page-node-id="aDPYF0kjsEYQm2JdA9Et2B">
+  <div class="screen" data-page-node-id="4sc8Sx2gIk0TdYZBNX9RHo">
+  <header class="header" data-page-node-id="GYxbSzPnNwfcE7o1dt79CT">
+    <div class="brand" data-page-node-id="aVALVtbrxqiZcQglzllnmW">
+      <div class="brand-icon" data-page-node-id="PrM4U8fH0yR7M4jtYrtMoG"><img class="brand-icon-img" alt="" src="data:image/png;base64,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"></div>
+      <div data-page-node-id="uqk8X697GW5JC8m64dfobF">
+        <h1 data-page-node-id="ExdKK8iFv2xHfNucWnPg1T">烟花爆竹监管平台</h1>
+      </div>
+    </div>
+    <nav class="nav" data-page-node-id="UpJDR0xQ4aE9Vlq9XicCvf">
+      <a href="index.html" data-page-node-id="aQjTF3G3AL72YsleU6bIzc">态势总览</a>
+      <a href="purchase.html" data-page-node-id="TSbcKspRVIwQ9hB7N2XP1W">采购态势</a>
+      <a href="production.html" data-page-node-id="XPVvLbp0q8mtD4cAyQCPiD">生产态势</a>
+      <a class="active" href="warehouse.html" data-page-node-id="YgfsWFqc5cBcC4AwsiD52i">仓储态势</a>
+      <a href="transport.html" data-page-node-id="0MI66oiWaej24CTysDZGuo">运输态势</a>
+      <a href="export.html" data-page-node-id="qad6Wx40VVpvH8gKgPh0jb">出口态势</a>
+      <a href="retail.html" data-page-node-id="IGxkfZ1p9F0BG9cg0Q03kZ">经营态势</a>
+      <a href="firework.html" data-page-node-id="fPxGUKWKweFb2BXNDnJViG">燃放态势</a>
+      <a href="enforcement.html">打非治违态势</a>
+      <a href="monitor.html" data-page-node-id="mUDWfHdfJALeewaBjvrakY">智能预警中心</a>
+      <a href="admin.html" data-page-node-id="ZN9rfyW0w48cbZlmoJXbjX">业务管理</a>
+    </nav>
+  </header>
+
+  <main class="main" data-page-node-id="WW5xWNteumEccQGZtu2rHb">
+    <!-- Left Column -->
+    <section class="col" data-page-node-id="UdpZ9QWbWOpgxWG3kHxDcG">
+      <div class="panel" style="flex: 1;" data-page-node-id="1qTbAKH3z46DyVPBLhDlR2">
+        <div class="panel-title" data-page-node-id="L2uPpdvbQW8UP1yRRaCmGw"><h3 data-page-node-id="je23CyOkyPJsdQWLfmBNuL">成品库存情况</h3><span class="more" data-page-node-id="fHmnSXC68tLODbKRo5VFmm">更多 &gt;</span></div>
+        <div id="stockChart" class="chart" data-page-node-id="xnfGeVUTe8EEQRY0NezR5E"></div>
+      </div>
+
+      <div class="panel" style="flex: 1;" data-page-node-id="SNwZmTzeyF7ncFGOqPhEhS">
+        <div class="panel-title" data-page-node-id="CoMdHM3GX6deA4MEHR7CVq"><h3 data-page-node-id="zf0cWlOqiCU9zzftnJLzxP">车辆进出库情况</h3><span class="more" data-page-node-id="XMVvDsGm1FifSYWS0CDPdr">更多 &gt;</span></div>
+        <div id="vehicleChart" class="chart" data-page-node-id="87DOLXgQ9kIDc7sP2Kk9aF"></div>
+      </div>
+
+      <div class="panel" style="flex: 1;" data-page-node-id="sEjCJu0QnWytql31fcDi58">
+        <div class="panel-title" data-page-node-id="6WGyCUlgHlLbswVZlcB4BG"><h3 data-page-node-id="Q9nP7iWiv9knjEkuI7oSqm">视频监测点情况</h3><span class="more" data-page-node-id="9XBeQEzrQdbJOz0QvZ3XeY">更多 &gt;</span></div>
+        <div id="videoChart" class="chart" data-page-node-id="vqGbyM1HPKENKDvl1cdeKC"></div>
+      </div>
+    </section>
+
+    <!-- Center Column -->
+    <section class="col col-center" data-page-node-id="xHJLriJYadpDDT3WAHEQlc">
+      <!-- KPI cards -->
+      <div class="center-top" data-page-node-id="MyukHW5jryjGHWfIWKHLhD">
+        <div class="summary-card" data-page-node-id="5IyL1shqlmCseYE0wjkfDz">
+          <div class="summary-label" data-page-node-id="D1iFPEQIEilahmYNRBLcoL">仓库库房总数</div>
+          <div class="summary-value" id="kpiRoom" data-page-node-id="Hj8CEBX0ghbGSKGq3dvFv5">1040<span class="summary-unit" data-page-node-id="cLNUeGp0RPCD754N0koIRR">栋</span></div>
+          <div class="summary-sub" data-page-node-id="oH098NHeIOjvYMRD9tspsb">工房 5380 · 库房 1040</div>
+        </div>
+        <div class="summary-card" data-page-node-id="9cjwHnmKp5KoQCpcD3XmfU">
+          <div class="summary-label" data-page-node-id="m3jBgJnFfUEk18DiOdTU1x">成品库存量</div>
+          <div class="summary-value" id="kpiStock" data-page-node-id="FbLrDKZHiejNwqtI6Pdxog">8620<span class="summary-unit" data-page-node-id="D0GWVKFgNtrIXnQ7e5CD2i">吨</span></div>
+          <div class="summary-sub" data-page-node-id="feX7KJ6Z4KBbyO5eOwl147">库存周转 22 天</div>
+        </div>
+        <div class="summary-card" data-page-node-id="g8cWyKpbO7xCSofA4yKBoH">
+          <div class="summary-label" data-page-node-id="dGRDCzT4lyABaWddDCmymV">库区作业人员</div>
+          <div class="summary-value" id="kpiWorker" data-page-node-id="BKpnPZMiqG3zdYZMNctTOQ">1.86<span class="summary-unit" data-page-node-id="Ua1UBCYKSfVjhEcB2yzgjN">万人</span></div>
+          <div class="summary-sub" data-page-node-id="9V5ZubHWF1tXFm786maS2I">持证上岗率 98.6%</div>
+        </div>
+        <div class="summary-card" data-page-node-id="ghVSK47PIVdREdS7tBw0UV">
+          <div class="summary-label" data-page-node-id="NiK6IIMTFg8bJjp41hx5MA">今日进库车辆</div>
+          <div class="summary-value" id="kpiIn" data-page-node-id="yKlebjFUGAeeJrzWmDwjiT">248<span class="summary-unit" data-page-node-id="STTRahxlstv4ORby6F769t">辆</span></div>
+          <div class="summary-sub" data-page-node-id="bHQpAMDWykNZheDboEm5CK">已核验 245 辆</div>
+        </div>
+        <div class="summary-card" data-page-node-id="09TDXRr387Ad98xvI4ULEj">
+          <div class="summary-label" data-page-node-id="8MwEP3d5IKwN9oGSFDJFKm">今日出库车辆</div>
+          <div class="summary-value" id="kpiOut" data-page-node-id="vQLkTkytrGLmkXWhrMROYw">216<span class="summary-unit" data-page-node-id="8QyHIpWJjoyuUZ84K1nNzZ">辆</span></div>
+          <div class="summary-sub" data-page-node-id="GOxGhJBWfxyXQItNK84dpj">合规率 99.1%</div>
+        </div>
+        <div class="summary-card" data-page-node-id="dPriTGp42CH7jFVL5Ek9K4">
+          <div class="summary-label" data-page-node-id="oAHnfMFnbNP4MNTga4uZpF">视频监测点</div>
+          <div class="summary-value" id="kpiVideo" data-page-node-id="Vx9SE44CzcAM2FWx2kdbK1">3752<span class="summary-unit" data-page-node-id="Ck7rV0HrFn6aBWrsDEBwJy">路</span></div>
+          <div class="summary-sub" data-page-node-id="OGx0vMGGR5w7vUqxjMDUdY">在线率 99.1%</div>
+        </div>
+        <div class="summary-card" data-page-node-id="PG5W9yJTOFM3u9KlpKGz0R">
+          <div class="summary-label" data-page-node-id="bnhk80o3BJMiCCl1pFMzso">本月预警总数</div>
+          <div class="summary-value" id="kpiWarn" style="color: #e5484d;" data-page-node-id="1rapbRmtNW8L5lWXt99RGu">156<span class="summary-unit" data-page-node-id="fpdARPyGg4d0XnzxaQrQno">起</span></div>
+          <div class="summary-sub" data-page-node-id="GS8kjXKwPl0fUVft3GOaam">处置率 92.3%</div>
+        </div>
+        <div class="summary-card" data-page-node-id="figj7C9TFNy3QrPzLBFpBk">
+          <div class="summary-label" data-page-node-id="NqnQw0QOWb4jCoexFo6fA1">人员资质到期</div>
+          <div class="summary-value" id="kpiQual" style="color: #f5821f;" data-page-node-id="4FjsTDA4g5oEpwKgg0CGwj">32<span class="summary-unit" data-page-node-id="UYMUruVGQdmmaOozwqtT85">人</span></div>
+          <div class="summary-sub" data-page-node-id="prYf6H4WkusYh88WFLqH9Y">即将到期 23 · 已过期 9</div>
+        </div>
+      </div>
+
+      <!-- Drill-down panel -->
+      <div class="panel drill-panel" style="flex: 0 0 auto;" data-page-node-id="w3PZ6JYmiEYSdpkH6FnTMD">
+        <div class="drill-bar" data-page-node-id="iocDSXFCpv7VRFOfFeHDXI">
+          <span class="drill-label" data-page-node-id="DrHAWUTvbJxQJe6IJV1bMK"><i data-page-node-id="6r2w9dNYhc0qp5fJzWQIYw">钻</i>数据下钻</span>
+          <span id="crumbBox" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;" data-page-node-id="hGSVSQX7SqaBdGrndPA4j4"></span>
+          <span class="drill-back disabled" id="btnBack" data-page-node-id="CDBUrXxJSJr8ELAM6ywsaP">‹ 返回上级</span>
+        </div>
+      </div>
+
+      <!-- Drill content -->
+      <div class="panel" style="flex: 1.7; min-height: 0;" data-page-node-id="OgF2c1juhpFIjCg2hGTFIq">
+        <div class="panel-title" data-page-node-id="q11SED5xdCHnMv4da6HsHG"><h3 id="drillTitle" data-page-node-id="oBS9hdEkooS7pLeXA5UNxj">各市仓储数据分布</h3><span class="more" data-page-node-id="IlbrOuCcrm0AzTTVmB06y8">点击地图或列表逐级下钻 &gt;</span></div>
+        <div class="drill-content" id="drillContent">
+          <div class="drill-box map-box">
+            <div class="map-badge">
+              <span class="mb-name" id="mapArea">江西省</span>
+              <span class="mb-lv" id="mapLevel">省级 · 地市分布</span>
+            </div>
+            <div class="map-hint" id="mapHint">点击地图区域逐级下钻 ›</div>
+            <div class="map-legend" id="mapLegend" style="display:none;">
+              <span><i style="background: #1677ff;"></i>运行正常</span>
+              <span><i style="background: #e5484d;"></i>存在预警</span>
+              <span style="color: rgb(107, 124, 147);">圆点大小 = 库存量</span>
+            </div>
+            <div id="mapChart"></div>
+          </div>
+          <div class="drill-box">
+            <h5 id="tableTitle">下级单位明细</h5>
+            <div class="rtable-wrap" id="tableWrap">
+              <table class="rtable">
+                <thead>
+                  <tr><th>名称</th><th>库房(栋)</th><th>库存(吨)</th><th>作业人员</th><th>进库</th><th>出库</th><th>预警</th><th>操作</th></tr>
+                </thead>
+                <tbody id="regionTbody"></tbody>
+              </table>
+            </div>
+            <div class="ent-detail" id="entPanel" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 库区人员与车辆进出趋势 -->
+      <div class="panel" style="flex: 1; min-height: 0;" data-page-node-id="WCYnhDomXrPn1HpNC5pFcT">
+        <div class="panel-title" data-page-node-id="wDdSpFRFRiDAkbPxGj4HuJ"><h3 data-page-node-id="U5D9JTsFRgcxDlOIlB11KZ">库区人员 · 车辆进出库趋势</h3><span class="more" data-page-node-id="pqdnBst8dwvuwf7CfvFRaR">更多 &gt;</span></div>
+        <div id="trendChart" class="chart" data-page-node-id="5ziqgtzAeDvXVSvbWc2Eb7"></div>
+      </div>
+    </section>
+
+    <!-- Right Column -->
+    <section class="col" data-page-node-id="vJVFNBl3j6c5lkbrWLl2of">
+      <div class="panel" style="flex: 0.82;" data-page-node-id="z3KiAF2dHYayGbFNCHSjq4">
+        <div class="panel-title" data-page-node-id="pnSM3cXbEabZy1Ijx4odqP"><h3 data-page-node-id="hIRUS1DuCFX7o4EIWIUi3s">预警处置情况</h3><span class="more" data-page-node-id="3jG5ihftRDozeHClDNJ2PU">更多 &gt;</span></div>
+        <div id="disposeChart" class="chart" data-page-node-id="qrMo6BAFbEWGkiVCpvj91F"></div>
+      </div>
+
+      <div class="panel" style="flex: 0.95;" data-page-node-id="obBwmhjnR83Gox9ZHF0DiD">
+        <div class="panel-title" data-page-node-id="PYYnbgTL3iPJMkP2yOSvbM"><h3 data-page-node-id="WHLENnoKU6e42j9LUSUMwg">预警类型分布</h3><span class="more" data-page-node-id="GK3O4i30mR8NCAvxpbcvHG">更多 &gt;</span></div>
+        <div id="warnTypeChart" class="chart" data-page-node-id="s5l32EQ1KaV8SkADFwqsmH"></div>
+      </div>
+
+      <div class="panel" style="flex: 1.75; min-height: 0;" data-page-node-id="GPwROoCnzGfmadyCRuVeSQ">
+        <div class="panel-title" data-page-node-id="UzlblOlDTmSDiCfKwPGuOv"><h3 data-page-node-id="jsZchQeSy0hCANvusqK8MV">仓库实时预警</h3><span class="more" data-page-node-id="wptHjz6hKffBdYFHvBmDGQ">更多 &gt;</span></div>
+        <div class="warning-list" id="warnList" data-page-node-id="TW8ltb120LKwNb1R5bzSpd"></div>
+      </div>
+
+      <div class="panel" style="flex: 0.7;" data-page-node-id="4pTFSxZj5WuCnLEgrsfCmn">
+        <div class="panel-title" data-page-node-id="bGyWgsQoz5e1b8of99tkIC"><h3 data-page-node-id="7goHyU6KJJGtjr58zMfCDq">人员资质到期与监测</h3><span class="more" data-page-node-id="IwsYma2DoEASmrblqV3Kzq">更多 &gt;</span></div>
+        <div class="mini-stats" data-page-node-id="VVI4o8lnlzl35vvRje3mWt">
+          <div class="mini-stat" data-page-node-id="eBFiY2fTqUcLcDBWBWDlpL"><div class="lab" data-page-node-id="pOJUVgAsA7KzwE4sSs33Qm">人员资质即将到期</div><div class="val warn" id="qualSoon" data-page-node-id="zTP6fTgIB45oDkKUTojrTx">23<span style="font-size:12px" data-page-node-id="R5v6Ht2PNIk3tdpLKCZEgF">人</span></div></div>
+          <div class="mini-stat" data-page-node-id="aYyckBZs4Eur6fBzHjfBws"><div class="lab" data-page-node-id="QO2ItU3uY0TqYo1p30HtAR">人员资质已过期</div><div class="val warn" id="qualOver" data-page-node-id="gLppHGbuygmdMIFFusyC4Y">9<span style="font-size:12px" data-page-node-id="8HFEn2RhfEbjZKId2yputq">人</span></div></div>
+          <div class="mini-stat" data-page-node-id="hlYm5fxe9UlevZdoSEQdQD"><div class="lab" data-page-node-id="E6Ng2G2Mk4RsBg9uNPGH9E">库区在岗人数</div><div class="val" id="onDuty" data-page-node-id="ACNVkncjf26EJwGehUqpVy">1280<span style="font-size:12px" data-page-node-id="zAB0rZRgz9I8brcHMLyIXQ">人</span></div></div>
+          <div class="mini-stat" data-page-node-id="zHe3GhfvAO3poquk8kLuXs"><div class="lab" data-page-node-id="zGCICqA5AvtgEBl6AlQ5zW">超员预警次数</div><div class="val warn" id="overCrowd" data-page-node-id="o9rQIkmIdYHmIjiKG08xvW">14<span style="font-size:12px" data-page-node-id="q97tMF8Epz3GGf8e1nxhy4">次</span></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  </div>
+
+  <script src="../shared/geo-data.js"></script>
+  <script>
+    // 自适应：按视口缩放整个设计稿(1920x1080)
+    function fitScreen() {
+      const screen = document.querySelector('.screen');
+      if (!screen) return;
+      const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      screen.style.transform = 'scale(' + scale + ')';
+    }
+    window.addEventListener('resize', fitScreen);
+    fitScreen();
+
+    // 导航：有真实 href 的菜单正常跳转，占位菜单仅切换高亮
+    document.querySelectorAll('.nav a').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        if (href && href !== '#') return;
+        e.preventDefault();
+        document.querySelectorAll('.nav a').forEach(x => x.classList.remove('active'));
+        a.classList.add('active');
+      });
+    });
+
+    // ================= 基础工具 =================
+
+    const textColor = '#000000';
+    const axisColor = 'rgba(15, 35, 70, 0.04)';
+    const tipBase = { backgroundColor: 'rgba(255, 255, 255, 0.98)', borderColor: '#1677ff', textStyle: { color: '#000000' } };
+
+    // 确定性伪随机（按名称生成稳定数据）
+    function hash01(s) {
+      let h = 7;
+      for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+      return (h % 1000) / 1000;
+    }
+    const ABS_SCALE = [1, 0.09, 0.032, 0.013, 0.0045];
+    const LEVEL_NAMES = ['省级', '市级', '县级', '乡镇级', '企业级'];
+    const fmt = v => (v === null || v === undefined || isNaN(v)) ? '--' : Number(v).toLocaleString('zh-CN', { maximumFractionDigits: 1 });
+    function mult(name, level) { return level === 0 ? 1 : ABS_SCALE[level] * (0.65 + hash01(name) * 0.7); }
+    function scaleArr(arr, m, dec) {
+      return arr.map(v => +(v * m).toFixed(dec === undefined ? 1 : dec));
+    }
+
+    // ================= 省级基础数据 =================
+    const MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月'];
+    const BASE = {
+      rooms: 1040,
+      // 成品库存（吨）月度：烟花 / 爆竹
+      stock: {
+        '烟花': [4200, 4350, 4500, 4620, 4700, 4780, 4680, 4820],
+        '爆竹': [3400, 3520, 3650, 3720, 3780, 3820, 3760, 3800]
+      },
+      stockTotal: 8620,
+      workers: 18600,
+      // 车辆进出库（辆）月度
+      vehicleIn:  [210, 225, 240, 235, 248, 256, 242, 248],
+      vehicleOut: [188, 202, 216, 212, 225, 232, 218, 216],
+      // 视频监测点
+      videoTotal: 3752,
+      videoOnline: 3718,
+      videoOffline: 26,
+      videoFault: 8,
+      // 预警类型及省级起数
+      warns: {
+        '仓库超高/超量': 38,
+        '库区超员': 14,
+        '堵塞消防通道': 22,
+        '非法入侵': 8,
+        '摄像头偏移/遮挡': 16,
+        '无证装货': 12,
+        '运输车辆无挡板': 10,
+        '温湿度异常': 36
+      }
+    };
+    const WARN_COLORS = {
+      '仓库超高/超量': '#e5484d',
+      '库区超员': '#f5821f',
+      '堵塞消防通道': '#d48806',
+      '非法入侵': '#7c3aed',
+      '摄像头偏移/遮挡': '#3b82f6',
+      '无证装货': '#f43f5e',
+      '运输车辆无挡板': '#16a34a',
+      '温湿度异常': '#e5484d'
+    };
+    const WARN_SUGGEST = {
+      '仓库超高/超量': '立即转运分流，降低堆垛高度与存量',
+      '库区超员': '疏散超员人员，严格落实定员定量',
+      '堵塞消防通道': '立即清理通道，恢复消防畅通',
+      '非法入侵': '启动联防，核查人员并锁闭库区',
+      '摄像头偏移/遮挡': '现场复位摄像头，清理遮挡物',
+      '无证装货': '制止装货，核验驾驶员与押运员资质',
+      '运输车辆无挡板': '要求加装挡板后方可出库',
+      '温湿度异常': '开启通风除湿，核查温湿度设备'
+    };
+
+    // ================= 图表初始化 =================
+    const stockChart = echarts.init(document.getElementById('stockChart'));
+    const vehicleChart = echarts.init(document.getElementById('vehicleChart'));
+    const videoChart = echarts.init(document.getElementById('videoChart'));
+    const disposeChart = echarts.init(document.getElementById('disposeChart'));
+    const warnTypeChart = echarts.init(document.getElementById('warnTypeChart'));
+    const trendChart = echarts.init(document.getElementById('trendChart'));
+
+    function renderStock(m) {
+      stockChart.setOption({
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, tipBase),
+        legend: { data: Object.keys(BASE.stock), textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
+        grid: { left: 48, right: 12, top: 30, bottom: 22 },
+        xAxis: { type: 'category', data: MONTHS, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#000000', fontSize: 10 } },
+        yAxis: { type: 'value', name: '吨', nameTextStyle: { color: '#000000', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#000000', fontSize: 10 } },
+        series: Object.keys(BASE.stock).map(k => ({
+          name: k, type: 'bar', barWidth: 8, stack: 'total',
+          itemStyle: { color: k === '烟花' ? '#1677ff' : '#f5821f', borderRadius: k === '爆竹' ? [2, 2, 0, 0] : [0, 0, 0, 0] },
+          data: scaleArr(BASE.stock[k], m, 0)
+        }))
+      }, true);
+    }
+
+    function renderVehicle(m) {
+      vehicleChart.setOption({
+        tooltip: Object.assign({ trigger: 'axis' }, tipBase),
+        legend: { data: ['进库车辆', '出库车辆'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
+        grid: { left: 44, right: 12, top: 30, bottom: 22 },
+        xAxis: { type: 'category', data: MONTHS, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#000000', fontSize: 10 } },
+        yAxis: { type: 'value', name: '辆', nameTextStyle: { color: '#000000', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#000000', fontSize: 10 } },
+        series: [
+          { name: '进库车辆', type: 'line', smooth: true, symbol: 'none', lineStyle: { color: '#1677ff', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(22, 119, 255, 0.22)'},{offset:1,color:'rgba(22, 119, 255, 0.01)'}]) }, data: scaleArr(BASE.vehicleIn, m, 0) },
+          { name: '出库车辆', type: 'line', smooth: true, symbol: 'none', lineStyle: { color: '#f5821f', width: 2 }, data: scaleArr(BASE.vehicleOut, m, 0) }
+        ]
+      }, true);
+    }
+
+    function renderVideo(m) {
+      const online = Math.max(0, Math.round(BASE.videoOnline * m));
+      const offline = Math.max(0, Math.round(BASE.videoOffline * m));
+      const fault = Math.max(0, Math.round(BASE.videoFault * m));
+      videoChart.setOption({
+        tooltip: Object.assign({ trigger: 'item', formatter: '{b}：{c} 路（{d}%）' }, tipBase),
+        legend: { bottom: 0, textStyle: { color: textColor, fontSize: 11 }, itemWidth: 12, itemHeight: 8 },
+        series: [{
+          type: 'pie', radius: ['45%', '70%'], center: ['50%', '44%'],
+          label: { color: '#000000', fontSize: 11, formatter: '{b}\n{c}路' },
+          itemStyle: { borderColor: '#eef2f8', borderWidth: 2 },
+          data: [
+            { name: '在线', value: online, itemStyle: { color: '#16a34a' } },
+            { name: '离线', value: offline, itemStyle: { color: '#f5821f' } },
+            { name: '故障', value: fault, itemStyle: { color: '#e5484d' } }
+          ]
+        }]
+      }, true);
+    }
+
+    function renderDispose(m) {
+      const total = Object.values(BASE.warns).reduce((a, b) => a + b, 0);
+      const done = Math.round(total * 0.78 * m);
+      const doing = Math.round(total * 0.14 * m);
+      const todo = Math.round(total * 0.08 * m);
+      const sum = done + doing + todo;
+      disposeChart.setOption({
+        tooltip: Object.assign({ trigger: 'item', formatter: '{b}：{c} 起（{d}%）' }, tipBase),
+        legend: { bottom: 0, textStyle: { color: textColor, fontSize: 11 }, itemWidth: 12, itemHeight: 8 },
+        series: [{
+          type: 'pie', radius: ['48%', '68%'], center: ['50%', '44%'],
+          label: { show: true, position: 'center', formatter: `处置率\n${sum ? Math.round(done / sum * 100) : 0}%`, color: '#000000', fontSize: 15, fontWeight: 700, lineHeight: 22 },
+          itemStyle: { borderColor: '#eef2f8', borderWidth: 2 },
+          data: [
+            { name: '已处置', value: done, itemStyle: { color: '#16a34a' } },
+            { name: '处置中', value: doing, itemStyle: { color: '#f5821f' } },
+            { name: '待处置', value: todo, itemStyle: { color: '#e5484d' } }
+          ]
+        }]
+      }, true);
+    }
+
+    function renderWarnType(m) {
+      const data = Object.entries(BASE.warns).map(([k, v]) => ({
+        name: k,
+        value: Math.max(0, Math.round(v * m)),
+        itemStyle: { color: WARN_COLORS[k] }
+      })).sort((a, b) => b.value - a.value);
+      warnTypeChart.setOption({
+        tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: ps => `${ps[0].name}<br/>预警：${ps[0].value} 起<br/>建议：${WARN_SUGGEST[ps[0].name] || '现场核查处置'}` }, tipBase),
+        grid: { left: 8, right: 30, top: 6, bottom: 6, containLabel: true },
+        xAxis: { type: 'value', splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#000000', fontSize: 10 } },
+        yAxis: { type: 'category', inverse: true, data: data.map(d => d.name), axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#000000', fontSize: 10 } },
+        series: [{ type: 'bar', barWidth: 10, data, label: { show: true, position: 'right', color: '#000000', fontSize: 10 } }]
+      }, true);
+    }
+
+    function renderTrend(m) {
+      const workers = MONTHS.map((_, i) => Math.round(16800 + i * 250 + hash01('w' + i) * 1200));
+      trendChart.setOption({
+        tooltip: Object.assign({ trigger: 'axis' }, tipBase),
+        legend: { data: ['库区作业人员', '进库车辆', '出库车辆'], textStyle: { color: textColor, fontSize: 11 }, top: 0, right: 0, itemWidth: 12, itemHeight: 8 },
+        grid: { left: 48, right: 48, top: 30, bottom: 22 },
+        xAxis: { type: 'category', data: MONTHS, axisLine: { lineStyle: { color: axisColor } }, axisLabel: { color: '#000000', fontSize: 10 } },
+        yAxis: [
+          { type: 'value', name: '人', nameTextStyle: { color: '#000000', fontSize: 10 }, splitLine: { lineStyle: { color: axisColor, type: 'dashed' } }, axisLabel: { color: '#000000', fontSize: 10 } },
+          { type: 'value', name: '辆', nameTextStyle: { color: '#000000', fontSize: 10 }, axisLabel: { color: '#000000', fontSize: 10 } }
+        ],
+        series: [
+          { name: '库区作业人员', type: 'line', smooth: true, symbol: 'none', lineStyle: { color: '#7c3aed', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(22, 119, 255, 0.2)'},{offset:1,color:'rgba(22, 119, 255, 0.01)'}]) }, data: scaleArr(workers, m / 10000, 2), yAxisIndex: 0 },
+          { name: '进库车辆', type: 'bar', barWidth: 8, yAxisIndex: 1, itemStyle: { color: 'rgba(22, 119, 255, 0.85)' }, data: scaleArr(BASE.vehicleIn, m, 0) },
+          { name: '出库车辆', type: 'bar', barWidth: 8, yAxisIndex: 1, itemStyle: { color: 'rgba(198, 115, 16, 0.8)' }, data: scaleArr(BASE.vehicleOut, m, 0) }
+        ]
+      }, true);
+    }
+
+    // ================= 区域树（省-市-县-乡镇-企业） =================
+    const GEO = window.GEO_DATA || {};
+    const CITY_ADCODE = {};   // 市名 -> adcode
+    const CITY_COUNTIES = {}; // 市名 -> 区县名数组（直接取自 geo-data.js，保证名称完全一致）
+    (function initGeoTree() {
+      const prov = GEO['360000'];
+      if (!prov) return;
+      prov.features.forEach(f => {
+        const ad = String(f.properties.adcode);
+        CITY_ADCODE[f.properties.name] = ad;
+        CITY_COUNTIES[f.properties.name] = ((GEO[ad] || {}).features || []).map(x => x.properties.name);
+      });
+    })();
+    const CITY_NAMES = Object.keys(CITY_COUNTIES).length
+      ? Object.keys(CITY_COUNTIES)
+      : ['南昌市', '景德镇市', '萍乡市', '九江市', '新余市', '鹰潭市', '赣州市', '吉安市', '宜春市', '抚州市', '上饶市'];
+
+    const TOWNS = ['桐木镇', '金山镇', '赤山镇', '株潭镇', '黄茅镇', '双桥镇', '罗城镇', '三兴镇', '潭埠镇', '马步乡', '高城镇', '白良镇'];
+    const ENT_PREFIX = ['鸿运', '鑫盛', '金焰', '景泰', '瑞祥', '宏图', '顺达', '永辉', '昌盛', '安泰'];
+
+    // 下级名称：省/市/县取真实行政区；乡镇与企业无边界数据，按确定性规则生成
+    function childNamesOf(node) {
+      if (node.level === 0) return CITY_NAMES.slice();
+      if (node.level === 1) return (CITY_COUNTIES[node.name] || []).slice();
+      if (node.level === 2) {
+        const h = Math.floor(hash01(node.name + 'tw') * TOWNS.length);
+        return [0, 1, 2].map(i => TOWNS[(h + i * 4) % TOWNS.length]);
+      }
+      if (node.level === 3) {
+        const h = Math.floor(hash01(node.name + 'en') * ENT_PREFIX.length);
+        return [0, 1, 2].map(i => node.name + ENT_PREFIX[(h + i * 3) % ENT_PREFIX.length] + '烟花仓储有限公司');
+      }
+      return [];
+    }
+    // 企业长名 -> 地图/列表用短名
+    function entShort(n) {
+      const i = n.indexOf('烟花仓储有限公司');
+      if (i < 0) return n;
+      const head = n.slice(0, i);
+      return (head.length > 4 ? head.slice(-2) : head) + '仓储';
+    }
+
+    // ================= 几何工具：在行政区面内稳定布点 =================
+    function featureRings(feat) {
+      const g = feat && feat.geometry;
+      if (!g) return [];
+      if (g.type === 'Polygon') return [g.coordinates[0]];
+      if (g.type === 'MultiPolygon') return g.coordinates.map(p => p[0]).filter(Boolean);
+      return [];
+    }
+    function inRing(pt, ring) {
+      let inside = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+        if (((yi > pt[1]) !== (yj > pt[1])) && (pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi)) inside = !inside;
+      }
+      return inside;
+    }
+    // 面内均匀取 n 个点（最远点采样，结果稳定可复现）
+    function featPoints(feat, n) {
+      const rings = featureRings(feat);
+      if (!rings.length) return [];
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      rings.forEach(r => r.forEach(p => {
+        if (p[0] < minX) minX = p[0];
+        if (p[0] > maxX) maxX = p[0];
+        if (p[1] < minY) minY = p[1];
+        if (p[1] > maxY) maxY = p[1];
+      }));
+      const cands = [];
+      const N = 24;
+      for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+          const x = minX + (maxX - minX) * (i + 0.5) / N;
+          const y = minY + (maxY - minY) * (j + 0.5) / N;
+          if (rings.some(r => inRing([x, y], r))) cands.push([x, y]);
+        }
+      }
+      if (!cands.length) return [[(minX + maxX) / 2, (minY + maxY) / 2]];
+      const picked = [cands[Math.floor(hash01(((feat.properties || {}).name) + 'pt') * cands.length)]];
+      while (picked.length < n) {
+        let best = null, bestD = -1;
+        for (let k = 0; k < cands.length; k++) {
+          let d = Infinity;
+          for (let q = 0; q < picked.length; q++) {
+            const dx = cands[k][0] - picked[q][0], dy = cands[k][1] - picked[q][1];
+            d = Math.min(d, dx * dx + dy * dy);
+          }
+          if (d > bestD) { bestD = d; best = cands[k]; }
+        }
+        if (!best) break;
+        picked.push(best);
+      }
+      return picked;
+    }
+    // 以 base 为中心、在面内生成 n 个邻近点（企业布点）
+    function pointsNear(feat, base, keys) {
+      const rings = featureRings(feat);
+      const inside = p => !rings.length || rings.some(r => inRing(p, r));
+      return keys.map((k, i) => {
+        const a0 = hash01(k + 'a') * Math.PI * 2;
+        const r0 = 0.022 + hash01(k + 'r') * 0.028;
+        // 依次尝试：换角度 + 逐级收缩半径，确保点落在本行政区面内
+        for (let s = 0; s < 24; s++) {
+          const ang = a0 + s * (Math.PI / 4);
+          const rad = r0 * Math.pow(0.72, Math.floor(s / 8));
+          const p = [base[0] + Math.cos(ang) * rad, base[1] + Math.sin(ang) * rad];
+          if (inside(p)) return p;
+        }
+        // 兜底：极近距环绕
+        for (let s = 0; s < 16; s++) {
+          const ang = a0 + s * (Math.PI / 8);
+          const rad = 0.0015 * (1 + (i % 3));
+          const p = [base[0] + Math.cos(ang) * rad, base[1] + Math.sin(ang) * rad];
+          if (inside(p)) return p;
+        }
+        return [base[0], base[1]];
+      });
+    }
+
+    // ================= 地图注册（省 / 市 / 县三级真实边界） =================
+    const registered = {};
+    const COUNTY_FEAT = {};
+    function ensureProvinceMap() {
+      if (!GEO['360000']) return false;
+      if (!registered['jx_province']) { echarts.registerMap('jx_province', GEO['360000']); registered['jx_province'] = true; }
+      return true;
+    }
+    function ensureCityMap(cityName) {
+      const ad = CITY_ADCODE[cityName];
+      if (!ad || !GEO[ad]) return null;
+      const mn = 'city_' + ad;
+      if (!registered[mn]) { echarts.registerMap(mn, GEO[ad]); registered[mn] = true; }
+      return mn;
+    }
+    function ensureCountyMap(cityName, countyName) {
+      const mn = 'cty_' + countyName;
+      if (registered[mn]) return mn;
+      const ad = CITY_ADCODE[cityName];
+      const gj = ad && GEO[ad];
+      if (!gj) return null;
+      const feat = (gj.features || []).find(f => f.properties.name === countyName);
+      if (!feat) return null;
+      echarts.registerMap(mn, { type: 'FeatureCollection', features: [feat] });
+      registered[mn] = true;
+      COUNTY_FEAT[mn] = feat;
+      return mn;
+    }
+
+    // ================= 数据模型：子节点由父节点总量拆分，保证上下级自洽 =================
+    const ROOT = { name: '江西省', level: 0, rooms: 1040, stock: 8620, workers: 18600, inVeh: 248, outVeh: 216, video: 3752, warns: 156 };
+    const METRICS = [
+      { key: 'rooms',   label: '仓库库房',   unit: '栋', dec: 0, tbl: true },
+      { key: 'stock',   label: '成品库存',   unit: '吨', dec: 0, tbl: true },
+      { key: 'workers', label: '作业人员',   unit: '人', dec: 0, tbl: true, cell: s => (s.workers / 10000).toFixed(2) + '万' },
+      { key: 'inVeh',   label: '进库车辆',   unit: '辆', dec: 0, tbl: true },
+      { key: 'outVeh',  label: '出库车辆',   unit: '辆', dec: 0, tbl: true },
+      { key: 'video',   label: '视频监测点', unit: '路', dec: 0, tbl: false }
+    ];
+    const TABLE_KEYS = METRICS.filter(m => m.tbl).map(m => m.key);
+    const MAIN_KEY = 'stock';
+    const MAIN_LABEL = '库存';
+    const MAIN_UNIT = '吨';
+
+    function splitTo(total, keys, dec) {
+      if (!keys.length) return [];
+      const D = Math.pow(10, dec);
+      const T = Math.round(total * D);
+      const w = keys.map(k => 0.45 + hash01('w' + k));
+      const s = w.reduce((a, b) => a + b, 0);
+      let used = 0;
+      return w.map((x, i) => {
+        if (i === keys.length - 1) return Math.max(0, T - used) / D;
+        let v = Math.round(T * x / s);
+        if (used + v > T) v = T - used;
+        used += v;
+        return v / D;
+      });
+    }
+    // 子节点指标 = 父节点总量按确定性权重拆分，五级上下合计严格自洽
+    function childNodes(parent) {
+      const names = childNamesOf(parent);
+      if (!names.length) return [];
+      const cols = {};
+      METRICS.forEach(mt => { cols[mt.key] = splitTo(parent[mt.key] || 0, names, mt.dec); });
+      const w = splitTo(parent.warns || 0, names, 0);
+      return names
+        .map((n, i) => {
+          const o = { name: n, level: parent.level + 1, warns: Math.round(w[i]) };
+          METRICS.forEach(mt => { o[mt.key] = cols[mt.key][i]; });
+          return o;
+        })
+        .sort((x, y) => y[MAIN_KEY] - x[MAIN_KEY]);
+    }
+    // 把节点指标打包成地图散点项
+    function packItems(nodes, shortOf) {
+      return nodes.map(c => {
+        const o = { name: c.name, short: shortOf ? shortOf(c.name) : c.name, warns: c.warns };
+        METRICS.forEach(mt => { o[mt.key] = c[mt.key]; });
+        return o;
+      });
+    }
+
+    // ================= 地图实例 =================
+    const mapChart = echarts.init(document.getElementById('mapChart'));
+
+    const LABEL_RICH = {
+      nm: { fontSize: 11, fontWeight: 700, color: '#000000', lineHeight: 15, align: 'center' },
+      v: { fontSize: 10, color: '#000000', lineHeight: 13, align: 'center' },
+      w: { fontSize: 10, color: '#000000', lineHeight: 13, align: 'center' }
+    };
+    const LABEL_BOX = {
+      backgroundColor: 'rgba(255, 255, 255, 0.98)',
+      borderColor: 'rgba(22, 119, 255, 0.42)',
+      borderWidth: 1, borderRadius: 4, padding: [3, 6, 2]
+    };
+    function tipHtml(d, extra) {
+      if (!d || d[MAIN_KEY] === undefined) return '';
+      let h = '<b>' + (d.tipName || d.name || '') + '</b>';
+      METRICS.forEach(mt => {
+        if (mt.tip === false) return;
+        h += '<br/>' + mt.label + '：' + fmt(d[mt.key]) + ' ' + mt.unit;
+      });
+      h += '<br/>预警：' + (d.warns > 0 ? '<span style="color: #e5484d">' + d.warns + ' 起</span>' : '<span style="color: #16a34a">无</span>');
+      return h + (extra || '');
+    }
+    function mainLine(d) {
+      return '{nm|' + (d.lbl || d.name || '') + '}\n{v|' + MAIN_LABEL + ' ' + fmt(d[MAIN_KEY]) + ' ' + MAIN_UNIT + '}' +
+        (d.warns ? '\n{w|预警 ' + d.warns + ' 起}' : '');
+    }
+
+    function setMapBadge(name, lv) {
+      document.getElementById('mapArea').textContent = name;
+      document.getElementById('mapLevel').textContent = lv;
+    }
+    function setMapHint(t) { document.getElementById('mapHint').textContent = t; }
+    function showPointLegend(on) { document.getElementById('mapLegend').style.display = on ? 'flex' : 'none'; }
+    function clearEmptyMap() { const el = document.getElementById('mapEmpty'); if (el) el.remove(); }
+    function emptyMap(msg) {
+      clearEmptyMap();
+      mapChart.clear();
+      setMapHint('');
+      showPointLegend(false);
+      const el = document.createElement('div');
+      el.id = 'mapEmpty'; el.className = 'map-empty'; el.textContent = msg;
+      document.querySelector('.map-box').appendChild(el);
+    }
+
+    // ---- 行政区着色地图（省级 / 市级） ----
+    function regionMapOption(mapName, children, isProv) {
+      const maxV = Math.max.apply(null, children.map(c => c[MAIN_KEY]).concat([1]));
+      const topN = isProv ? children.length : Math.min(8, children.length);
+      return {
+        tooltip: Object.assign({
+          trigger: 'item',
+          formatter: p => tipHtml(p.data || {}, '<br/><span style="color: #4096ff">点击下钻 ›</span>')
+        }, tipBase),
+        visualMap: {
+          show: true, type: 'continuous', min: 0, max: maxV, seriesIndex: 0,
+          left: 8, bottom: 8, orient: 'horizontal', itemWidth: 92, itemHeight: 8,
+          text: ['高', '低'], textStyle: { color: '#000000', fontSize: 10 },
+          inRange: { color: ['#eef4ff', '#edf2f7', '#1272c8', '#3b82f6'] }
+        },
+        series: [{
+          type: 'map', map: mapName, roam: false, zoom: 1, aspectScale: 0.92,
+          left: 14, right: 34, top: 16, bottom: 32,
+          itemStyle: {
+            areaColor: 'rgba(255, 255, 255, 0.98)',
+            borderColor: 'rgba(22, 119, 255, 0.85)', borderWidth: 1.2,
+            shadowColor: 'rgba(22, 119, 255, 0.4)', shadowBlur: 16
+          },
+          emphasis: {
+            itemStyle: { areaColor: '#e8f0fe', shadowBlur: 22, shadowColor: 'rgba(22, 119, 255, 0.85)' },
+            label: { show: true, color: '#000000' }
+          },
+          select: { disabled: true },
+          label: Object.assign({
+            show: false,
+            formatter: p => mainLine({ name: p.name, [MAIN_KEY]: (p.data || {})[MAIN_KEY], warns: (p.data || {}).warns }),
+            rich: LABEL_RICH
+          }, LABEL_BOX),
+          data: children.map((c, i) => {
+            const o = { name: c.name, value: c[MAIN_KEY], warns: c.warns, label: { show: i < topN } };
+            METRICS.forEach(mt => { o[mt.key] = c[mt.key]; });
+            return o;
+          })
+        }]
+      };
+    }
+
+    // ---- 面内散点地图底图（县级 / 乡镇级共用） ----
+    function baseGeo(mapName, regionName) {
+      return {
+        map: mapName, roam: false, aspectScale: 0.92,
+        left: 26, right: 100, top: 22, bottom: 36,
+        itemStyle: {
+          areaColor: 'rgba(15, 35, 70, 0.07)',
+          borderColor: 'rgba(22, 119, 255, 0.85)', borderWidth: 1.6,
+          shadowColor: 'rgba(22, 119, 255, 0.45)', shadowBlur: 20
+        },
+        emphasis: { disabled: true },
+        label: { show: false },
+        tooltip: { show: false },
+        regions: [{ name: regionName, itemStyle: { areaColor: 'rgba(15, 35, 70, 0.07)' } }]
+      };
+    }
+    function pointSeries(items) {
+      const maxV = Math.max.apply(null, items.map(i => i[MAIN_KEY]).concat([1]));
+      return {
+        type: 'effectScatter', coordinateSystem: 'geo', geoIndex: 0,
+        rippleEffect: { brushType: 'stroke', scale: 2.8, period: 4 },
+        symbolSize: v => 14 + 22 * Math.sqrt(((v && v[2]) || 0) / maxV),
+        itemStyle: { shadowBlur: 12, shadowColor: 'rgba(22, 119, 255, 0.85)' },
+        label: Object.assign({
+          show: true, position: 'right', distance: 8,
+          formatter: p => mainLine(p.data || {}),
+          rich: LABEL_RICH
+        }, LABEL_BOX),
+        data: items.map((it, i) => {
+          const o = { name: it.name, lbl: it.short || it.name, tipName: it.tip || it.name };
+          METRICS.forEach(mt => { o[mt.key] = it[mt.key]; });
+          o.warns = it.warns;
+          o.label = { position: i % 2 ? 'left' : 'right' };
+          o.value = [it.lng, it.lat, it[MAIN_KEY]];
+          o.itemStyle = {
+            color: it.warns ? '#e5484d' : '#1677ff',
+            shadowColor: it.warns ? 'rgba(255, 77, 79, 0.6)' : 'rgba(22, 119, 255, 0.85)'
+          };
+          return o;
+        })
+      };
+    }
+
+    // ---- 县级视图：在县界内布乡镇点 ----
+    function renderTownMap(node) {
+      const mn = ensureCountyMap(path[1] ? path[1].name : '', node.name);
+      const feat = mn && COUNTY_FEAT[mn];
+      if (!mn || !feat) { emptyMap('暂无「' + node.name + '」边界数据'); return; }
+      const names = childNamesOf(node);
+      const pts = featPoints(feat, names.length);
+      const posMap = {};
+      names.forEach((n, i) => posMap[n] = pts[i] || pts[0] || [0, 0]);
+      const items = packItems(childNodes(node)).map(it => Object.assign(it, {
+        lng: posMap[it.name][0], lat: posMap[it.name][1]
+      }));
+      mapChart.setOption({
+        tooltip: Object.assign({
+          trigger: 'item',
+          formatter: p => tipHtml(p.data || {}, '<br/><span style="color: #4096ff">点击下钻 ›</span>')
+        }, tipBase),
+        geo: baseGeo(mn, node.name),
+        series: [pointSeries(items)]
+      }, true);
+      setMapBadge(node.name, '县级 · 乡镇分布');
+      setMapHint('点击乡镇圆点下钻 ›');
+      showPointLegend(true);
+    }
+
+    // ---- 乡镇级视图：县界为底，高亮乡镇并布企业点 ----
+    function renderEntMap(node) {
+      const countyNode = path[2];
+      const mn = ensureCountyMap(path[1] ? path[1].name : '', countyNode ? countyNode.name : '');
+      const feat = mn && COUNTY_FEAT[mn];
+      if (!mn || !feat) { emptyMap('暂无「' + (countyNode ? countyNode.name : '') + '」边界数据'); return; }
+      const townNames = childNamesOf(countyNode);
+      const tpts = featPoints(feat, townNames.length);
+      const tIdx = townNames.indexOf(node.name);
+      const townPt = tpts[tIdx >= 0 ? tIdx : 0] || [0, 0];
+      const entNames = childNamesOf(node);
+      const epts = pointsNear(feat, townPt, entNames);
+      const posMap = {};
+      entNames.forEach((n, i) => posMap[n] = epts[i]);
+      const items = packItems(childNodes(node), entShort).map(it => Object.assign(it, {
+        tip: it.name, lng: posMap[it.name][0], lat: posMap[it.name][1]
+      }));
+      const townMark = {
+        type: 'scatter', coordinateSystem: 'geo', geoIndex: 0,
+        symbol: 'circle', symbolSize: 14,
+        itemStyle: {
+          color: 'rgba(198, 115, 16, 0.85)', borderColor: '#ffd591', borderWidth: 1.5,
+          shadowBlur: 14, shadowColor: 'rgba(255, 159, 46, 0.7)'
+        },
+        label: {
+          show: true, position: 'top', distance: 6, formatter: node.name,
+          color: '#000000', fontSize: 12, fontWeight: 700,
+          textShadowColor: 'rgba(15, 35, 70, 0.12)', textShadowBlur: 4
+        },
+        data: [{ name: '__town__', value: townPt }]
+      };
+      mapChart.setOption({
+        tooltip: Object.assign({
+          trigger: 'item',
+          formatter: p => tipHtml(p.data || {}, '<br/><span style="color: #4096ff">点击下钻 ›</span>')
+        }, tipBase),
+        geo: baseGeo(mn, countyNode.name),
+        series: [townMark, pointSeries(items)]
+      }, true);
+      setMapBadge(countyNode.name + ' · ' + node.name, '乡镇级 · 企业分布');
+      setMapHint('点击企业圆点下钻 ›');
+      showPointLegend(true);
+    }
+
+    // ---- 企业级（叶子）：县界为底，定位单个企业 ----
+    function renderEntLeaf(node) {
+      const countyNode = path[2], townNode = path[3];
+      const mn = ensureCountyMap(path[1] ? path[1].name : '', countyNode ? countyNode.name : '');
+      const feat = mn && COUNTY_FEAT[mn];
+      if (!mn || !feat || !townNode) { emptyMap('暂无企业位置数据'); return; }
+      const townNames = childNamesOf(countyNode);
+      const tpts = featPoints(feat, townNames.length);
+      const tIdx = townNames.indexOf(townNode.name);
+      const townPt = tpts[tIdx >= 0 ? tIdx : 0] || [0, 0];
+      const entNames = childNamesOf(townNode);
+      const epts = pointsNear(feat, townPt, entNames);
+      const eIdx = entNames.indexOf(node.name);
+      const pt = epts[eIdx >= 0 ? eIdx : 0] || townPt;
+      const over = (node.warns || 0) > 0;
+      const townMark = {
+        type: 'scatter', coordinateSystem: 'geo', geoIndex: 0,
+        symbol: 'circle', symbolSize: 11,
+        itemStyle: { color: 'rgba(198, 115, 16, 0.7)', borderColor: 'rgba(255, 213, 145, 0.8)', borderWidth: 1 },
+        label: {
+          show: true, position: 'top', distance: 5, formatter: townNode.name,
+          color: '#000000', fontSize: 11,
+          textShadowColor: 'rgba(15, 35, 70, 0.12)', textShadowBlur: 4
+        },
+        data: [{ name: '__town__', value: townPt }]
+      };
+      const entData = { name: node.name, lbl: entShort(node.name), tipName: node.name, warns: node.warns };
+      METRICS.forEach(mt => { entData[mt.key] = node[mt.key]; });
+      const entMark = {
+        type: 'effectScatter', coordinateSystem: 'geo', geoIndex: 0,
+        rippleEffect: { brushType: 'stroke', scale: 3.2, period: 3.5 },
+        symbolSize: 24,
+        itemStyle: {
+          color: over ? '#e5484d' : '#1677ff',
+          shadowBlur: 18, shadowColor: over ? 'rgba(255, 77, 79, 0.75)' : 'rgba(22, 119, 255, 0.85)'
+        },
+        label: Object.assign({
+          show: true, position: 'right', distance: 10,
+          formatter: () => '{nm|' + entShort(node.name) + '}\n{v|' + MAIN_LABEL + ' ' + fmt(node[MAIN_KEY]) + ' ' + MAIN_UNIT + '}' +
+            (over ? '\n{w|预警未处置}' : '\n{v|运行正常}'),
+          rich: LABEL_RICH
+        }, LABEL_BOX),
+        data: [Object.assign(entData, { value: pt })]
+      };
+      mapChart.setOption({
+        tooltip: Object.assign({ trigger: 'item', formatter: p => tipHtml(p.data || {}, '') }, tipBase),
+        geo: baseGeo(mn, countyNode.name),
+        series: [townMark, entMark]
+      }, true);
+      setMapBadge(entShort(node.name), '企业级 · 位置定位');
+      setMapHint('已到最末级 · 可返回上级');
+      showPointLegend(true);
+    }
+
+    function renderMapView() {
+      clearEmptyMap();
+      const node = curNode();
+      if (node.level === 0) {
+        if (!ensureProvinceMap()) { emptyMap('地理数据未加载：请确认 geo-data.js'); return; }
+        mapChart.setOption(regionMapOption('jx_province', childNodes(node), true), true);
+        setMapBadge('江西省', '省级 · 地市分布');
+        setMapHint('点击地市下钻 ›');
+        showPointLegend(false);
+      } else if (node.level === 1) {
+        const mn = ensureCityMap(node.name);
+        if (!mn) { emptyMap('暂无「' + node.name + '」边界数据'); return; }
+        mapChart.setOption(regionMapOption(mn, childNodes(node), false), true);
+        setMapBadge(node.name, '市级 · 区县分布');
+        setMapHint('点击区县下钻 ›');
+        showPointLegend(false);
+      } else if (node.level === 2) {
+        renderTownMap(node);
+      } else if (node.level === 3) {
+        renderEntMap(node);
+      } else {
+        renderEntLeaf(node);
+      }
+    }
+
+    // ================= 下钻逻辑 =================
+    let path = [ROOT];
+    const curNode = () => path[path.length - 1];
+
+    function renderCrumb() {
+      const box = document.getElementById('crumbBox');
+      box.innerHTML = path.map((n, i) => {
+        const isCur = i === path.length - 1;
+        const seg = `<span class="crumb-item ${isCur ? 'cur' : ''}" data-idx="${i}">${i >= 3 ? entShort(n.name) : n.name}${isCur ? `<span class="level-tag">${LEVEL_NAMES[n.level]}</span>` : ''}</span>`;
+        return i === 0 ? seg : `<span class="crumb-sep">›</span>` + seg;
+      }).join('');
+      box.querySelectorAll('.crumb-item').forEach(el => {
+        el.addEventListener('click', () => {
+          const idx = +el.dataset.idx;
+          if (idx < path.length - 1) { path = path.slice(0, idx + 1); refreshAll(); }
+        });
+      });
+      document.getElementById('btnBack').classList.toggle('disabled', path.length <= 1);
+    }
+
+    // 列表与地图联动
+    function syncHighlight(name, on) {
+      [0, 1].forEach(si => {
+        try { mapChart.dispatchAction({ type: on ? 'highlight' : 'downplay', seriesIndex: si, name: name }); } catch (e) { }
+      });
+    }
+
+    function renderTable(children) {
+      const sub = LEVEL_NAMES[children[0].level].replace('级', '');
+      document.getElementById('tableTitle').textContent = sub + '级单位明细（点击下钻）';
+      const tb = document.getElementById('regionTbody');
+      const isEnt = children[0].level === 4;
+      tb.innerHTML = children.map((s) => `
+        <tr data-name="${s.name}">
+          <td>${isEnt ? entShort(s.name) : s.name}</td>
+          ${TABLE_KEYS.map(k => {
+            const mt = METRICS.find(m => m.key === k);
+            return `<td class="num">${mt.cell ? mt.cell(s) : fmt(s[k])}</td>`;
+          }).join('')}
+          <td class="${s.warns > 0 ? 'warn-num' : 'ok-num'}">${s.warns > 0 ? s.warns + ' 起' : '无'}</td>
+          <td><span class="drill-link">下钻 ›</span></td>
+        </tr>
+      `).join('');
+      tb.querySelectorAll('tr').forEach(tr => {
+        const nm = tr.dataset.name;
+        tr.addEventListener('click', () => {
+          const t = children.find(c => c.name === nm);
+          if (t) { path.push(t); refreshAll(); }
+        });
+        tr.addEventListener('mouseenter', () => syncHighlight(nm, true));
+        tr.addEventListener('mouseleave', () => syncHighlight(nm, false));
+      });
+    }
+
+    // 企业仓储画像
+    function renderEntDetail(node) {
+      const over = (node.warns || 0) > 0;
+      const util = over ? (103 + Math.round(hash01(node.name + 'o') * 24)) : (62 + Math.round(hash01(node.name + 'u') * 36));
+      const turnover = Math.max(5, Math.round(22 - hash01(node.name + 't') * 10));
+      const onlineRate = Math.round(96 + hash01(node.name + 'v') * 4);
+      document.getElementById('tableTitle').textContent = '企业仓储画像';
+      document.getElementById('entPanel').innerHTML = `
+        <div class="ent-head">
+          <h4>${node.name}</h4>
+          <p>所属区域：${path.slice(0, 4).map(p => p.name).join(' / ')}</p>
+          <p>许可范围：烟花爆竹成品仓储 · 安全生产许可证有效 · 1.3级工库房在线监控</p>
+          <span class="ent-status ${over ? 'warn' : 'ok'}">${over ? '● 库存超库容预警中' : '● 仓储运行正常'}</span>
+        </div>
+        <div class="ent-kpis">
+          <div class="ent-kpi"><div class="lab">仓库库房</div><div class="val">${fmt(node.rooms)} 栋</div></div>
+          <div class="ent-kpi"><div class="lab">成品库存</div><div class="val ${over ? 'warn' : ''}">${fmt(node.stock)} 吨</div></div>
+          <div class="ent-kpi"><div class="lab">库容利用率</div><div class="val ${over ? 'warn' : ''}">${util}%</div></div>
+          <div class="ent-kpi"><div class="lab">库存周转</div><div class="val">${turnover} 天</div></div>
+          <div class="ent-kpi"><div class="lab">进/出库车辆</div><div class="val">${node.inVeh}/${node.outVeh}</div></div>
+          <div class="ent-kpi"><div class="lab">本月预警</div><div class="val ${over ? 'warn' : ''}">${node.warns} 起</div></div>
+        </div>
+        <div class="ent-mat-title">库存品类明细（本月）</div>
+        <table class="ent-mat">
+          <thead>
+            <tr><th>品类</th><th class="num">库存(吨)</th><th class="num">入库(吨)</th><th class="num">出库(吨)</th><th class="num">周转(天)</th></tr>
+          </thead>
+          <tbody>${entStockItems(node).map(r => `
+            <tr>
+              <td>${r.name}</td>
+              <td class="num">${fmt(r.stock)}</td>
+              <td class="num">${fmt(r.inQ)}</td>
+              <td class="num">${fmt(r.outQ)}</td>
+              <td class="num">${r.turn}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // 库存品类明细：按典型成品结构配比，结合企业库存规模确定性浮动
+    function entStockItems(node) {
+      const defs = [
+        { name: '烟花类', w: 0.52 },
+        { name: '爆竹类', w: 0.34 },
+        { name: '黑火药', w: 0.08 },
+        { name: '引火线', w: 0.06 }
+      ];
+      const k = 0.6 + (node.stock / 8.7) * 0.5 + hash01(node.name + 'sk') * 0.25;
+      return defs.map((d, i) => {
+        const stock = Math.max(1, Math.round(1800 * d.w * k));
+        const inQ = Math.max(0, Math.round(stock * (0.28 + hash01(node.name + 'i' + i) * 0.22)));
+        const outQ = Math.max(0, Math.round(stock * (0.24 + hash01(node.name + 'o' + i) * 0.2)));
+        const turn = Math.max(3, Math.round(stock / Math.max(1, outQ) * (0.8 + hash01(node.name + 'r' + i) * 0.5)));
+        return { name: d.name, stock, inQ, outQ, turn };
+      });
+    }
+
+    // 仓储预警列表：按省级类型权重把当前层级预警总数拆分，保证与 KPI 自洽
+    function renderWarnList(node) {
+      const box = document.getElementById('warnList');
+      if (node.level >= 4) {
+        box.innerHTML = '<div style="color: rgb(107, 124, 147);font-size:12px;padding:12px;text-align:center;line-height:1.8;">企业级视图<br/>请在上方查看该企业仓储画像与预警情况</div>';
+        return;
+      }
+      const keys = Object.keys(BASE.warns);
+      const total = node.warns || 0;
+      if (!total) { box.innerHTML = '<div class="empty-state">✓ 当前层级暂无仓储预警</div>'; return; }
+      const vals = splitTo(total, keys, 0);
+      let html = '';
+      keys.forEach((k, i) => {
+        const v = Math.round(vals[i]);
+        if (v <= 0) return;
+        const high = ['仓库超高/超量', '非法入侵', '无证装货', '温湿度异常'].indexOf(k) >= 0;
+        html += `
+          <div class="warning-item ${high ? '' : 'warn'}">
+            <div class="warning-info">
+              <div class="warning-title">${k}预警</div>
+              <div class="warning-meta">${WARN_SUGGEST[k] || '现场核查处置'} · ${hash01(node.name + k) > 0.5 ? '处置中' : '待处置'}</div>
+            </div>
+            <span class="warning-level ${high ? 'high' : 'mid'}">${v} 起</span>
+          </div>`;
+      });
+      box.innerHTML = html;
+    }
+
+
+    // KPI 数字刷新（带动画）
+    function setKpi(id, target, dec) {
+      const el = document.getElementById(id);
+      const unit = el.querySelector('.summary-unit');
+      const unitHtml = unit ? unit.outerHTML : '';
+      const start = performance.now();
+      const from = parseFloat(el.firstChild.nodeValue.replace(/,/g, '')) || 0;
+      function frame(now) {
+        const p = Math.min((now - start) / 600, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const cur = from + (target - from) * eased;
+        const txt = dec > 0 ? cur.toFixed(dec) : Math.round(cur).toLocaleString();
+        el.innerHTML = txt + unitHtml;
+        if (p < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function refreshAll() {
+      const node = curNode();
+      const children = childNodes(node);
+      const isLeaf = node.level >= 4;
+      renderCrumb();
+
+      document.getElementById('tableWrap').style.display = isLeaf ? 'none' : '';
+      const entPanel = document.getElementById('entPanel');
+      entPanel.style.display = isLeaf ? 'flex' : 'none';
+
+      document.getElementById('drillTitle').textContent = isLeaf
+        ? (entShort(node.name) + ' · 企业仓储画像')
+        : (node.name + ' · 各' + LEVEL_NAMES[children[0].level].replace('级', '') + '仓储数据分布（地图）');
+
+      renderMapView();
+      if (isLeaf) renderEntDetail(node); else renderTable(children);
+
+      const m = node[MAIN_KEY] / ROOT[MAIN_KEY];
+      const mw = node.warns / ROOT.warns;
+      renderStock(m);
+      renderVehicle(m);
+      renderVideo(m);
+      renderDispose(mw);
+      renderWarnType(mw);
+      renderTrend(m);
+      renderWarnList(node);
+
+      setKpi('kpiRoom', node.rooms, 0);
+      setKpi('kpiStock', node.stock, 0);
+      setKpi('kpiWorker', +(node.workers / 10000).toFixed(2), 2);
+      setKpi('kpiIn', node.inVeh, 0);
+      setKpi('kpiOut', node.outVeh, 0);
+      setKpi('kpiVideo', node.video, 0);
+      setKpi('kpiWarn', node.warns, 0);
+      setKpi('kpiQual', Math.max(1, Math.round(32 * m)), 0);
+
+      document.getElementById('qualSoon').innerHTML = Math.max(0, Math.round(23 * m)) + '<span style="font-size:12px">人</span>';
+      document.getElementById('qualOver').innerHTML = Math.max(0, Math.round(9 * m)) + '<span style="font-size:12px">人</span>';
+      document.getElementById('onDuty').innerHTML = Math.max(0, Math.round(1280 * m)) + '<span style="font-size:12px">人</span>';
+      document.getElementById('overCrowd').innerHTML = Math.max(0, Math.round(BASE.warns['库区超员'] * mw)) + '<span style="font-size:12px">次</span>';
+
+      mapChart.resize();
+    }
+
+    mapChart.on('click', p => {
+      const node = curNode();
+      if (node.level >= 4) return;
+      const target = childNodes(node).find(c => c.name === p.name);
+      if (!target) return;
+      path.push(target);
+      refreshAll();
+    });
+
+    document.getElementById('btnBack').addEventListener('click', () => {
+      if (path.length > 1) { path.pop(); refreshAll(); }
+    });
+    refreshAll();
+  </script>
+</body>
+</html>

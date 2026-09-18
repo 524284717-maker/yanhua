@@ -1,0 +1,17 @@
+# ---------- 系统与编辑器 ----------
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/*.log
+
+# ---------- 依赖（本工程零第三方依赖，仅作兜底）----------
+node_modules/
+package-lock.json
+
+# ---------- 打包产物（由 tools/make-zip.sh 生成，不入库）----------
+*.zip
+
+# ---------- 工具临时产物 ----------
+__pycache__/
+*.pyc

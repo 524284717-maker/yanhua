@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>数值等价性自检 · 模块化源码 vs 旧版单文件</title>
+<style>
+  body { margin: 0; padding: 20px 26px 40px; background: #f5f7fa; color: #1f2d3d;
+         font: 13px/1.7 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  h1 { font-size: 19px; margin: 0 0 4px; }
+  .sub { color: #5b6b7f; font-size: 12.5px; margin-bottom: 16px; }
+  #banner { padding: 16px 20px; border-radius: 8px; font-size: 22px; font-weight: 700;
+            letter-spacing: .5px; margin-bottom: 6px; }
+  .pass { background: #e8f8ef; color: #10784a; border: 1px solid #9ad9b8; }
+  .fail { background: #fdecec; color: #b3261e; border: 1px solid #f0a9a4; }
+  .run  { background: #eef4ff; color: #1a4f9c; border: 1px solid #a8c4f0; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0 18px; }
+  .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 13px; }
+  .card .k { color: #6b7c93; font-size: 11.5px; }
+  .card .v { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  h2 { font-size: 14px; margin: 20px 0 8px; padding-left: 8px; border-left: 3px solid #1a73e8; }
+  table { border-collapse: collapse; width: 100%; background: #fff; font-size: 12px; }
+  th, td { border: 1px solid #e2e8f0; padding: 5px 8px; text-align: left; }
+  th { background: #f0f4f9; font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .ok { color: #10784a; }
+  .bad { color: #b3261e; font-weight: 600; }
+  .note { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 15px; font-size: 12.5px; }
+  code { background: #eef2f7; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<h1>数值等价性自检</h1>
+<div class="sub">
+  比对对象：<code>js/core/*</code>（模块化源码包，window.FWCore） ⟷ <code>patent-model.js</code>（旧版单文件，window.PATENT）<br/>
+  比对范围：t = 0 ～ 60 分钟（步长 0.25，共 241 个采样时刻）× 全部导出量 + 全时间线 1201 个预计算采样点
+</div>
+
+<div id="banner" class="run">自检运行中…</div>
+<div class="grid">
+  <div class="card"><div class="k">比对项总数</div><div class="v" id="nChecks">—</div></div>
+  <div class="card"><div class="k">不一致项</div><div class="v" id="nFails">—</div></div>
+  <div class="card"><div class="k">最大绝对误差</div><div class="v" id="maxDiff">—</div></div>
+  <div class="card"><div class="k">耗时</div><div class="v" id="cost">—</div></div>
+</div>
+
+<div class="note" id="keyNote">正在校验接口覆盖…</div>
+
+<h2>差异明细（最多显示 40 条）</h2>
+<table>
+  <thead><tr><th style="width:34%">比对项</th><th style="width:22%">旧版单文件</th><th style="width:22%">模块化源码</th><th style="width:22%">绝对误差</th></tr></thead>
+  <tbody id="rows"><tr><td colspan="4">—</td></tr></tbody>
+</table>
+
+<!-- ===== 1) 行政区划数据（公开底图，非创新点） ===== -->
+<script src="../../shared/geo-data.js"></script>
+
+<!-- ===== 2) 旧版单文件数据模型：建立基准 window.PATENT ===== -->
+<script src="../../shared/patent-model.js"></script>
+
+<!-- ===== 3) 模块化源码包：建立待测 window.FWCore（刻意不加载 compat/export-patent.js，
+             以免覆盖上一步的基准 window.PATENT） ===== -->
+<script src="../js/core/00-namespace.js"></script>
+<script src="../js/core/01-params.js"></script>
+<script src="../js/core/02-geometry.js"></script>
+<script src="../js/core/03-geo-anchor.js"></script>
+<script src="../js/core/04-op-dataset.js"></script>
+<script src="../js/core/05-vehicles.js"></script>
+<script src="../js/core/06-s1-saturation.js"></script>
+<script src="../js/core/07-s2-geofence.js"></script>
+<script src="../js/core/08-s3-stagnation.js"></script>
+<script src="../js/core/09-s4-dual-risk.js"></script>
+<script src="../js/core/10-s5-confidence.js"></script>
+<script src="../js/core/11-timeline.js"></script>
+<script src="../js/core/12-aggregate.js"></script>
+<script src="../js/core/13-map-layers.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  var A = window.PATENT;   // 基准：旧版单文件
+  var B = window.FWCore;   // 待测：模块化源码包
+
+  if (!A || !B) {
+    var bn0 = document.getElementById('banner');
+    bn0.className = 'fail';
+    bn0.textContent = 'FAIL · 数据模型未就绪（window.PATENT = ' + !!A + '，window.FWCore = ' + !!B + '）';
+    return;
+  }
+
+  try {
+    run();
+  } catch (e) {
+    var bn = document.getElementById('banner');
+    bn.className = 'fail';
+    bn.textContent = 'FAIL · 自检脚本异常：' + e.message;
+    document.getElementById('rows').innerHTML =
+      '<tr><td colspan="4" class="bad">' + (e && e.stack ? e.stack : e) + '</td></tr>';
+    window.__RESULT__ = { pass: false, error: String(e), stack: e && e.stack };
+    throw e;
+  }
+
+  function run() {
+
+  var checks = 0, fails = [], worst = 0, keyReport = [];
+  var TMAX = 60, STEP = 0.25;
+
+  /* ---------- 比较原语 ---------- */
+  function num(label, a, b) {
+    checks++;
+    if (typeof a !== 'number' || typeof b !== 'number') {
+      if (a !== b) fails.push([label, String(a), String(b), '类型不同']);
+      return;
+    }
+    if (a !== a && b !== b) return;                       // 同为 NaN
+    var d = Math.abs(a - b);
+    if (d > worst) worst = d;
+    if (!(d <= 1e-9)) fails.push([label, a, b, d]);
+  }
+  function val(label, a, b) {
+    checks++;
+    if (a !== b) fails.push([label, a, b, '取值不同']);
+  }
+  function canon(x) {
+    if (x === null || typeof x !== 'object') return JSON.stringify(x === undefined ? null : x);
+    if (Array.isArray(x)) return '[' + x.map(canon).join(',') + ']';
+    var ks = Object.keys(x).filter(function (k) { return k !== 'renderItem'; }).sort();
+    return '{' + ks.map(function (k) { return JSON.stringify(k) + ':' + canon(x[k]); }).join(',') + '}';
+  }
+  function struct(label, a, b) {
+    checks++;
+    var sa = canon(a), sb = canon(b);
+    if (sa !== sb) fails.push([label, sa.slice(0, 160), sb.slice(0, 160), '结构不同']);
+  }
+
+  var t0 = performance.now();
+
+  /* ---------- ① 接口覆盖检查：旧版每个导出项，新版必须同名同类型 ---------- */
+  var missing = [], mismatchType = [];
+  Object.keys(A).forEach(function (k) {
+    if (k.indexOf('__') === 0) return;
+    if (!(k in B)) { missing.push(k); return; }
+    if (typeof A[k] !== typeof B[k]) mismatchType.push(k + '（旧 ' + typeof A[k] + ' / 新 ' + typeof B[k] + '）');
+  });
+  keyReport.push('旧版导出项 ' + Object.keys(A).length + ' 个 → 新版缺失 ' + missing.length + ' 个，类型不符 ' + mismatchType.length + ' 个');
+  if (missing.length) fails.push(['接口覆盖：缺失导出项', missing.join(', '), '—', '缺失']);
+  if (mismatchType.length) fails.push(['接口覆盖：类型不符', mismatchType.join(', '), '—', '类型不同']);
+
+  /* ---------- ② 参数与静态数据 ---------- */
+  struct('P 阈值参数集', A.P, B.P);
+  struct('TL 功能时间线', A.TL, B.TL);
+  num('BOOK_WIN 考察窗口起点', A.BOOK_WIN, B.BOOK_WIN);
+  num('TRAVEL 围栏内行驶时长', A.TRAVEL, B.TRAVEL);
+  num('UNLOAD 装卸作业时长', A.UNLOAD, B.UNLOAD);
+  struct('OP 扫码流水数据集', A.OP, B.OP);
+  struct('WARE 目标仓储坐标', A.WARE, B.WARE);
+  struct('CENTER 县域质心', A.CENTER, B.CENTER);
+  struct('BBOX 县域外接框', A.BBOX, B.BBOX);
+  struct('CITY 地市 Feature', A.CITY, B.CITY);
+  val('COUNTY 目标县名称', A.COUNTY && A.COUNTY.properties && A.COUNTY.properties.name,
+                          B.COUNTY && B.COUNTY.properties && B.COUNTY.properties.name);
+  val('COUNTY_LIST 下辖县数量', A.COUNTY_LIST.length, B.COUNTY_LIST.length);
+  struct('VEHICLES 车辆实体（含路径/停靠点）', A.VEHICLES, B.VEHICLES);
+  struct('tipBase 提示样式', A.tipBase, B.tipBase);
+  struct('LABEL_BOX 标签外框样式', A.LABEL_BOX, B.LABEL_BOX);
+  // stageMeta 的 file 字段在源码包中指向 sN.html，属展示用元数据，不参与数值等价
+  struct('stageMeta 阶段登记表（除 file）', A.stageMeta.map(function (m) {
+    return { no: m.no, name: m.name, short: m.short, desc: m.desc, t: m.t };
+  }), B.stageMeta.map(function (m) {
+    return { no: m.no, name: m.name, short: m.short, desc: m.desc, t: m.t };
+  }));
+
+  /* ---------- ③ 全时间线预计算逐点比对 ---------- */
+  num('DERIVED.step 采样步长', A.DERIVED.step, B.DERIVED.step);
+  num('DERIVED.rows 采样点数', A.DERIVED.rows.length, B.DERIVED.rows.length);
+  num('DERIVED.peakS4 阶段峰值', A.DERIVED.peakS4, B.DERIVED.peakS4);
+  num('DERIVED.peakIdx 滞留指数峰值', A.DERIVED.peakIdx, B.DERIVED.peakIdx);
+  function cmpNullable(label, a, b) {
+    checks++;
+    if (a === null || b === null) {
+      if (a !== b) fails.push([label, String(a), String(b), '触发时刻不同']);
+      return;
+    }
+    num(label, a, b);
+  }
+  cmpNullable('DERIVED.riskHideFrom（隐蔽囤货判定时刻）', A.DERIVED.riskHideFrom, B.DERIVED.riskHideFrom);
+  cmpNullable('DERIVED.bookFrom（账面造假判定时刻）', A.DERIVED.bookFrom, B.DERIVED.bookFrom);
+  cmpNullable('DERIVED.alertFrom（管控预警下发时刻）', A.DERIVED.alertFrom, B.DERIVED.alertFrom);
+
+  var nRows = Math.min(A.DERIVED.rows.length, B.DERIVED.rows.length);
+  for (var i = 0; i < nRows; i++) {
+    var ra = A.DERIVED.rows[i], rb = B.DERIVED.rows[i];
+    var tag = 'DERIVED.rows[' + i + '](t=' + ra.t + ')';
+    num(tag + '.t', ra.t, rb.t);
+    num(tag + '.stock', ra.stock, rb.stock);
+    num(tag + '.sat', ra.sat, rb.sat);
+    num(tag + '.idx', ra.idx, rb.idx);
+    num(tag + '.stayCount', ra.stayCount, rb.stayCount);
+    num(tag + '.peakS4', ra.peakS4, rb.peakS4);
+    num(tag + '.bookDrop', ra.bookDrop, rb.bookDrop);
+    val(tag + '.bookActive', ra.bookActive, rb.bookActive);
+    val(tag + '.riskHide', ra.riskHide, rb.riskHide);
+    val(tag + '.riskBook', ra.riskBook, rb.riskBook);
+    val(tag + '.noDeparture', ra.noDeparture, rb.noDeparture);
+    val(tag + '.alert', ra.alert, rb.alert);
+    num(tag + '.conf.total', ra.conf.total, rb.conf.total);
+    val(tag + '.conf.pass', ra.conf.pass, rb.conf.pass);
+  }
+
+  /* ---------- ④ 逐时刻调用全部公开函数 ---------- */
+  for (var k = 0; k * STEP <= TMAX + 1e-9; k++) {
+    var t = Math.round(k * STEP * 1000) / 1000;
+
+    num('stockAt(' + t + ')', A.stockAt(t), B.stockAt(t));
+    num('satAt(' + t + ')', A.satAt(t), B.satAt(t));
+
+    var ca = A.scanCount(t), cb = B.scanCount(t);
+    num('scanCount(' + t + ').in', ca.in, cb.in);
+    num('scanCount(' + t + ').out', ca.out, cb.out);
+
+    var sa = A.scansAt(t, 10), sb = B.scansAt(t, 10);
+    num('scansAt(' + t + ',10).length', sa.length, sb.length);
+    for (var j = 0; j < Math.min(sa.length, sb.length); j++) {
+      num('scansAt(' + t + ')[' + j + '].at', sa[j].at, sb[j].at);
+      num('scansAt(' + t + ')[' + j + '].qty', sa[j].qty, sb[j].qty);
+      val('scansAt(' + t + ')[' + j + '].act', sa[j].act, sb[j].act);
+      val('scansAt(' + t + ')[' + j + '].name', sa[j].name, sb[j].name);
+      val('scansAt(' + t + ')[' + j + '].phantom', !!sa[j].phantom, !!sb[j].phantom);
+    }
+
+    var ga = A.stagnationAt(t), gb = B.stagnationAt(t);
+    num('stagnationAt(' + t + ').index', ga.index, gb.index);
+    num('stagnationAt(' + t + ').count', ga.count, gb.count);
+    num('stagnationAt(' + t + ').rows.length', ga.rows.length, gb.rows.length);
+    for (var m = 0; m < Math.min(ga.rows.length, gb.rows.length); m++) {
+      var xa = ga.rows[m], xb = gb.rows[m], tg = 'stagnationAt(' + t + ').rows[' + m + ']';
+      val(tg + '.plate', xa.plate, xb.plate);
+      num(tg + '.inAt', xa.inAt, xb.inAt);
+      num(tg + '.inFenceMin', xa.inFenceMin, xb.inFenceMin);
+      num(tg + '.spd', xa.spd, xb.spd);
+      num(tg + '.stayMin', xa.stayMin, xb.stayMin);
+      num(tg + '.weight', xa.weight, xb.weight);
+      val(tg + '.stay', xa.stay, xb.stay);
+      val(tg + '.phase', xa.phase, xb.phase);
+      num(tg + '.pos[0]', xa.pos[0], xb.pos[0]);
+      num(tg + '.pos[1]', xa.pos[1], xb.pos[1]);
+    }
+
+    for (var v = 0; v < A.VEHICLES.length; v++) {
+      var pa = A.vehPos(A.VEHICLES[v], t), pb = B.vehPos(B.VEHICLES[v], t);
+      var tv = 'vehPos(' + A.VEHICLES[v].plate + ',' + t + ')';
+      num(tv + '.pos[0]', pa.pos[0], pb.pos[0]);
+      num(tv + '.pos[1]', pa.pos[1], pb.pos[1]);
+      num(tv + '.spd', pa.spd, pb.spd);
+      num(tv + '.stayMin', pa.stayMin, pb.stayMin);
+      val(tv + '.phase', pa.phase, pb.phase);
+      num('vehExitStart(' + A.VEHICLES[v].plate + ')', A.vehExitStart(A.VEHICLES[v]), B.vehExitStart(B.VEHICLES[v]));
+    }
+
+    val('detectDeparture(' + t + ')', A.detectDeparture(t), B.detectDeparture(t));
+    var fa = A.inFenceAt(t), fb = B.inFenceAt(t);
+    val('inFenceAt(' + t + ') 车牌集合',
+        fa.map(function (x) { return x.plate; }).join('|'),
+        fb.map(function (x) { return x.plate; }).join('|'));
+
+    var qa = A.confidenceAt(t), qb = B.confidenceAt(t);
+    num('confidenceAt(' + t + ').a', qa.a, qb.a);
+    num('confidenceAt(' + t + ').b', qa.b, qb.b);
+    num('confidenceAt(' + t + ').c', qa.c, qb.c);
+    num('confidenceAt(' + t + ').d', qa.d, qb.d);
+    num('confidenceAt(' + t + ').total', qa.total, qb.total);
+    val('confidenceAt(' + t + ').pass', qa.pass, qb.pass);
+
+    /* 聚合状态快照 */
+    var ua = A.stateAt(t), ub = B.stateAt(t);
+    num('stateAt(' + t + ').stock', ua.stock, ub.stock);
+    num('stateAt(' + t + ').sat', ua.sat, ub.sat);
+    num('stateAt(' + t + ').satPct', ua.satPct, ub.satPct);
+    num('stateAt(' + t + ').peakS4Pct', ua.peakS4Pct, ub.peakS4Pct);
+    num('stateAt(' + t + ').index', ua.index, ub.index);
+    num('stateAt(' + t + ').stayCount', ua.stayCount, ub.stayCount);
+    num('stateAt(' + t + ').bookDrop', ua.bookDrop, ub.bookDrop);
+    val('stateAt(' + t + ').bookActive', ua.bookActive, ub.bookActive);
+    val('stateAt(' + t + ').riskHide', ua.riskHide, ub.riskHide);
+    val('stateAt(' + t + ').riskBook', ua.riskBook, ub.riskBook);
+    val('stateAt(' + t + ').noDeparture', ua.noDeparture, ub.noDeparture);
+    val('stateAt(' + t + ').alert', ua.alert, ub.alert);
+    num('stateAt(' + t + ').inFence.length', ua.inFence.length, ub.inFence.length);
+    num('stateAt(' + t + ').scans.length', ua.scans.length, ub.scans.length);
+    num('stateAt(' + t + ').scanCount.in', ua.scanCount.in, ub.scanCount.in);
+    num('stateAt(' + t + ').scanCount.out', ua.scanCount.out, ub.scanCount.out);
+    num('stateAt(' + t + ').stage.no', ua.stage.no, ub.stage.no);
+    val('stateAt(' + t + ').stage.done', ua.stage.done, ub.stage.done);
+
+    num('rowAt(' + t + ').t', A.rowAt(t).t, B.rowAt(t).t);
+    num('stageAt(' + t + ').no', A.stageAt(t).no, B.stageAt(t).no);
+    val('stageAt(' + t + ').done', A.stageAt(t).done, B.stageAt(t).done);
+
+    /* 判定式与地图图层 */
+    struct('vehSeries(' + t + ')', A.vehSeries(t, 11), B.vehSeries(t, 11));
+    struct('wareSeries(' + t + ')', A.wareSeries(ua, 17), B.wareSeries(ub, 17));
+    struct('alertSeries(' + t + ')', A.alertSeries(ua, 17), B.alertSeries(ub, 17));
+  }
+
+  struct('fenceSeries()', A.fenceSeries(), B.fenceSeries());
+  struct('trackSeries()', A.trackSeries(), B.trackSeries());
+  for (var n = 1; n <= 5; n++) num('stageTime(' + n + ')', A.stageTime(n), B.stageTime(n));
+
+  /* ---------- ⑤ 判定式独立比对 ----------
+     说明：判定式 A/B 在旧版单文件中是内联在时间线预计算里的表达式，并未单独导出；
+     此处按旧版源码原样复写为独立函数，与新版 09-s4-dual-risk.js 的导出函数逐点比对。 */
+  function origJudgeHide(sat, idx) { return sat >= A.P.fullRatio && idx >= A.P.stayThreshold; }
+  function origJudgeBook(drop, hasDeparture) { return drop >= A.P.bookDrop && !hasDeparture; }
+  function origBookDropOf(peakSat, sat) { return Math.max(0, peakSat - sat); }
+
+  for (var s = 0; s <= 1.4; s += 0.05) {
+    for (var y = 0; y <= 1.2; y += 0.05) {
+      var ss = Math.round(s * 1000) / 1000, yy = Math.round(y * 1000) / 1000;
+      val('judgeHide(' + ss + ',' + yy + ')', origJudgeHide(ss, yy), B.judgeHide(ss, yy));
+    }
+  }
+  for (var bd = 0; bd <= 0.4; bd += 0.02) {
+    for (var dp = 0; dp <= 1; dp++) {
+      var b2 = Math.round(bd * 1000) / 1000;
+      val('judgeBook(' + b2 + ',' + dp + ')', origJudgeBook(b2, !!dp), B.judgeBook(b2, !!dp));
+    }
+  }
+  for (var pk = 0.8; pk <= 1.0; pk += 0.01) {
+    for (var cu = 0.5; cu <= 1.0; cu += 0.05) {
+      var p2 = Math.round(pk * 1000) / 1000, c2 = Math.round(cu * 1000) / 1000;
+      num('bookDropOf(' + p2 + ',' + c2 + ')', origBookDropOf(p2, c2), B.bookDropOf(p2, c2));
+    }
+  }
+  for (var h = 0; h <= 60; h += 0.5) num('hash01 稳定性(' + h + ')', A.hash01('c' + Math.round(h)), B.hash01('c' + Math.round(h)));
+
+  /* ---------- ⑥ 输出 ---------- */
+  var ms = performance.now() - t0;
+  var banner = document.getElementById('banner');
+  var pass = fails.length === 0;
+
+  banner.className = pass ? 'pass' : 'fail';
+  banner.textContent = pass
+    ? 'PASS · 模块化源码与旧版单文件数值完全等价（' + checks.toLocaleString() + ' 项全部一致）'
+    : 'FAIL · 发现 ' + fails.length + ' 处不一致（共比对 ' + checks.toLocaleString() + ' 项）';
+
+  document.getElementById('nChecks').textContent = checks.toLocaleString();
+  document.getElementById('nFails').textContent = fails.length;
+  document.getElementById('maxDiff').textContent = worst === 0 ? '0' : worst.toExponential(2);
+  document.getElementById('cost').textContent = ms.toFixed(0) + ' ms';
+
+  var kn = document.getElementById('keyNote');
+  kn.innerHTML = '<b>接口覆盖检查：</b>' + keyReport.join('；') +
+    '<br/>判定时刻：隐蔽囤货 <code>' + A.DERIVED.riskHideFrom + '′</code> · 账面造假 <code>' +
+    A.DERIVED.bookFrom + '′</code> · 管控预警 <code>' + A.DERIVED.alertFrom + '′</code>' +
+    '（新版：<code>' + B.DERIVED.riskHideFrom + '′</code> / <code>' + B.DERIVED.bookFrom +
+    '′</code> / <code>' + B.DERIVED.alertFrom + '′</code>）';
+
+  var tbody = document.getElementById('rows');
+  if (!fails.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="ok">无差异 —— 全部比对项逐位一致。</td></tr>';
+  } else {
+    tbody.innerHTML = fails.slice(0, 40).map(function (f) {
+      return '<tr><td>' + f[0] + '</td><td class="num bad">' + f[1] + '</td><td class="num bad">' +
+             f[2] + '</td><td class="num">' + f[3] + '</td></tr>';
+    }).join('');
+  }
+
+  window.__RESULT__ = { pass: pass, checks: checks, fails: fails.slice(0, 200), failCount: fails.length, maxDiff: worst };
+  console.log('[equivalence]', window.__RESULT__);
+  }
+})();
+</script>
+</body>
+</html>
