@@ -65,10 +65,12 @@ patent-src/
 │   ├── index.html                 系统功能总览
 │   └── s1.html … s5.html          5 个功能页（可直接双击打开）
 └── tools/
-    ├── build-pages.py             由 pages-src/ + css/ 组装 pages/
+    ├── build-pages.py             由 pages-src/ + css/ 组装 pages/ 与 js/pages/
     ├── pages-src/                 页面正文片段与页面脚本源（可编辑）
+    ├── build-legacy.py            生成旧版对照基准（注入时刻冻结钩子）
     ├── equivalence-test.html      ★ 数值等价性自检（新版模块 vs 旧版单文件，t=0~60）
-    ├── dom-diff.html              ★ 界面等价性自检（新版页面 vs 旧版页面，冻结时刻逐页比对文本）
+    ├── dom-diff.sh                ★ 界面等价性自检（新版页面 vs 旧版页面，冻结时刻逐页比对）
+    ├── md2html.py                 由 技术特征对照表.md 生成可读 HTML
     └── legacy/                    旧版单文件页面（等价性对照基准，含测试用时间钩子）
 ```
 
@@ -122,14 +124,18 @@ open patent-src/pages/index.html
 /Users/xuhongtao/.workbuddy/binaries/python/versions/3.13.12/bin/python3 patent-src/tools/build-pages.py
 ```
 
-### 3. 等价性自检
+### 3. 等价性自检（两项，均应 PASS）
 
 ```bash
-open patent-src/tools/equivalence-test.html   # 数值等价：逐时刻比对全部导出量
-open patent-src/tools/dom-diff.html           # 界面等价：逐页比对冻结时刻的界面文本
+# ① 数值等价：逐时刻比对全部导出量（55,610 项）
+open patent-src/tools/equivalence-test.html
+
+# ② 界面等价：5 个页面 × 23 个冻结时刻，比对 DOM 文本 + 全部 ECharts 配置（115 组）
+bash patent-src/tools/dom-diff.sh          # 需要 agent-browser 在 PATH 中
 ```
 
-两个自检页均以 `PASS / FAIL` 大字提示结果，并在控制台输出差异明细。
+数值自检页以 `PASS / FAIL` 大字提示结果，并列出差异明细；
+界面自检在终端逐时刻打印哈希，末尾给出总结论与退出码（0 = PASS）。
 
 ---
 
@@ -156,4 +162,16 @@ open patent-src/tools/dom-diff.html           # 界面等价：逐页比对冻�
 5. `js/core/11-timeline.js` —— 为什么判定结果与帧序无关。
 6. `js/core/12-aggregate.js` —— 任意时刻的完整状态快照。
 
-配套说明：`技术特征对照表.md`。
+配套说明：`技术特征对照表.md`（同时提供可读的 `技术特征对照表.html`）。
+
+---
+
+## 七、等价性验证结论（实测）
+
+| 校验项 | 方法 | 规模 | 结果 |
+| --- | --- | --- | --- |
+| 数值等价 | `tools/equivalence-test.html` | 55,610 项 | **PASS，差异 0 项，最大绝对误差 0** |
+| 接口覆盖 | 旧版每个导出项在新版同名同类型 | 48 项 | PASS |
+| 判定时刻 | 隐蔽囤货 32.0′ / 账面造假 40.6′ / 管控预警 41.0′ | 3 项 | 新旧完全一致 |
+| 界面等价 | `tools/dom-diff.sh`（DOM 文本 + 全部 ECharts 配置） | 115 组 | **PASS，全部一致** |
+| 页面健康度 | 6 个页面 JS 报错 / 面板溢出 | 6 页 | 0 报错、0 溢出 |
