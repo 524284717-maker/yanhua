@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>S3 滞留车辆筛选与滞留指数 · 烟花爆竹全链条数字化预警监管平台</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<link rel="stylesheet" href="../css/platform.css" />
+</head>
+<body>
+<div class="screen">
+  <header>
+    <div style="flex-shrink:0;">
+      <h1>烟花爆竹全链条数字化预警监管平台</h1>
+      <div class="sub"><b>S3 滞留车辆筛选与滞留指数</b> · 筛选「速度低于静止阈值 且 停留超过装卸容忍时间」车辆，计算异常滞留指数</div>
+    </div>
+    <nav class="step-nav">
+      <a class="home" href="index.html">方案总览</a>
+      <a href="s1.html" data-step="1"><b>S1</b>库存饱和度</a>
+      <a href="s2.html" data-step="2"><b>S2</b>电子围栏</a>
+      <a href="s3.html" data-step="3"><b>S3</b>滞留指数</a>
+      <a href="s4.html" data-step="4"><b>S4</b>双风险判定</a>
+      <a href="s5.html" data-step="5"><b>S5</b>管控预警</a>
+    </nav>
+    <div class="ctrl">
+      <span class="tag-step" id="stepTag">S3 / S5</span>
+      <span class="tag-time" id="flowTick">T+00.0′</span>
+      <button class="btn" id="btnReset">重置</button>
+    </div>
+  </header>
+  <main style="grid-template-columns: 1.15fr 1fr;">
+    <div class="col">
+      <div class="panel map-panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3><i class="step-no">S3</i>围栏内滞留车辆定位</h3><span class="more" id="inFenceTag">—</span></div>
+        <div class="map-box"><div class="map-tag">红色三角 = 判定为滞留车辆</div><div id="mapStag" style="width:100%;height:100%;"></div></div>
+        <div class="legend-mini">
+          <span><i style="background:#ff4d4f"></i>滞留车辆（停留超容忍 ∧ 速度低于静止阈值）</span>
+          <span><i style="background:#ffd23f"></i>停靠未超时</span>
+          <span><i style="background:#7fe3a0"></i>正常行驶</span>
+        </div>
+      </div>
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3>滞留车辆筛选规则</h3><span class="more">功能流程第 3 步</span></div>
+        <div class="kv-grid" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="kv"><div class="k">静止阈值</div><div class="v">2<small>km/h</small></div></div>
+          <div class="kv"><div class="k">装卸容忍时间</div><div class="v">15<small>min</small></div></div>
+          <div class="kv"><div class="k">滞留报警阈值</div><div class="v">0.60</div></div>
+          <div class="kv" id="kvIdx"><div class="k">异常滞留指数 I(t)</div><div class="v">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>滞留车辆集合与权重明细</h3><span class="more" id="stayTag">—</span></div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>车牌号</th><th>进入时刻</th><th class="num">围栏内停留</th><th class="num">移动速度</th><th>筛选判定</th><th class="num">滞留权重</th><th>电子运单</th></tr></thead>
+            <tbody id="stayTbody"></tbody>
+          </table>
+        </div>
+        <div class="formula" style="margin-top: 8px; flex-shrink: 0;">
+          <div><b>筛选条件：</b><code>停留时间 ≥ 15 min ∧ 移动速度 &lt; 2 km/h</code></div>
+          <div><b>滞留权重：</b><code>w = 0.5 × min(1, 停留/15) + 0.5 × max(0, 1 − 速度/2)</code></div>
+          <div><b>异常滞留指数：</b><code>I(t) = min(1, Σw / 3 × 0.78 + 0.1)</code> —— 以 3 辆滞留车辆为满值参考</div>
+        </div>
+      </div>
+
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3>异常滞留指数演进</h3><span class="more" id="idxPeak">—</span></div>
+        <div id="idxChart" style="height: 170px;"></div>
+      </div>
+    </div>
+  </main>
+  <footer class="pager">
+    <a href="s2.html" data-step="2">← 上一流程 S2</a>
+    <span class="mid">S3 / S5 · 滞留车辆筛选与滞留指数 —— 进页自 T+0 起按功能时序自动推进，各指标随监测时刻实时刷新</span>
+    <a href="s4.html" data-step="4">下一流程 S4 →</a>
+  </footer>
+</div>
+
+<script src="../../geo-data.js"></script>
+<script src="../js/core/00-namespace.js"></script>
+<script src="../js/core/01-params.js"></script>
+<script src="../js/core/02-geometry.js"></script>
+<script src="../js/core/03-geo-anchor.js"></script>
+<script src="../js/core/04-op-dataset.js"></script>
+<script src="../js/core/05-vehicles.js"></script>
+<script src="../js/core/06-s1-saturation.js"></script>
+<script src="../js/core/07-s2-geofence.js"></script>
+<script src="../js/core/08-s3-stagnation.js"></script>
+<script src="../js/core/09-s4-dual-risk.js"></script>
+<script src="../js/core/10-s5-confidence.js"></script>
+<script src="../js/core/11-timeline.js"></script>
+<script src="../js/core/12-aggregate.js"></script>
+<script src="../js/core/13-map-layers.js"></script>
+<script src="../js/compat/export-patent.js"></script>
+<script src="../js/render/page-shell.js"></script>
+<script src="../js/pages/s3.js"></script>
+<script src="../js/render/boot.js"></script>
+</body>
+</html>

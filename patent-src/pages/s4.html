@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>S4 双风险判定 · 烟花爆竹全链条数字化预警监管平台</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<link rel="stylesheet" href="../css/platform.css" />
+</head>
+<body>
+<div class="screen">
+  <header>
+    <div style="flex-shrink:0;">
+      <h1>烟花爆竹全链条数字化预警监管平台</h1>
+      <div class="sub"><b>S4 双风险判定</b> · 饱和度与滞留指数双超阈 → 隐蔽囤货风险；饱和度下降但无驶离轨迹 → 账面造假风险</div>
+    </div>
+    <nav class="step-nav">
+      <a class="home" href="index.html">方案总览</a>
+      <a href="s1.html" data-step="1"><b>S1</b>库存饱和度</a>
+      <a href="s2.html" data-step="2"><b>S2</b>电子围栏</a>
+      <a href="s3.html" data-step="3"><b>S3</b>滞留指数</a>
+      <a href="s4.html" data-step="4"><b>S4</b>双风险判定</a>
+      <a href="s5.html" data-step="5"><b>S5</b>管控预警</a>
+    </nav>
+    <div class="ctrl">
+      <span class="tag-step" id="stepTag">S4 / S5</span>
+      <span class="tag-time" id="flowTick">T+00.0′</span>
+      <button class="btn" id="btnReset">重置</button>
+    </div>
+  </header>
+  <main style="grid-template-columns: 1fr 1fr;">
+    <div class="col">
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3><i class="step-no">S4</i>风险判定结果</h3><span class="more" id="ruleState">—</span></div>
+        <div class="risk-row">
+          <div class="risk-card" id="riskHide">
+            <div class="lab">隐蔽囤货风险</div>
+            <div class="st" id="stHide">未触发</div>
+            <div class="cond">库存饱和度 S(t) &gt; 85%<br/>且 异常滞留指数 I(t) &gt; 0.60</div>
+          </div>
+          <div class="risk-card" id="riskBook">
+            <div class="lab">账面造假风险</div>
+            <div class="st" id="stBook">未触发</div>
+            <div class="cond">饱和度在预设时间段内下降 &gt; 15%<br/>且 未监测到驶离轨迹</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>判定式与当前取值代入</h3><span class="more">双条件与逻辑</span></div>
+        <div class="formula" style="flex: 1; min-height: 0; overflow-y: auto;">
+          <div style="margin-bottom: 10px;">
+            <b>判定式 A（隐蔽囤货风险）：</b><br/>
+            <code>S(t) ≥ 85% ∧ I(t) ≥ 0.60 → Risk_Hidden</code><br/>
+            <span class="vs">代入 T+<b id="fA_t">0</b>′：</span>
+            S(t) = <em id="fA_s">—</em> 85% &nbsp;<span class="vs">∧</span>&nbsp; I(t) = <em id="fA_i">—</em> 0.60
+            &nbsp;→&nbsp; <em id="fA_r">—</em>
+          </div>
+          <div style="margin-bottom: 10px;">
+            <b>判定式 B（账面造假风险）：</b><br/>
+            <code>ΔS(Δt) ≤ −15% ∧ ¬Departure(Δt) → Risk_Phantom</code><br/>
+            <span class="vs">代入 T+<b id="fB_t">0</b>′：</span>
+            预设时间段内峰值饱和度 <em id="fB_p">—</em>，当前 <em id="fB_c">—</em>，
+            降幅 <em id="fB_d">—</em> 15%
+            &nbsp;<span class="vs">∧</span>&nbsp; 驶离轨迹 <em id="fB_dep">—</em>
+            &nbsp;→&nbsp; <em id="fB_r">—</em>
+          </div>
+          <div class="spec" style="margin-top: 4px;">
+            <span class="h">判定说明</span>
+            隐蔽囤货：仓储账面库存已逼近设计容量（超载），且围栏内出现多辆长时间滞留、几乎静止的运输车辆，
+            符合「以车代库、囤而不发」的行为特征。<br/>
+            账面造假：扫码系统显示持续大批量出库（账面库存快速下降），但围栏内始终未监测到任何运输车辆驶离轨迹，
+            说明出库登记与实际物流不一致，存在虚假出库、掩盖超储的可能。
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3>风险触发时序</h3><span class="more">按功能时序</span></div>
+        <div class="formula">
+          <div>· <b>隐蔽囤货风险</b>：<span id="tHide">—</span></div>
+          <div>· <b>账面造假风险</b>：<span id="tBook">—</span></div>
+          <div>· <b>管控预警下发</b>：<span id="tAlert">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3>判定指标实时看板</h3><span class="more" id="s4Tag">—</span></div>
+        <div class="kv-grid" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="kv" id="kSat"><div class="k">库存饱和度 S(t)</div><div class="v">—</div></div>
+          <div class="kv" id="kPeak"><div class="k">窗口内峰值饱和度</div><div class="v">—</div></div>
+          <div class="kv" id="kIdx"><div class="k">异常滞留指数 I(t)</div><div class="v">—</div></div>
+          <div class="kv" id="kStay"><div class="k">滞留车辆数</div><div class="v">—</div></div>
+          <div class="kv" id="kDrop"><div class="k">饱和度降幅 ΔS</div><div class="v">—</div></div>
+          <div class="kv" id="kDep"><div class="k">驶离轨迹</div><div class="v" style="font-size:15px;">—</div></div>
+        </div>
+      </div>
+
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>双指标联合演进与风险触发点</h3><span class="more" id="triggerTag">—</span></div>
+        <div id="s4Chart" style="flex: 1; min-height: 0;"></div>
+      </div>
+
+    </div>
+  </main>
+  <footer class="pager">
+    <a href="s3.html" data-step="3">← 上一流程 S3</a>
+    <span class="mid">S4 / S5 · 双风险判定 —— 进页自 T+0 起按功能时序自动推进，各指标随监测时刻实时刷新</span>
+    <a href="s5.html" data-step="5">下一流程 S5 →</a>
+  </footer>
+</div>
+
+<script src="../../geo-data.js"></script>
+<script src="../js/core/00-namespace.js"></script>
+<script src="../js/core/01-params.js"></script>
+<script src="../js/core/02-geometry.js"></script>
+<script src="../js/core/03-geo-anchor.js"></script>
+<script src="../js/core/04-op-dataset.js"></script>
+<script src="../js/core/05-vehicles.js"></script>
+<script src="../js/core/06-s1-saturation.js"></script>
+<script src="../js/core/07-s2-geofence.js"></script>
+<script src="../js/core/08-s3-stagnation.js"></script>
+<script src="../js/core/09-s4-dual-risk.js"></script>
+<script src="../js/core/10-s5-confidence.js"></script>
+<script src="../js/core/11-timeline.js"></script>
+<script src="../js/core/12-aggregate.js"></script>
+<script src="../js/core/13-map-layers.js"></script>
+<script src="../js/compat/export-patent.js"></script>
+<script src="../js/render/page-shell.js"></script>
+<script src="../js/pages/s4.js"></script>
+<script src="../js/render/boot.js"></script>
+</body>
+</html>

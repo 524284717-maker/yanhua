@@ -1,0 +1,40 @@
+  <main style="grid-template-columns: 1.35fr 1fr;">
+    <div class="col">
+      <div class="panel map-panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3><i class="step-no">S2</i>目标仓储所在县域总览</h3>
+          <span class="more" id="ovInfo">—</span></div>
+        <div class="map-box"><div class="map-tag">万载县（宜春市）· 县级行政区划</div><div id="mapOverview" style="width:100%;height:100%;"></div></div>
+        <div class="legend-mini">
+          <span><i style="background:#ff4d4f"></i>目标仓储 A 库</span>
+          <span><i style="background:#00d4ff"></i>地理电子围栏（R=800m）</span>
+          <span><i style="background:#ffd23f"></i>运输车辆当前位置</span>
+          <span><i style="background:#ff9f2e"></i>在途运输轨迹</span>
+        </div>
+      </div>
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3>地理电子围栏参数</h3><span class="more">以目标仓储为中心</span></div>
+        <div class="kv-grid" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="kv"><div class="k">围栏中心（仓储坐标）</div><div class="v" style="font-size:14px;" id="fenceCenter">—</div></div>
+          <div class="kv"><div class="k">围栏半径 R</div><div class="v">800<small>m</small></div></div>
+          <div class="kv"><div class="k">围栏内车辆</div><div class="v" id="fenceCnt">—</div></div>
+          <div class="kv"><div class="k">在途轨迹点数</div><div class="v" id="trackCnt">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="panel map-panel" style="flex: 1.1; min-height: 0;">
+        <div class="panel-title"><h3>围栏内定位轨迹细节放大</h3><span class="more" id="dtInfo">—</span></div>
+        <div class="map-box"><div class="map-tag">细节视图 · 围栏内车辆定位</div><div id="mapDetail" style="width:100%;height:100%;"></div></div>
+      </div>
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>运输车辆定位轨迹实时接入</h3><span class="more">卫星定位 + 车载终端</span></div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>车牌号</th><th>进入围栏</th><th class="num">围栏内时长</th><th class="num">移动速度</th><th>当前状态</th><th>定位坐标</th></tr></thead>
+            <tbody id="trackTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>

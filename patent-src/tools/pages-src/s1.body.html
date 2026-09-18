@@ -1,0 +1,48 @@
+  <main style="grid-template-columns: 420px 1fr 560px;">
+    <div class="col">
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3><i class="step-no">S1</i>库存饱和度 S(t)</h3><span class="more" id="satTag">—</span></div>
+        <div id="gaugeSat" style="height: 196px; flex-shrink: 0;"></div>
+        <div class="kv-grid" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="kv"><div class="k">设计容量 C</div><div class="v">800<small>吨</small></div></div>
+          <div class="kv"><div class="k">满载阈值</div><div class="v">85<small>%</small></div></div>
+          <div class="kv" id="kvStock"><div class="k">当前库存 Q(t)</div><div class="v">—</div></div>
+          <div class="kv" id="kvSat"><div class="k">饱和度 S(t)=Q(t)/C</div><div class="v">—</div></div>
+        </div>
+      </div>
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>库存饱和度演进</h3><span class="more" id="peakTag">—</span></div>
+        <div id="satChart" style="flex: 1; min-height: 0;"></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>实时扫码出入库流水</h3><span class="more" id="scanSum">入库 0 · 出库 0</span></div>
+        <div class="scan-list" id="scanList"></div>
+      </div>
+      <div class="panel" style="flex: 0 0 auto;">
+        <div class="panel-title"><h3>扫码数据来源与口径</h3></div>
+        <div class="formula">
+          <div>· 数据源：仓储出入库扫码枪 / PDA 实时上报，含<b>品类、批次、数量、时间戳</b>；</div>
+          <div>· 饱和度按 <code>S(t) = Q(t) / C</code> 计算，<code>Q(t)</code> 由 T+0 初始库存逐笔累加扫码记录得到；</div>
+          <div>· 累计扫码 <b id="scanTotal">0</b> 笔（入库 <b id="scanIn">0</b> · 出库 <b id="scanOut">0</b>），当前在线设备 <b>12</b> 台。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="panel" style="flex: 1; min-height: 0;">
+        <div class="panel-title"><h3>功能说明 · S1 库存饱和度计算</h3><span class="more">功能流程第 1 步</span></div>
+        <div class="spec" style="flex-shrink: 0;">
+          <span class="h">功能说明</span>实时获取目标仓储的扫码出入库数据，并结合目标仓储的设计容量，计算当前时刻的库存饱和度。
+        </div>
+        <div class="tbl-wrap" style="margin-top: 9px;">
+          <table class="tbl">
+            <thead><tr><th>时刻</th><th>扫码类型</th><th>品类</th><th class="num">数量(吨)</th><th class="num">累计库存</th><th>备注</th></tr></thead>
+            <tbody id="opTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
